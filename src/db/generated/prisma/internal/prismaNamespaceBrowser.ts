@@ -120,7 +120,8 @@ export const MessageScalarFieldEnum = {
   contactId: 'contactId',
   instanceId: 'instanceId',
   createdAt: 'createdAt',
-  timestamp: 'timestamp'
+  timestamp: 'timestamp',
+  processingStatus: 'processingStatus'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]

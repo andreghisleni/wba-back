@@ -1011,7 +1011,8 @@ export const MessageScalarFieldEnum = {
   contactId: 'contactId',
   instanceId: 'instanceId',
   createdAt: 'createdAt',
-  timestamp: 'timestamp'
+  timestamp: 'timestamp',
+  processingStatus: 'processingStatus'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -1236,6 +1237,20 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'BigInt[]'
  */
 export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProcessingStatus'
+ */
+export type EnumProcessingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProcessingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProcessingStatus[]'
+ */
+export type ListEnumProcessingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProcessingStatus[]'>
     
 
 

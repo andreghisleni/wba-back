@@ -50,3 +50,13 @@ export const MessageType = {
 } as const
 
 export type MessageType = (typeof MessageType)[keyof typeof MessageType]
+
+
+export const ProcessingStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  NONE: 'NONE'
+} as const
+
+export type ProcessingStatus = (typeof ProcessingStatus)[keyof typeof ProcessingStatus]

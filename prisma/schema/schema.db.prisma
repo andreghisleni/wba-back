@@ -90,6 +90,8 @@ model Message {
   createdAt DateTime @default(now()) // Data que entrou no seu banco
   timestamp BigInt? // Timestamp original do WhatsApp (Unix epoch)
 
+  processingStatus ProcessingStatus @default(NONE)
+
   @@index([contactId])
   @@index([wamid])
   @@map("messages")
@@ -128,4 +130,11 @@ enum MessageType {
   interactive // Botões e Listas
   template // Mensagens prontas (HSM)
   unknown
+}
+
+enum ProcessingStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  NONE
 }
