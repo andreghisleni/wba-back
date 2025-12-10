@@ -6,7 +6,7 @@ import { env } from '~/env';
 import { tracing } from '~/tracing';
 // import { event } from "./routes/event-routes";
 // import { events } from "./routes/events";
-import { rentalRoutes } from './routes/rental';
+import { whatsappRoutes } from './routes/whatsapp';
 
 // import { scoutSessions } from "./routes/scout-sessions";
 // import { users } from "./routes/users";
@@ -53,7 +53,8 @@ const app = new Elysia()
   // .use(scoutSessions)
   // .use(users)
   // .use(event)
-  .use(rentalRoutes)
+  // .use(rentalRoutes)
+  .use(whatsappRoutes)
   .get('/', () => 'Hello Elysia', {
     detail: {
       summary: 'API Health Check',

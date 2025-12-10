@@ -5,6 +5,10 @@ const schema = z.object({
   DATABASE_URL: z.string().min(5).max(100),
   OTEL_TRACE_EXPORTER_URL: z.string(),
   BETTER_AUTH_URL: z.string(),
+
+  META_APP_ID: z.string(),
+  META_APP_SECRET: z.string(),
+  META_WEBHOOK_VERIFY_TOKEN: z.string()
 });
 // Faz o "parse" das variáveis de ambiente (process.env) usando o schema definido
 const parsedEnv = schema.safeParse(process.env);
