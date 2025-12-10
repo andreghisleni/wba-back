@@ -1,0 +1,131 @@
+// ---------------------------------------------------------
+// 2. A CONEXÃO COM A META (RESULTADO DO EMBEDDED SIGNUP)
+// ---------------------------------------------------------
+model WhatsAppInstance {
+  id   String  @id @default(uuid())
+  name String? // Nome para identificar internamente (ex: "Loja Centro")
+
+  // DADOS CRÍTICOS DA API CLOUD (Obtidos no Onboarding)
+  wabaId        String // ID da WhatsApp Business Account
+  phoneNumberId String @unique // ID do Telefone (necessário para enviar msg)
+  accessToken   String // Token Permanente (System User Token)
+
+  // Dados de exibição
+  displayNumber String? // O número formatado (ex: +551199999999)
+  businessName  String? // Nome que aparece no WhatsApp
+
+  status InstanceStatus @default(ACTIVE)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Relacionamentos
+  contacts Contact[]
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("whatsapp_instances")
+}
+
+// ---------------------------------------------------------
+// 3. OS CONTATOS (CLIENTES QUE MANDAM MENSAGEM)
+// ---------------------------------------------------------
+model Contact {
+  id String @id @default(uuid())
+
+  // WAID é o ID do usuário no WhatsApp (geralmente o número, ex: 554899998888)
+  waId          String
+  pushName      String? // Nome que o usuário usa no perfil dele
+  profilePicUrl String? // Foto de perfil (se conseguir capturar)
+
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
+
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Garante que o contato é único POR INSTÂNCIA (Instâncias diferentes podem ter o mesmo contato)
+  @@unique([instanceId, waId])
+  @@map("contacts")
+}
+
+// ---------------------------------------------------------
+// 4. O HISTÓRICO DE MENSAGENS (O CORAÇÃO DO CHAT)
+// ---------------------------------------------------------
+model Message {
+  id String @id @default(uuid())
+
+  // WAMID é o ID único da mensagem gerado pela Meta.
+  // Importante para deduplicação e atualizações de status (lido/entregue).
+  wamid String @unique
+
+  // Tipo de mensagem
+  type      MessageType      @default(text)
+  direction MessageDirection // INBOUND (Recebida) ou OUTBOUND (Enviada)
+  status    MessageStatus    @default(SENT)
+
+  // Conteúdo
+  body String? @db.Text // Texto da mensagem
+
+  // Para Mídia (Imagens, Áudio, PDF)
+  mediaUrl      String?
+  mediaMimeType String?
+  mediaCaption  String?
+
+  // JSON Bruto: Recomendo MUITO guardar o payload original da Meta aqui.
+  // Se eles lançarem uma feature nova (ex: Botão de Pix), seu sistema não quebra.
+  rawJson Json?
+
+  // Relacionamentos
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id])
+
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
+
+  createdAt DateTime @default(now()) // Data que entrou no seu banco
+  timestamp BigInt? // Timestamp original do WhatsApp (Unix epoch)
+
+  @@index([contactId])
+  @@index([wamid])
+  @@map("messages")
+}
+
+// ---------------------------------------------------------
+// ENUMS (Para padronizar o código)
+// ---------------------------------------------------------
+
+enum InstanceStatus {
+  ACTIVE
+  DISCONNECTED
+  BANNED
+}
+
+enum MessageDirection {
+  INBOUND // Do cliente para o sistema
+  OUTBOUND // Do sistema para o cliente
+}
+
+enum MessageStatus {
+  ACCEPTED // Meta aceitou
+  SENT // Enviado
+  DELIVERED // Chegou no celular (dois tiques cinzas)
+  READ // Lido (dois tiques azuis)
+  FAILED // Erro no envio
+}
+
+enum MessageType {
+  text
+  image
+  video
+  audio
+  document
+  sticker
+  interactive // Botões e Listas
+  template // Mensagens prontas (HSM)
+  unknown
+}

@@ -1,0 +1,23 @@
+{
+  "cSpell.words": [
+    "Elysia",
+    "elysiajs",
+    "opentelemetry",
+    "otlp"
+  ],
+  "emmet.showExpandedAbbreviation": "never",
+  "editor.defaultFormatter": "biomejs.biome",
+  "[javascript][typescript][javascriptreact][typescriptreact][json][jsonc][css][graphql]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
+}
