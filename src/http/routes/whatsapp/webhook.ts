@@ -1,28 +1,31 @@
-import Elysia, { t } from "elysia";
-import { prisma } from "~/db/client";
-import { env } from "~/env";
-import { dispatchMediaProcessing } from "~/lib/media-service";
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+/** biome-ignore-all lint/nursery/noAwaitInLoop: <explanation> */
+import Elysia from 'elysia';
+import { prisma } from '~/db/client';
+// import { env } from '~/env';
+import { dispatchMediaProcessing } from '~/lib/media-service';
 
-export const whatsappWebhookRoute = new Elysia({ prefix: "/webhook" })
+export const whatsappWebhookRoute = new Elysia({ prefix: '/webhook' })
   // 1. Verificação (A Meta chama isso quando você configura o webhook)
-  .get("/", ({ query, set }) => {
-    const mode = query["hub.mode"];
-    const token = query["hub.verify_token"];
-    const challenge = query["hub.challenge"];
+  .get('/', ({ query, set }) => {
+    const mode = query['hub.mode'];
+    // const token = query['hub.verify_token'];
+    const challenge = query['hub.challenge'];
 
-    if (mode === "subscribe") {// && token === env.META_WEBHOOK_VERIFY_TOKEN
+    if (mode === 'subscribe') {
+      // && token === env.META_WEBHOOK_VERIFY_TOKEN
       return challenge; // Retorna o desafio em texto puro
     }
 
     set.status = 403;
-    return "Forbidden";
+    return 'Forbidden';
   })
   // 2. Recebimento de Mensagens
-  .post("/", async ({ body, set }) => {
+  .post('/', async ({ body, set }) => {
     const payload = body as any;
 
     // Verificar se é um evento do WhatsApp
-    if (payload.object === "whatsapp_business_account") {
+    if (payload.object === 'whatsapp_business_account') {
       for (const entry of payload.entry || []) {
         for (const change of entry.changes || []) {
           const value = change.value;
@@ -54,7 +57,14 @@ export const whatsappWebhookRoute = new Elysia({ prefix: "/webhook" })
                 },
               });
 
-              const mediaTypes = ["image", "video", "audio", "document", "sticker", "voice"];
+              const mediaTypes = [
+                'image',
+                'video',
+                'audio',
+                'document',
+                'sticker',
+                'voice',
+              ];
               const isMedia = mediaTypes.includes(msg.type);
 
               // 2. Salvar Mensagem
@@ -63,13 +73,13 @@ export const whatsappWebhookRoute = new Elysia({ prefix: "/webhook" })
                   wamid: msg.id,
                   instanceId: instance.id,
                   contactId: dbContact.id,
-                  direction: "INBOUND",
+                  direction: 'INBOUND',
                   type: msg.type, // text, image, etc.]
-                  processingStatus: isMedia ? "PENDING" : "NONE",
-                  body: msg.text?.body || msg.caption || "",
+                  processingStatus: isMedia ? 'PENDING' : 'NONE',
+                  body: msg.text?.body || msg.caption || '',
                   timestamp: BigInt(msg.timestamp),
                   rawJson: msg, // Guardamos o JSON original por segurança
-                  status: "DELIVERED",
+                  status: 'DELIVERED',
                 },
               });
 
@@ -79,27 +89,45 @@ export const whatsappWebhookRoute = new Elysia({ prefix: "/webhook" })
                 const mediaContent = (msg as any)[msg.type];
 
                 // Priorizamos a URL direta, fallback para ID
-                const targetUrl = mediaContent?.url || `https://graph.facebook.com/v18.0/${mediaContent?.id}`;
+                const targetUrl =
+                  mediaContent?.url ||
+                  `https://graph.facebook.com/v18.0/${mediaContent?.id}`;
 
                 // Tenta pegar o nome original (Documentos geralmente têm isso)
-                const originalName = mediaContent?.filename || null;
+                const originalName: any = mediaContent?.filename || null;
 
                 if (targetUrl) {
                   dispatchMediaProcessing({
                     messageId: savedMsg.id,
                     mediaUrl: targetUrl,
                     metaToken: instance.accessToken,
-                    originalName: originalName // <--- Passando o nome
+                    originalName, // <--- Passando o nome
                   });
                 }
               }
+
+              // if (dbContact && instance.userId) {
+              //   // 3. DISPARA O AVISO PARA O FRONTEND
+              //   // "user-{userId}" é o nome da sala que criamos no passo 1
+              //   const hub = getHub();
+
+              //   console.log(hub)
+
+              //   console.log('hih', hub?.send(
+              //     JSON.stringify({
+              //       type: 'NEW_MESSAGE',
+              //       payload: savedMsg, // Opcional: mandar a mensagem inteira
+              //       contactId: dbContact.id
+              //     })
+              //   ));
+              // }
             }
           }
         }
       }
-      return "OK";
+      return 'OK';
     }
 
     set.status = 404;
-    return "Not Found";
+    return 'Not Found';
   });

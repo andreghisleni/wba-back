@@ -20,8 +20,9 @@ model WhatsAppInstance {
   user   User   @relation(fields: [userId], references: [id])
 
   // Relacionamentos
-  contacts Contact[]
-  messages Message[]
+  contacts  Contact[]
+  messages  Message[]
+  templates Template[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -137,4 +138,23 @@ enum ProcessingStatus {
   COMPLETED
   FAILED
   NONE
+}
+
+model Template {
+  id        String  @id @default(uuid())
+  wamid     String? // ID do template na Meta
+  name      String
+  language  String  @default("pt_BR")
+  category  String // MARKETING, UTILITY, AUTHENTICATION
+  body      String  @db.Text // Texto principal (apenas para busca fácil)
+  structure Json? // O JSON completo (botões, footer, exemplos)
+  status    String // APPROVED, REJECTED, PENDING
+
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([instanceId, name, language]) // Evita nomes duplicados na mesma conta
 }

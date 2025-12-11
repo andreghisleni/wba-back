@@ -54,6 +54,7 @@ export const ModelName = {
   WhatsAppInstance: 'WhatsAppInstance',
   Contact: 'Contact',
   Message: 'Message',
+  Template: 'Template',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -125,6 +126,23 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const TemplateScalarFieldEnum = {
+  id: 'id',
+  wamid: 'wamid',
+  name: 'name',
+  language: 'language',
+  category: 'category',
+  body: 'body',
+  structure: 'structure',
+  status: 'status',
+  instanceId: 'instanceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

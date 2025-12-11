@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
+/** biome-ignore-all lint/complexity/useLiteralKeys: <explanation> */
 import Elysia, { t } from "elysia";
 import { prisma } from "~/db/client";
 import { env } from "~/env";

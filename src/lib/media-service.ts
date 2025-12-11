@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { env } from '~/env';
 
 interface DispatchParams {
@@ -7,6 +8,7 @@ interface DispatchParams {
   originalName?: string | null; // <--- Adicionado campo opcional
 }
 
+// biome-ignore lint/suspicious/useAwait: <explanation>
 export async function dispatchMediaProcessing(data: DispatchParams) {
   const callbackUrl = `${env.API_PUBLIC_URL}/whatsapp/media-callback`;
 

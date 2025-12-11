@@ -1,32 +1,80 @@
+/** biome-ignore-all lint/style/useBlockStatements: <explanation> */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { Elysia, t } from "elysia";
 import { authMacro } from "~/auth";
 import { prisma } from "~/db/client";
 
+const TemplateParamsSchema = t.Object({
+  name: t.String(),
+  language: t.String({ default: 'pt_BR' }),
+  // Valores para as variáveis do corpo: {{1}}, {{2}} -> ["João", "R$ 50,00"]
+  bodyValues: t.Optional(t.Array(t.String())),
+  // Valores para variáveis de botão (se houver URL dinâmica)
+  buttonValues: t.Optional(t.Array(t.Object({
+    index: t.Number(), // Qual botão é (0, 1, 2)
+    value: t.String()  // O valor da variável na URL
+  })))
+});
+
 export const whatsappChatRoute = new Elysia().macro(authMacro)
   // 1. Listar Contatos (Inbox)
   .get("/contacts", async ({ user }) => {
-    // Busca contatos apenas das instâncias que pertencem ao usuário logado
+    // 24 horas em milissegundos
+    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
     const contacts = await prisma.contact.findMany({
       where: {
         instance: { userId: user.id }
       },
-      include: {
+      // Aqui está o segredo: Selecionamos os campos específicos + ultimas mensagens
+      select: {
+        id: true,
+        pushName: true,
+        waId: true,
+        profilePicUrl: true,
+        updatedAt: true,
         messages: {
           orderBy: { timestamp: 'desc' },
-          take: 1 // Pega só a última mensagem para exibir na lista
+          take: 20, // Trazemos as últimas 20. Geralmente é suficiente para achar a última do cliente.
+          select: {
+            body: true,
+            timestamp: true,
+            direction: true
+          }
         }
       },
       orderBy: { updatedAt: 'desc' }
     });
 
-    return contacts.map(c => ({
-      id: c.id,
-      pushName: c.pushName || c.waId,
-      waId: c.waId,
-      profilePicUrl: c.profilePicUrl,
-      lastMessage: c.messages[0]?.body || "",
-      lastMessageAt: c.messages[0] ? new Date(Number(c.messages[0].timestamp) * 1000) : c.updatedAt
-    }));
+    // Processamento em Memória (Super rápido)
+    return contacts.map(c => {
+      const lastMsg = c.messages[0]; // A mais recente (para preview)
+
+      // Procura a primeira mensagem que seja INBOUND dentro do array que retornou
+      const lastInbound = c.messages.find(m => m.direction === 'INBOUND');
+
+      // Cálculo da Janela
+      let isWindowOpen = false;
+      if (lastInbound) {
+        const lastInboundTime = Number(lastInbound.timestamp) * 1000;
+        isWindowOpen = (Date.now() - lastInboundTime) < TWENTY_FOUR_HOURS;
+      }
+      // OBS: Se não achou inbound nas últimas 20, assumimos false (fechada) por segurança.
+
+      return {
+        id: c.id,
+        pushName: c.pushName || c.waId,
+        waId: c.waId,
+        profilePicUrl: c.profilePicUrl,
+        // Dados para o Preview
+        lastMessage: lastMsg?.body || "",
+        lastMessageAt: lastMsg
+          ? new Date(Number(lastMsg.timestamp) * 1000)
+          : c.updatedAt,
+        // Nossa flag calculada
+        isWindowOpen
+      };
+    });
   }, {
     auth: true,
     detail: {
@@ -75,56 +123,108 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
 
   // 3. Enviar Mensagem (Simples texto)
   .post("/messages", async ({ body, user, set }) => {
-    const { contactId, message } = body;
+    const { contactId, type, message: textMessage, template } = body;
 
-    // Busca dados para envio
+    // 1. Busca dados do contato e instância
     const contact = await prisma.contact.findUnique({
       where: { id: contactId },
       include: { instance: true }
     });
 
     if (!contact || contact.instance.userId !== user.id) {
-      set.status = 403;
-      return { error: "Sem permissão" };
+      set.status = 403; return { error: "Sem permissão" };
+    }
+
+    const metaPayload: any = {
+      messaging_product: "whatsapp",
+      to: contact.waId,
+    };
+
+    // --- LÓGICA DE MONTAGEM DO PAYLOAD ---
+
+    if (type === 'text') {
+      if (!textMessage) throw new Error("Mensagem de texto vazia");
+      metaPayload.type = "text";
+      metaPayload.text = { body: textMessage };
+    }
+    else if (type === 'template') {
+      if (!template) throw new Error("Dados do template faltando");
+
+      const components: any[] = [];
+
+      // A. Preenche variáveis do CORPO (Body)
+      if (template.bodyValues && template.bodyValues.length > 0) {
+        components.push({
+          type: "body",
+          parameters: template.bodyValues.map((val: any) => ({
+            type: "text",
+            text: val
+          }))
+        });
+      }
+
+      // B. Preenche variáveis de BOTÕES (Buttons)
+      if (template.buttonValues && template.buttonValues.length > 0) {
+        // biome-ignore lint/complexity/noForEach: <explanation>
+        template.buttonValues.forEach((btn: any) => {
+          components.push({
+            type: "button",
+            sub_type: "url",
+            index: btn.index,
+            parameters: [{
+              type: "text",
+              text: btn.value
+            }]
+          });
+        });
+      }
+
+      metaPayload.type = "template";
+      metaPayload.template = {
+        name: template.name,
+        language: { code: template.language || "pt_BR" },
+        components: components.length > 0 ? components : undefined
+      };
     }
 
     try {
-      // Chama a API da Meta
-      const url = `https://graph.facebook.com/v18.0/${contact.instance.phoneNumberId}/messages`;
+      // 2. Envia para a Meta
+      const url = `https://graph.facebook.com/v21.0/${contact.instance.phoneNumberId}/messages`;
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${contact.instance.accessToken}`,
         },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: contact.waId,
-          type: "text",
-          text: { body: message }
-        })
+        body: JSON.stringify(metaPayload)
       });
 
       const responseData = await res.json();
-
       if (responseData.error) throw new Error(responseData.error.message);
 
-      console.log("Mensagem enviada, resposta da Meta:", responseData);
+      // 3. Salva no Banco
+      // Se for template, salvamos algo legível no body, ex: "Template: nome_do_template"
+      const bodyToSave = type === 'text'
+        ? textMessage
+        : `Template: ${template?.name}`;
 
-      // Salva no banco como OUTBOUND
       const savedMsg = await prisma.message.create({
         data: {
           wamid: responseData.messages[0].id,
           contactId: contact.id,
           instanceId: contact.instanceId,
           direction: "OUTBOUND",
-          body: message,
+          body: bodyToSave, // O texto ou o nome do template
+          type: type === 'template' ? 'template' : 'text', // Importante ter essa coluna no DB se quiser diferenciar
           status: "SENT",
           timestamp: BigInt(Math.floor(Date.now() / 1000))
         }
       });
 
-      return { ...savedMsg, timestamp: Number(savedMsg.timestamp) };
+      // Update contact updatedAt... (seu código existente)
+      await prisma.contact.update({ where: { id: contact.id }, data: { updatedAt: new Date() } });
+
+      return { ...savedMsg, timestamp: new Date(Number(savedMsg.timestamp) * 1000) };
 
     } catch (error: any) {
       set.status = 500;
@@ -134,10 +234,63 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
     auth: true,
     body: t.Object({
       contactId: t.String(),
-      message: t.String()
+      type: t.Enum({ text: 'text', template: 'template' }),
+      message: t.Optional(t.String()),
+      template: t.Optional(TemplateParamsSchema)
+    })
+  }).post("/contacts", async ({ body, user, set }) => {
+    const { phoneNumber, name } = body;
+
+    // 1. Valida e seleciona a instância
+    // Se o front não mandar instanceId, tentamos pegar a primeira conectada do usuário
+    const instance = await prisma.whatsAppInstance.findFirst({
+      where: { userId: user.id }
+    });
+
+    if (!instance) {
+      set.status = 400;
+      return { error: "Nenhuma instância disponível para criar o contato." };
+    }
+
+    // 2. Limpeza do Telefone (Remove tudo que não é número)
+    const cleanPhone = phoneNumber.replace(/\D/g, "");
+
+    // Validar tamanho mínimo (DDI + DDD + Numero)
+    if (cleanPhone.length < 10) {
+      set.status = 400;
+      return { error: "Número de telefone inválido." };
+    }
+
+    // 3. Upsert (Cria ou Atualiza se já existir)
+    const contact = await prisma.contact.upsert({
+      where: {
+        instanceId_waId: {
+          instanceId: instance.id,
+          waId: cleanPhone
+        }
+      },
+      update: {
+        // Se já existe, atualizamos o nome se foi fornecido um novo
+        pushName: name || undefined
+      },
+      create: {
+        instanceId: instance.id,
+        waId: cleanPhone,
+        pushName: name || cleanPhone,
+        profilePicUrl: ""
+      }
+    });
+
+    return contact;
+
+  }, {
+    auth: true,
+    body: t.Object({
+      phoneNumber: t.String(),
+      name: t.Optional(t.String()),
     }),
     detail: {
-      operationId: "postWhatsappMessages",
-      tags: ["WhatsApp"]
+      tags: ["WhatsApp Contacts"],
+      operationId: "createWhatsappContact"
     }
   });

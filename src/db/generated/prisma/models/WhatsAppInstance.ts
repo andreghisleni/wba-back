@@ -233,6 +233,7 @@ export type WhatsAppInstanceWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   contacts?: Prisma.ContactListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  templates?: Prisma.TemplateListRelationFilter
 }
 
 export type WhatsAppInstanceOrderByWithRelationInput = {
@@ -250,6 +251,7 @@ export type WhatsAppInstanceOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   contacts?: Prisma.ContactOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  templates?: Prisma.TemplateOrderByRelationAggregateInput
 }
 
 export type WhatsAppInstanceWhereUniqueInput = Prisma.AtLeast<{
@@ -270,6 +272,7 @@ export type WhatsAppInstanceWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   contacts?: Prisma.ContactListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  templates?: Prisma.TemplateListRelationFilter
 }, "id" | "phoneNumberId">
 
 export type WhatsAppInstanceOrderByWithAggregationInput = {
@@ -320,6 +323,7 @@ export type WhatsAppInstanceCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutWhatsAppInstancesInput
   contacts?: Prisma.ContactCreateNestedManyWithoutInstanceInput
   messages?: Prisma.MessageCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceUncheckedCreateInput = {
@@ -336,6 +340,7 @@ export type WhatsAppInstanceUncheckedCreateInput = {
   updatedAt?: Date | string
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutInstanceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceUpdateInput = {
@@ -352,6 +357,7 @@ export type WhatsAppInstanceUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutWhatsAppInstancesNestedInput
   contacts?: Prisma.ContactUpdateManyWithoutInstanceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceUncheckedUpdateInput = {
@@ -368,6 +374,7 @@ export type WhatsAppInstanceUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutInstanceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceCreateManyInput = {
@@ -512,6 +519,20 @@ export type WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WhatsAppInstanceUpdateToOneWithWhereWithoutMessagesInput, Prisma.WhatsAppInstanceUpdateWithoutMessagesInput>, Prisma.WhatsAppInstanceUncheckedUpdateWithoutMessagesInput>
 }
 
+export type WhatsAppInstanceCreateNestedOneWithoutTemplatesInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppInstanceCreateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedCreateWithoutTemplatesInput>
+  connectOrCreate?: Prisma.WhatsAppInstanceCreateOrConnectWithoutTemplatesInput
+  connect?: Prisma.WhatsAppInstanceWhereUniqueInput
+}
+
+export type WhatsAppInstanceUpdateOneRequiredWithoutTemplatesNestedInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppInstanceCreateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedCreateWithoutTemplatesInput>
+  connectOrCreate?: Prisma.WhatsAppInstanceCreateOrConnectWithoutTemplatesInput
+  upsert?: Prisma.WhatsAppInstanceUpsertWithoutTemplatesInput
+  connect?: Prisma.WhatsAppInstanceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WhatsAppInstanceUpdateToOneWithWhereWithoutTemplatesInput, Prisma.WhatsAppInstanceUpdateWithoutTemplatesInput>, Prisma.WhatsAppInstanceUncheckedUpdateWithoutTemplatesInput>
+}
+
 export type WhatsAppInstanceCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.WhatsAppInstanceCreateWithoutUserInput, Prisma.WhatsAppInstanceUncheckedCreateWithoutUserInput> | Prisma.WhatsAppInstanceCreateWithoutUserInput[] | Prisma.WhatsAppInstanceUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.WhatsAppInstanceCreateOrConnectWithoutUserInput | Prisma.WhatsAppInstanceCreateOrConnectWithoutUserInput[]
@@ -567,6 +588,7 @@ export type WhatsAppInstanceCreateWithoutContactsInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWhatsAppInstancesInput
   messages?: Prisma.MessageCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceUncheckedCreateWithoutContactsInput = {
@@ -582,6 +604,7 @@ export type WhatsAppInstanceUncheckedCreateWithoutContactsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceCreateOrConnectWithoutContactsInput = {
@@ -613,6 +636,7 @@ export type WhatsAppInstanceUpdateWithoutContactsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWhatsAppInstancesNestedInput
   messages?: Prisma.MessageUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceUncheckedUpdateWithoutContactsInput = {
@@ -628,6 +652,7 @@ export type WhatsAppInstanceUncheckedUpdateWithoutContactsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceCreateWithoutMessagesInput = {
@@ -643,6 +668,7 @@ export type WhatsAppInstanceCreateWithoutMessagesInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutWhatsAppInstancesInput
   contacts?: Prisma.ContactCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceUncheckedCreateWithoutMessagesInput = {
@@ -658,6 +684,7 @@ export type WhatsAppInstanceUncheckedCreateWithoutMessagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceCreateOrConnectWithoutMessagesInput = {
@@ -689,6 +716,7 @@ export type WhatsAppInstanceUpdateWithoutMessagesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutWhatsAppInstancesNestedInput
   contacts?: Prisma.ContactUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceUncheckedUpdateWithoutMessagesInput = {
@@ -704,6 +732,87 @@ export type WhatsAppInstanceUncheckedUpdateWithoutMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutInstanceNestedInput
+}
+
+export type WhatsAppInstanceCreateWithoutTemplatesInput = {
+  id?: string
+  name?: string | null
+  wabaId: string
+  phoneNumberId: string
+  accessToken: string
+  displayNumber?: string | null
+  businessName?: string | null
+  status?: $Enums.InstanceStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutWhatsAppInstancesInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutInstanceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutInstanceInput
+}
+
+export type WhatsAppInstanceUncheckedCreateWithoutTemplatesInput = {
+  id?: string
+  name?: string | null
+  wabaId: string
+  phoneNumberId: string
+  accessToken: string
+  displayNumber?: string | null
+  businessName?: string | null
+  status?: $Enums.InstanceStatus
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutInstanceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutInstanceInput
+}
+
+export type WhatsAppInstanceCreateOrConnectWithoutTemplatesInput = {
+  where: Prisma.WhatsAppInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WhatsAppInstanceCreateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedCreateWithoutTemplatesInput>
+}
+
+export type WhatsAppInstanceUpsertWithoutTemplatesInput = {
+  update: Prisma.XOR<Prisma.WhatsAppInstanceUpdateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedUpdateWithoutTemplatesInput>
+  create: Prisma.XOR<Prisma.WhatsAppInstanceCreateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedCreateWithoutTemplatesInput>
+  where?: Prisma.WhatsAppInstanceWhereInput
+}
+
+export type WhatsAppInstanceUpdateToOneWithWhereWithoutTemplatesInput = {
+  where?: Prisma.WhatsAppInstanceWhereInput
+  data: Prisma.XOR<Prisma.WhatsAppInstanceUpdateWithoutTemplatesInput, Prisma.WhatsAppInstanceUncheckedUpdateWithoutTemplatesInput>
+}
+
+export type WhatsAppInstanceUpdateWithoutTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wabaId?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumberId?: Prisma.StringFieldUpdateOperationsInput | string
+  accessToken?: Prisma.StringFieldUpdateOperationsInput | string
+  displayNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumInstanceStatusFieldUpdateOperationsInput | $Enums.InstanceStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutWhatsAppInstancesNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutInstanceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutInstanceNestedInput
+}
+
+export type WhatsAppInstanceUncheckedUpdateWithoutTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wabaId?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumberId?: Prisma.StringFieldUpdateOperationsInput | string
+  accessToken?: Prisma.StringFieldUpdateOperationsInput | string
+  displayNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumInstanceStatusFieldUpdateOperationsInput | $Enums.InstanceStatus
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutInstanceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceCreateWithoutUserInput = {
@@ -719,6 +828,7 @@ export type WhatsAppInstanceCreateWithoutUserInput = {
   updatedAt?: Date | string
   contacts?: Prisma.ContactCreateNestedManyWithoutInstanceInput
   messages?: Prisma.MessageCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceUncheckedCreateWithoutUserInput = {
@@ -734,6 +844,7 @@ export type WhatsAppInstanceUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutInstanceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutInstanceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutInstanceInput
 }
 
 export type WhatsAppInstanceCreateOrConnectWithoutUserInput = {
@@ -805,6 +916,7 @@ export type WhatsAppInstanceUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUpdateManyWithoutInstanceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceUncheckedUpdateWithoutUserInput = {
@@ -820,6 +932,7 @@ export type WhatsAppInstanceUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutInstanceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutInstanceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutInstanceNestedInput
 }
 
 export type WhatsAppInstanceUncheckedUpdateManyWithoutUserInput = {
@@ -843,11 +956,13 @@ export type WhatsAppInstanceUncheckedUpdateManyWithoutUserInput = {
 export type WhatsAppInstanceCountOutputType = {
   contacts: number
   messages: number
+  templates: number
 }
 
 export type WhatsAppInstanceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contacts?: boolean | WhatsAppInstanceCountOutputTypeCountContactsArgs
   messages?: boolean | WhatsAppInstanceCountOutputTypeCountMessagesArgs
+  templates?: boolean | WhatsAppInstanceCountOutputTypeCountTemplatesArgs
 }
 
 /**
@@ -874,6 +989,13 @@ export type WhatsAppInstanceCountOutputTypeCountMessagesArgs<ExtArgs extends run
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * WhatsAppInstanceCountOutputType without action
+ */
+export type WhatsAppInstanceCountOutputTypeCountTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TemplateWhereInput
+}
+
 
 export type WhatsAppInstanceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -890,6 +1012,7 @@ export type WhatsAppInstanceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   contacts?: boolean | Prisma.WhatsAppInstance$contactsArgs<ExtArgs>
   messages?: boolean | Prisma.WhatsAppInstance$messagesArgs<ExtArgs>
+  templates?: boolean | Prisma.WhatsAppInstance$templatesArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["whatsAppInstance"]>
 
@@ -942,6 +1065,7 @@ export type WhatsAppInstanceInclude<ExtArgs extends runtime.Types.Extensions.Int
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   contacts?: boolean | Prisma.WhatsAppInstance$contactsArgs<ExtArgs>
   messages?: boolean | Prisma.WhatsAppInstance$messagesArgs<ExtArgs>
+  templates?: boolean | Prisma.WhatsAppInstance$templatesArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WhatsAppInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -957,6 +1081,7 @@ export type $WhatsAppInstancePayload<ExtArgs extends runtime.Types.Extensions.In
     user: Prisma.$UserPayload<ExtArgs>
     contacts: Prisma.$ContactPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    templates: Prisma.$TemplatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1367,6 +1492,7 @@ export interface Prisma__WhatsAppInstanceClient<T, Null = never, ExtArgs extends
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   contacts<T extends Prisma.WhatsAppInstance$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstance$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.WhatsAppInstance$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstance$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  templates<T extends Prisma.WhatsAppInstance$templatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstance$templatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1848,6 +1974,30 @@ export type WhatsAppInstance$messagesArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * WhatsAppInstance.templates
+ */
+export type WhatsAppInstance$templatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Template
+   */
+  select?: Prisma.TemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Template
+   */
+  omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  where?: Prisma.TemplateWhereInput
+  orderBy?: Prisma.TemplateOrderByWithRelationInput | Prisma.TemplateOrderByWithRelationInput[]
+  cursor?: Prisma.TemplateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TemplateScalarFieldEnum | Prisma.TemplateScalarFieldEnum[]
 }
 
 /**

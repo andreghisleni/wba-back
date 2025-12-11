@@ -11,6 +11,7 @@
 export type * from './models/WhatsAppInstance.js'
 export type * from './models/Contact.js'
 export type * from './models/Message.js'
+export type * from './models/Template.js'
 export type * from './models/User.js'
 export type * from './models/Session.js'
 export type * from './models/Account.js'

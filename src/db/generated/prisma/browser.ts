@@ -33,6 +33,11 @@ export type Contact = Prisma.ContactModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model Template
+ * 
+ */
+export type Template = Prisma.TemplateModel
+/**
  * Model User
  * 
  */

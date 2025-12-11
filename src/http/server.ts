@@ -11,7 +11,7 @@ import { whatsappRoutes } from './routes/whatsapp';
 // import { scoutSessions } from "./routes/scout-sessions";
 // import { users } from "./routes/users";
 
-const app = new Elysia()
+export const app = new Elysia()
   .use(tracing)
   .use(
     cors({

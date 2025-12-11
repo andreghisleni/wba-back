@@ -1,3 +1,6 @@
+/** biome-ignore-all lint/style/useBlockStatements: <explanation> */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import Elysia, { t } from "elysia";
 import { authMacro } from "~/auth";
 import { prisma } from "~/db/client";
@@ -73,7 +76,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
         },
         create: {
           userId: user.id,
-          wabaId: wabaId,
+          wabaId,
           phoneNumberId: phoneData.id,
           accessToken: userAccessToken,
           displayNumber: phoneData.display_phone_number,
@@ -101,5 +104,9 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
     body: t.Object({
       code: t.String(),
     }),
+    detail: {
+      summary: "Onboard a WhatsApp Business Account using OAuth2 code.",
+      operationId: "whatsappOnboard",
+    }
   }
 );
