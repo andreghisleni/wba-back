@@ -388,6 +388,7 @@ export const ModelName = {
   Contact: 'Contact',
   Message: 'Message',
   Template: 'Template',
+  ConversationCharge: 'ConversationCharge',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation"
+    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -707,6 +708,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TemplateCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TemplateCountAggregateOutputType> | number
+        }
+      }
+    }
+    ConversationCharge: {
+      payload: Prisma.$ConversationChargePayload<ExtArgs>
+      fields: Prisma.ConversationChargeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ConversationChargeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ConversationChargeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        findFirst: {
+          args: Prisma.ConversationChargeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ConversationChargeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        findMany: {
+          args: Prisma.ConversationChargeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>[]
+        }
+        create: {
+          args: Prisma.ConversationChargeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        createMany: {
+          args: Prisma.ConversationChargeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ConversationChargeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>[]
+        }
+        delete: {
+          args: Prisma.ConversationChargeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        update: {
+          args: Prisma.ConversationChargeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        deleteMany: {
+          args: Prisma.ConversationChargeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ConversationChargeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ConversationChargeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>[]
+        }
+        upsert: {
+          args: Prisma.ConversationChargeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationChargePayload>
+        }
+        aggregate: {
+          args: Prisma.ConversationChargeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateConversationCharge>
+        }
+        groupBy: {
+          args: Prisma.ConversationChargeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationChargeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ConversationChargeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationChargeCountAggregateOutputType> | number
         }
       }
     }
@@ -1313,7 +1388,9 @@ export const MessageScalarFieldEnum = {
   instanceId: 'instanceId',
   createdAt: 'createdAt',
   timestamp: 'timestamp',
-  processingStatus: 'processingStatus'
+  processingStatus: 'processingStatus',
+  errorCode: 'errorCode',
+  errorDesc: 'errorDesc'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -1334,6 +1411,19 @@ export const TemplateScalarFieldEnum = {
 } as const
 
 export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
+
+
+export const ConversationChargeScalarFieldEnum = {
+  id: 'id',
+  wamid: 'wamid',
+  conversationId: 'conversationId',
+  category: 'category',
+  instanceId: 'instanceId',
+  timestamp: 'timestamp',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationChargeScalarFieldEnum = (typeof ConversationChargeScalarFieldEnum)[keyof typeof ConversationChargeScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -1727,6 +1817,7 @@ export type GlobalOmitConfig = {
   contact?: Prisma.ContactOmit
   message?: Prisma.MessageOmit
   template?: Prisma.TemplateOmit
+  conversationCharge?: Prisma.ConversationChargeOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit

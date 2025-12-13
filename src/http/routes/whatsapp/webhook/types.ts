@@ -28,7 +28,10 @@ export interface WhatsAppStatus {
   status: 'sent' | 'delivered' | 'read' | 'failed';
   timestamp: string;
   recipient_id: string;
-  errors?: WhatsAppError[];
+
+  pricing?: WhatsAppPricing;
+  conversation?: WhatsAppConversation;
+  errors?: WhatsAppError[]; // Já tínhamos, mas vamos usar agora
 }
 
 export interface WhatsAppMediaContent {
@@ -83,4 +86,18 @@ export interface WhatsAppEntry {
 export interface WhatsAppWebhookPayload {
   object: 'whatsapp_business_account';
   entry: WhatsAppEntry[];
+}
+
+export interface WhatsAppPricing {
+  billable: boolean;
+  pricing_model: string; // "CBP"
+  category: 'marketing' | 'utility' | 'authentication' | 'service';
+}
+
+export interface WhatsAppConversation {
+  id: string; // ID da sessão de 24h
+  origin: {
+    type: string;
+  };
+  expiration_timestamp?: string; // Quando a janela fecha
 }

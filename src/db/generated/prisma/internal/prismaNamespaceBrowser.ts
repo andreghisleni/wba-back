@@ -55,6 +55,7 @@ export const ModelName = {
   Contact: 'Contact',
   Message: 'Message',
   Template: 'Template',
+  ConversationCharge: 'ConversationCharge',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -126,7 +127,9 @@ export const MessageScalarFieldEnum = {
   instanceId: 'instanceId',
   createdAt: 'createdAt',
   timestamp: 'timestamp',
-  processingStatus: 'processingStatus'
+  processingStatus: 'processingStatus',
+  errorCode: 'errorCode',
+  errorDesc: 'errorDesc'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -147,6 +150,19 @@ export const TemplateScalarFieldEnum = {
 } as const
 
 export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
+
+
+export const ConversationChargeScalarFieldEnum = {
+  id: 'id',
+  wamid: 'wamid',
+  conversationId: 'conversationId',
+  category: 'category',
+  instanceId: 'instanceId',
+  timestamp: 'timestamp',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationChargeScalarFieldEnum = (typeof ConversationChargeScalarFieldEnum)[keyof typeof ConversationChargeScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

@@ -38,6 +38,11 @@ export type Message = Prisma.MessageModel
  */
 export type Template = Prisma.TemplateModel
 /**
+ * Model ConversationCharge
+ * 
+ */
+export type ConversationCharge = Prisma.ConversationChargeModel
+/**
  * Model User
  * 
  */

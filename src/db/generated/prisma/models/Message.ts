@@ -50,6 +50,8 @@ export type MessageMinAggregateOutputType = {
   createdAt: Date | null
   timestamp: bigint | null
   processingStatus: $Enums.ProcessingStatus | null
+  errorCode: string | null
+  errorDesc: string | null
 }
 
 export type MessageMaxAggregateOutputType = {
@@ -68,6 +70,8 @@ export type MessageMaxAggregateOutputType = {
   createdAt: Date | null
   timestamp: bigint | null
   processingStatus: $Enums.ProcessingStatus | null
+  errorCode: string | null
+  errorDesc: string | null
 }
 
 export type MessageCountAggregateOutputType = {
@@ -87,6 +91,8 @@ export type MessageCountAggregateOutputType = {
   createdAt: number
   timestamp: number
   processingStatus: number
+  errorCode: number
+  errorDesc: number
   _all: number
 }
 
@@ -115,6 +121,8 @@ export type MessageMinAggregateInputType = {
   createdAt?: true
   timestamp?: true
   processingStatus?: true
+  errorCode?: true
+  errorDesc?: true
 }
 
 export type MessageMaxAggregateInputType = {
@@ -133,6 +141,8 @@ export type MessageMaxAggregateInputType = {
   createdAt?: true
   timestamp?: true
   processingStatus?: true
+  errorCode?: true
+  errorDesc?: true
 }
 
 export type MessageCountAggregateInputType = {
@@ -152,6 +162,8 @@ export type MessageCountAggregateInputType = {
   createdAt?: true
   timestamp?: true
   processingStatus?: true
+  errorCode?: true
+  errorDesc?: true
   _all?: true
 }
 
@@ -258,6 +270,8 @@ export type MessageGroupByOutputType = {
   createdAt: Date
   timestamp: bigint | null
   processingStatus: $Enums.ProcessingStatus
+  errorCode: string | null
+  errorDesc: string | null
   _count: MessageCountAggregateOutputType | null
   _avg: MessageAvgAggregateOutputType | null
   _sum: MessageSumAggregateOutputType | null
@@ -300,6 +314,8 @@ export type MessageWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   timestamp?: Prisma.BigIntNullableFilter<"Message"> | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
+  errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
 }
@@ -321,6 +337,8 @@ export type MessageOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   timestamp?: Prisma.SortOrderInput | Prisma.SortOrder
   processingStatus?: Prisma.SortOrder
+  errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
   contact?: Prisma.ContactOrderByWithRelationInput
   instance?: Prisma.WhatsAppInstanceOrderByWithRelationInput
 }
@@ -345,6 +363,8 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   timestamp?: Prisma.BigIntNullableFilter<"Message"> | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
+  errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
 }, "id" | "wamid">
@@ -366,6 +386,8 @@ export type MessageOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   timestamp?: Prisma.SortOrderInput | Prisma.SortOrder
   processingStatus?: Prisma.SortOrder
+  errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MessageCountOrderByAggregateInput
   _avg?: Prisma.MessageAvgOrderByAggregateInput
   _max?: Prisma.MessageMaxOrderByAggregateInput
@@ -393,6 +415,8 @@ export type MessageScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
   timestamp?: Prisma.BigIntNullableWithAggregatesFilter<"Message"> | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusWithAggregatesFilter<"Message"> | $Enums.ProcessingStatus
+  errorCode?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  errorDesc?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
 }
 
 export type MessageCreateInput = {
@@ -410,6 +434,8 @@ export type MessageCreateInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
 }
@@ -431,6 +457,8 @@ export type MessageUncheckedCreateInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageUpdateInput = {
@@ -448,6 +476,8 @@ export type MessageUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
 }
@@ -469,6 +499,8 @@ export type MessageUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyInput = {
@@ -488,6 +520,8 @@ export type MessageCreateManyInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageUpdateManyMutationInput = {
@@ -505,6 +539,8 @@ export type MessageUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyInput = {
@@ -524,6 +560,8 @@ export type MessageUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageListRelationFilter = {
@@ -553,6 +591,8 @@ export type MessageCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   processingStatus?: Prisma.SortOrder
+  errorCode?: Prisma.SortOrder
+  errorDesc?: Prisma.SortOrder
 }
 
 export type MessageAvgOrderByAggregateInput = {
@@ -575,6 +615,8 @@ export type MessageMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   processingStatus?: Prisma.SortOrder
+  errorCode?: Prisma.SortOrder
+  errorDesc?: Prisma.SortOrder
 }
 
 export type MessageMinOrderByAggregateInput = {
@@ -593,6 +635,8 @@ export type MessageMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   processingStatus?: Prisma.SortOrder
+  errorCode?: Prisma.SortOrder
+  errorDesc?: Prisma.SortOrder
 }
 
 export type MessageSumOrderByAggregateInput = {
@@ -722,6 +766,8 @@ export type MessageCreateWithoutInstanceInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
 }
 
@@ -741,6 +787,8 @@ export type MessageUncheckedCreateWithoutInstanceInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageCreateOrConnectWithoutInstanceInput = {
@@ -789,6 +837,8 @@ export type MessageScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   timestamp?: Prisma.BigIntNullableFilter<"Message"> | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
+  errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
 }
 
 export type MessageCreateWithoutContactInput = {
@@ -806,6 +856,8 @@ export type MessageCreateWithoutContactInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
 }
 
@@ -825,6 +877,8 @@ export type MessageUncheckedCreateWithoutContactInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageCreateOrConnectWithoutContactInput = {
@@ -869,6 +923,8 @@ export type MessageCreateManyInstanceInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageUpdateWithoutInstanceInput = {
@@ -886,6 +942,8 @@ export type MessageUpdateWithoutInstanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
 }
 
@@ -905,6 +963,8 @@ export type MessageUncheckedUpdateWithoutInstanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutInstanceInput = {
@@ -923,6 +983,8 @@ export type MessageUncheckedUpdateManyWithoutInstanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyContactInput = {
@@ -941,6 +1003,8 @@ export type MessageCreateManyContactInput = {
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
 }
 
 export type MessageUpdateWithoutContactInput = {
@@ -958,6 +1022,8 @@ export type MessageUpdateWithoutContactInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
 }
 
@@ -977,6 +1043,8 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutContactInput = {
@@ -995,6 +1063,8 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1016,6 +1086,8 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   timestamp?: boolean
   processingStatus?: boolean
+  errorCode?: boolean
+  errorDesc?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
@@ -1037,6 +1109,8 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   timestamp?: boolean
   processingStatus?: boolean
+  errorCode?: boolean
+  errorDesc?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
@@ -1058,6 +1132,8 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   timestamp?: boolean
   processingStatus?: boolean
+  errorCode?: boolean
+  errorDesc?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
@@ -1079,9 +1155,11 @@ export type MessageSelectScalar = {
   createdAt?: boolean
   timestamp?: boolean
   processingStatus?: boolean
+  errorCode?: boolean
+  errorDesc?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
@@ -1118,6 +1196,8 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     createdAt: Date
     timestamp: bigint | null
     processingStatus: $Enums.ProcessingStatus
+    errorCode: string | null
+    errorDesc: string | null
   }, ExtArgs["result"]["message"]>
   composites: {}
 }
@@ -1559,6 +1639,8 @@ export interface MessageFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly timestamp: Prisma.FieldRef<"Message", 'BigInt'>
   readonly processingStatus: Prisma.FieldRef<"Message", 'ProcessingStatus'>
+  readonly errorCode: Prisma.FieldRef<"Message", 'String'>
+  readonly errorDesc: Prisma.FieldRef<"Message", 'String'>
 }
     
 

@@ -20,9 +20,10 @@ model WhatsAppInstance {
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   // Relacionamentos
-  contacts  Contact[]
-  messages  Message[]
-  templates Template[]
+  contacts            Contact[]
+  messages            Message[]
+  templates           Template[]
+  conversationCharges ConversationCharge[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,6 +95,9 @@ model Message {
 
   processingStatus ProcessingStatus @default(NONE)
 
+  errorCode String? // Ex: 131047
+  errorDesc String? // Ex: Payment method not configured
+
   @@index([contactId])
   @@index([wamid])
   @@map("messages")
@@ -159,4 +163,21 @@ model Template {
 
   @@unique([instanceId, name, language]) // Evita nomes duplicados na mesma conta
   @@map("templates")
+}
+
+model ConversationCharge {
+  id             String @id @default(uuid())
+  wamid          String // ID da mensagem que iniciou a cobrança
+  conversationId String // ID da conversa (sessão de 24h) da Meta
+  category       String // MARKETING, UTILITY, AUTHENTICATION, SERVICE
+
+  // Vamos salvar qual instância pagou
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
+
+  timestamp BigInt
+  createdAt DateTime @default(now())
+
+  @@index([instanceId, category])
+  @@index([createdAt])
 }

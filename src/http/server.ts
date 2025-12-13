@@ -4,6 +4,7 @@ import { Elysia, t } from 'elysia';
 import { auth } from '~/auth';
 import { env } from '~/env';
 import { tracing } from '~/tracing';
+import { dashboardRoutes } from './routes/dashboard';
 // import { event } from "./routes/event-routes";
 // import { events } from "./routes/events";
 import { whatsappRoutes } from './routes/whatsapp';
@@ -53,7 +54,7 @@ export const app = new Elysia()
   // .use(scoutSessions)
   // .use(users)
   // .use(event)
-  // .use(rentalRoutes)
+  .use(dashboardRoutes)
   .use(whatsappRoutes)
   .get('/', () => 'Hello Elysia', {
     detail: {

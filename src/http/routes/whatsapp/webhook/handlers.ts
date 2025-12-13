@@ -37,31 +37,70 @@ function getMediaContent(msg: WhatsAppMessage): WhatsAppMediaContent | null {
 /**
  * Gerencia a atualização de status (Sent, Delivered, Read, Failed)
  */
-async function handleStatusUpdate(value: WhatsAppChangeValue) {
+async function handleStatusUpdate(
+  value: WhatsAppChangeValue,
+  instanceId: string
+) {
   if (!value.statuses) {
     return;
   }
 
   for (const statusUpdate of value.statuses) {
     const wamid = statusUpdate.id;
-    const newStatus = statusUpdate.status.toUpperCase(); // Tipagem do Prisma geralmente é uppercase
+    const newStatus = statusUpdate.status.toUpperCase();
+    const timestamp = BigInt(statusUpdate.timestamp);
 
-    // timestamp vem como string unix timestamp da Meta
-    // const timestamp = BigInt(statusUpdate.timestamp);
+    console.log(`🔄 Status: ${newStatus} | Msg: ${wamid}`);
 
-    console.log(`🔄 Status Update: ${wamid} -> ${newStatus}`);
+    // 1. DADOS DE COBRANÇA (A Meta avisa: "Abriu uma janela paga")
+    if (statusUpdate.pricing && statusUpdate.conversation) {
+      const { category } = statusUpdate.pricing;
+      const { id: conversationId } = statusUpdate.conversation;
 
+      // Salvamos a cobrança
+      try {
+        await prisma.conversationCharge.create({
+          data: {
+            wamid,
+            conversationId,
+            category: category.toUpperCase(),
+            instanceId,
+            timestamp,
+          },
+        });
+        console.log(`💰 Cobrança registrada: ${category.toUpperCase()}`);
+      } catch (e) {
+        console.error('Erro ao salvar cobrança:', e);
+      }
+    }
+
+    // 2. DADOS DE ERRO (Ex: Falta de Pagamento)
+    let errorData = {};
+    if (
+      newStatus === 'FAILED' &&
+      statusUpdate.errors &&
+      statusUpdate.errors.length > 0
+    ) {
+      const err = statusUpdate.errors[0];
+      errorData = {
+        errorCode: err.code.toString(),
+        errorDesc: err.message, // Ex: "Payment method not configured"
+      };
+
+      console.error(`❌ Falha na mensagem ${wamid}: ${err.message}`);
+    }
+
+    // 3. ATUALIZAÇÃO DA MENSAGEM
     try {
       await prisma.message.updateMany({
         where: { wamid },
         data: {
           status: newStatus as MessageStatus,
-          // Se quiser salvar o erro em caso de falha:
-          // errorCode: statusUpdate.errors?.[0]?.code?.toString()
+          ...errorData, // Espalha errorCode e errorDesc se existirem
         },
       });
     } catch (error) {
-      console.error(`❌ Erro ao atualizar status ${wamid}:`, error);
+      console.error(`Erro ao atualizar mensagem ${wamid}:`, error);
     }
   }
 }
@@ -184,7 +223,7 @@ export async function processWebhookChange(change: WhatsAppChange) {
 
   // Lógica de Despacho
   if (value.statuses && value.statuses.length > 0) {
-    await handleStatusUpdate(value);
+    await handleStatusUpdate(value, instance.id);
   } else if (value.messages && value.messages.length > 0) {
     await handleIncomingMessage(value, instance.id, instance.accessToken);
   }
