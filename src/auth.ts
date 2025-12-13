@@ -2,12 +2,20 @@
 
 import { SES, type SendEmailCommandInput } from '@aws-sdk/client-ses';
 import { fromEnv } from '@aws-sdk/credential-providers';
-import { betterAuth } from 'better-auth';
+import { betterAuth, type User } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { admin, openAPI, organization } from 'better-auth/plugins';
+import {
+  admin,
+  type Invitation,
+  type Member,
+  type Organization,
+  openAPI,
+  organization,
+} from 'better-auth/plugins';
 
 import { renderToStaticMarkup } from 'react-dom/server';
 import { prisma } from './db/client';
+import InviteEmail from './emails/invite-email';
 import { ResetPasswordEmail } from './emails/reset-password';
 import { env } from './env';
 
@@ -58,7 +66,55 @@ export const auth = betterAuth({
       await Promise.resolve();
     },
   },
-  plugins: [admin(), openAPI(), organization()],
+  plugins: [
+    admin(),
+    openAPI(),
+    organization({
+      async sendInvitationEmail(data: {
+        id: string;
+        role: string;
+        email: string;
+        organization: Organization;
+        invitation: Invitation;
+        inviter: Member & {
+          user: User;
+        };
+      }) {
+        // biome-ignore lint/suspicious/noConsole: <explanation>
+        console.log('Reset password link:', data);
+
+        const html = renderToStaticMarkup(
+          InviteEmail({
+            userName: data.email || undefined,
+            inviteLink: `${env.BETTER_AUTH_URL}/accept-invitation/${data.id}`,
+            organizationName: data.organization.name,
+
+          })
+        );
+
+        await ses.sendEmail({
+          Source: 'envio@andreg.com.br',
+          Destination: {
+            ToAddresses: [data.email],
+          },
+          Message: {
+            Body: {
+              Html: {
+                Charset: 'UTF-8',
+                Data: html,
+              },
+            },
+            Subject: {
+              Charset: 'UTF-8',
+              Data: `Convite para participar da organização ${data.organization.name}`,
+            },
+          },
+        } satisfies SendEmailCommandInput);
+
+        await Promise.resolve();
+      },
+    }),
+  ],
   basePath: '/api',
   trustedOrigins: ['http://localhost:5173'],
   advanced: {
@@ -118,8 +174,22 @@ export const authMacro = {
       // biome-ignore lint/style/useBlockStatements: <explanation>
       if (!session) return status(401);
 
+      const member = await auth.api.getActiveMember({
+        headers,
+      });
+
+      // const org = await auth.api.getFullOrganization({
+      //   headers,
+      //   query: {
+      //     membersLimit: 1,
+      //   }
+      // });
+
       return {
         user: session.user,
+        // organization: org,
+        member,
+        organizationId: member?.organizationId,
         session: session.session,
       };
     },

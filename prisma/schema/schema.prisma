@@ -28,12 +28,14 @@ model User {
   sessions Session[]
   accounts Account[]
 
-  whatsAppInstances WhatsAppInstance[]
-
   role       String?
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
+
+  lastUserEventId String?
+  members         Member[]
+  invitations     Invitation[]
 
   @@map("users")
 }
@@ -55,6 +57,9 @@ model Session {
 
   impersonatedBy String?
 
+  activeOrganizationId String?
+
+  @@index([userId])
   @@map("sessions")
 }
 
@@ -77,6 +82,7 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
   @@map("accounts")
 }
 
@@ -89,5 +95,48 @@ model Verification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([identifier])
   @@map("verifications")
+}
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String?
+  logo        String?
+  createdAt   DateTime
+  metadata    String?
+  members     Member[]
+  invitations Invitation[]
+
+  whatsAppInstances WhatsAppInstance[]
+
+  @@unique([slug])
+  @@map("organization")
+}
+
+model Member {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String       @default("member")
+  createdAt      DateTime
+
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String?
+  status         String       @default("pending")
+  expiresAt      DateTime
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@map("invitation")
 }

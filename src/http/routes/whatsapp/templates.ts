@@ -154,9 +154,9 @@ export const whatsappTemplatesRoute = new Elysia({
   // GET /templates
   .get(
     '/',
-    async ({ user }) => {
+    async ({ organizationId }) => {
       const templates = await prisma.template.findMany({
-        where: { instance: { userId: user.id } },
+        where: { instance: { organizationId } },
         orderBy: { createdAt: 'desc' },
       });
 
@@ -176,7 +176,7 @@ export const whatsappTemplatesRoute = new Elysia({
   // POST /templates
   .post(
     '/',
-    async ({ body, user, set }) => {
+    async ({ body, organizationId, set }) => {
       const {
         name,
         category,
@@ -189,7 +189,7 @@ export const whatsappTemplatesRoute = new Elysia({
 
       // 1. Validação de Instância
       const instance = await prisma.whatsAppInstance.findFirst({
-        where: { userId: user.id },
+        where: { organizationId },
       });
 
       if (!instance) {
@@ -300,10 +300,10 @@ export const whatsappTemplatesRoute = new Elysia({
   ) // POST /templates/import (Sincronizar com a Meta)
   .post(
     '/import',
-    async ({ user, set }) => {
+    async ({ organizationId, set }) => {
       // 1. Validar Instância
       const instance = await prisma.whatsAppInstance.findFirst({
-        where: { userId: user.id },
+        where: { organizationId },
       });
 
       if (!instance) {
@@ -397,7 +397,7 @@ export const whatsappTemplatesRoute = new Elysia({
   )
 // .patch(
 //   '/:id',
-//   async ({ params, body, user, set }) => {
+//   async ({ params, body, organizationId, set }) => {
 //     const { id } = params;
 //     const { category, bodyText } = body;
 
@@ -420,7 +420,7 @@ export const whatsappTemplatesRoute = new Elysia({
 //       };
 //     }
 
-//     if (template.instance.userId !== user.id) {
+//     if (template.instance.organizationId !=) {
 //       set.status = 403;
 //       return { status: 403, error: 'Sem permissão.' };
 //     }

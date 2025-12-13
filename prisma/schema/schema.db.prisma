@@ -16,8 +16,8 @@ model WhatsAppInstance {
 
   status InstanceStatus @default(ACTIVE)
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   // Relacionamentos
   contacts  Contact[]
@@ -158,4 +158,5 @@ model Template {
   updatedAt DateTime @updatedAt
 
   @@unique([instanceId, name, language]) // Evita nomes duplicados na mesma conta
+  @@map("templates")
 }

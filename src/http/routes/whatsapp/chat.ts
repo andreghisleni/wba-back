@@ -18,13 +18,13 @@ const TemplateParamsSchema = t.Object({
 
 export const whatsappChatRoute = new Elysia().macro(authMacro)
   // 1. Listar Contatos (Inbox)
-  .get("/contacts", async ({ user }) => {
+  .get("/contacts", async ({ organizationId }) => {
     // 24 horas em milissegundos
     const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
     const contacts = await prisma.contact.findMany({
       where: {
-        instance: { userId: user.id }
+        instance: { organizationId }
       },
       // Aqui está o segredo: Selecionamos os campos específicos + ultimas mensagens
       select: {
@@ -84,12 +84,12 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
   })
 
   // 2. Listar Mensagens de um Contato
-  .get("/contacts/:contactId/messages", async ({ params, user, set }) => {
+  .get("/contacts/:contactId/messages", async ({ params, organizationId, set }) => {
     // Verifica se o contato pertence a uma instância do usuário (Segurança)
     const contact = await prisma.contact.findFirst({
       where: {
         id: params.contactId,
-        instance: { userId: user.id }
+        instance: { organizationId }
       }
     });
 
@@ -123,7 +123,7 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
   })
 
   // 3. Enviar Mensagem (Simples texto)
-  .post("/messages", async ({ body, user, set }) => {
+  .post("/messages", async ({ body, organizationId, set }) => {
     const { contactId, type, message: textMessage, template } = body;
 
     // 1. Busca dados do contato e instância
@@ -132,7 +132,7 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
       include: { instance: true }
     });
 
-    if (!contact || contact.instance.userId !== user.id) {
+    if (!contact || contact.instance.organizationId !== organizationId) {
       set.status = 403; return { error: "Sem permissão" };
     }
 
@@ -239,13 +239,13 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
       message: t.Optional(t.String()),
       template: t.Optional(TemplateParamsSchema)
     })
-  }).post("/contacts", async ({ body, user, set }) => {
+  }).post("/contacts", async ({ body, organizationId, set }) => {
     const { phoneNumber, name } = body;
 
     // 1. Valida e seleciona a instância
     // Se o front não mandar instanceId, tentamos pegar a primeira conectada do usuário
     const instance = await prisma.whatsAppInstance.findFirst({
-      where: { userId: user.id }
+      where: { organizationId }
     });
 
     if (!instance) {

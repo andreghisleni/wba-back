@@ -9,6 +9,8 @@ const schema = z.object({
   META_APP_ID: z.string(),
   META_APP_SECRET: z.string(),
   META_WEBHOOK_VERIFY_TOKEN: z.string(),
+  META_CALLBACK_URL: z.url(),
+  META_CONFIG_ID: z.string(),
 
   CF_WORKER_URL: z.url(),     // Ex: http://localhost:8787 ou https://media-worker.sua-conta.workers.dev
   CF_WORKER_SECRET: z.string(),        // A mesma senha que você colocou no wrangler.json

@@ -8,8 +8,13 @@ import { env } from "~/env";
 
 export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
   "/onboard",
-  async ({ body, user, set }) => {
+  async ({ body, organizationId, set }) => {
     const { code } = body;
+
+    if (!organizationId) {
+      set.status = 400;
+      return { error: "Usuário não pertence a nenhuma organização." };
+    }
 
     try {
       // 1. Trocar o 'code' pelo Access Token do Usuário
@@ -75,7 +80,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
           status: "ACTIVE",
         },
         create: {
-          userId: user.id,
+          organizationId,
           wabaId,
           phoneNumberId: phoneData.id,
           accessToken: userAccessToken,
