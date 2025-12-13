@@ -76,6 +76,7 @@ model Message {
   mediaUrl      String?
   mediaMimeType String?
   mediaCaption  String?
+  mediaFileName String?
 
   // JSON Bruto: Recomendo MUITO guardar o payload original da Meta aqui.
   // Se eles lançarem uma feature nova (ex: Botão de Pix), seu sistema não quebra.

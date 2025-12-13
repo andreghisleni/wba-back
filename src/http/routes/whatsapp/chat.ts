@@ -108,6 +108,7 @@ export const whatsappChatRoute = new Elysia().macro(authMacro)
       body: m.body, // Se for imagem, aqui pode ser a legenda
       type: m.type, // 'text', 'image', 'video', etc.
       mediaUrl: m.mediaUrl, // URL da imagem
+      mediaFileName: m.mediaFileName,
       direction: m.direction,
       status: m.status,
       timestamp: new Date(Number(m.timestamp) * 1000)

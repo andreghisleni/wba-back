@@ -23,6 +23,7 @@ export const mediaCallbackRoute = new Elysia()
           where: { id: messageId },
           data: {
             mediaUrl: publicUrl,
+            mediaFileName: fileName,
             processingStatus: 'COMPLETED'
           }
         });

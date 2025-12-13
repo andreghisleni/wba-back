@@ -8,6 +8,7 @@ export const tracing = opentelemetry({
   instrumentations: [new PgInstrumentation()],
   serviceName: 'api',
   spanProcessors: [
+    // new SimpleSpanProcessor(new ConsoleSpanExporter()),
     new BatchSpanProcessor(
       new OTLPTraceExporter({
         url: env.OTEL_TRACE_EXPORTER_URL,

@@ -16,7 +16,7 @@ export const app = new Elysia()
   .use(
     cors({
       origin: env.BETTER_AUTH_URL,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization'],
     })

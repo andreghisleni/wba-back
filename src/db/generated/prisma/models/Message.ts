@@ -44,6 +44,7 @@ export type MessageMinAggregateOutputType = {
   mediaUrl: string | null
   mediaMimeType: string | null
   mediaCaption: string | null
+  mediaFileName: string | null
   contactId: string | null
   instanceId: string | null
   createdAt: Date | null
@@ -61,6 +62,7 @@ export type MessageMaxAggregateOutputType = {
   mediaUrl: string | null
   mediaMimeType: string | null
   mediaCaption: string | null
+  mediaFileName: string | null
   contactId: string | null
   instanceId: string | null
   createdAt: Date | null
@@ -78,6 +80,7 @@ export type MessageCountAggregateOutputType = {
   mediaUrl: number
   mediaMimeType: number
   mediaCaption: number
+  mediaFileName: number
   rawJson: number
   contactId: number
   instanceId: number
@@ -106,6 +109,7 @@ export type MessageMinAggregateInputType = {
   mediaUrl?: true
   mediaMimeType?: true
   mediaCaption?: true
+  mediaFileName?: true
   contactId?: true
   instanceId?: true
   createdAt?: true
@@ -123,6 +127,7 @@ export type MessageMaxAggregateInputType = {
   mediaUrl?: true
   mediaMimeType?: true
   mediaCaption?: true
+  mediaFileName?: true
   contactId?: true
   instanceId?: true
   createdAt?: true
@@ -140,6 +145,7 @@ export type MessageCountAggregateInputType = {
   mediaUrl?: true
   mediaMimeType?: true
   mediaCaption?: true
+  mediaFileName?: true
   rawJson?: true
   contactId?: true
   instanceId?: true
@@ -245,6 +251,7 @@ export type MessageGroupByOutputType = {
   mediaUrl: string | null
   mediaMimeType: string | null
   mediaCaption: string | null
+  mediaFileName: string | null
   rawJson: runtime.JsonValue | null
   contactId: string
   instanceId: string
@@ -286,6 +293,7 @@ export type MessageWhereInput = {
   mediaUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaMimeType?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
@@ -306,6 +314,7 @@ export type MessageOrderByWithRelationInput = {
   mediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaCaption?: Prisma.SortOrderInput | Prisma.SortOrder
+  mediaFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   rawJson?: Prisma.SortOrderInput | Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
@@ -329,6 +338,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   mediaUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaMimeType?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
@@ -349,6 +359,7 @@ export type MessageOrderByWithAggregationInput = {
   mediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaCaption?: Prisma.SortOrderInput | Prisma.SortOrder
+  mediaFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   rawJson?: Prisma.SortOrderInput | Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
@@ -375,6 +386,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   mediaUrl?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   mediaMimeType?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   mediaCaption?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  mediaFileName?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableWithAggregatesFilter<"Message">
   contactId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   instanceId?: Prisma.StringWithAggregatesFilter<"Message"> | string
@@ -393,6 +405,7 @@ export type MessageCreateInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -411,6 +424,7 @@ export type MessageUncheckedCreateInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   instanceId: string
@@ -429,6 +443,7 @@ export type MessageUpdateInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -447,6 +462,7 @@ export type MessageUncheckedUpdateInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -465,6 +481,7 @@ export type MessageCreateManyInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   instanceId: string
@@ -483,6 +500,7 @@ export type MessageUpdateManyMutationInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -499,6 +517,7 @@ export type MessageUncheckedUpdateManyInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -527,6 +546,7 @@ export type MessageCountOrderByAggregateInput = {
   mediaUrl?: Prisma.SortOrder
   mediaMimeType?: Prisma.SortOrder
   mediaCaption?: Prisma.SortOrder
+  mediaFileName?: Prisma.SortOrder
   rawJson?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
@@ -549,6 +569,7 @@ export type MessageMaxOrderByAggregateInput = {
   mediaUrl?: Prisma.SortOrder
   mediaMimeType?: Prisma.SortOrder
   mediaCaption?: Prisma.SortOrder
+  mediaFileName?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -566,6 +587,7 @@ export type MessageMinOrderByAggregateInput = {
   mediaUrl?: Prisma.SortOrder
   mediaMimeType?: Prisma.SortOrder
   mediaCaption?: Prisma.SortOrder
+  mediaFileName?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -695,6 +717,7 @@ export type MessageCreateWithoutInstanceInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -712,6 +735,7 @@ export type MessageUncheckedCreateWithoutInstanceInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   createdAt?: Date | string
@@ -758,6 +782,7 @@ export type MessageScalarWhereInput = {
   mediaUrl?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaMimeType?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
@@ -776,6 +801,7 @@ export type MessageCreateWithoutContactInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -793,6 +819,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   createdAt?: Date | string
@@ -836,6 +863,7 @@ export type MessageCreateManyInstanceInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   createdAt?: Date | string
@@ -853,6 +881,7 @@ export type MessageUpdateWithoutInstanceInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -870,6 +899,7 @@ export type MessageUncheckedUpdateWithoutInstanceInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -887,6 +917,7 @@ export type MessageUncheckedUpdateManyWithoutInstanceInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -904,6 +935,7 @@ export type MessageCreateManyContactInput = {
   mediaUrl?: string | null
   mediaMimeType?: string | null
   mediaCaption?: string | null
+  mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   createdAt?: Date | string
@@ -921,6 +953,7 @@ export type MessageUpdateWithoutContactInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -938,6 +971,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -955,6 +989,7 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -974,6 +1009,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   mediaUrl?: boolean
   mediaMimeType?: boolean
   mediaCaption?: boolean
+  mediaFileName?: boolean
   rawJson?: boolean
   contactId?: boolean
   instanceId?: boolean
@@ -994,6 +1030,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mediaUrl?: boolean
   mediaMimeType?: boolean
   mediaCaption?: boolean
+  mediaFileName?: boolean
   rawJson?: boolean
   contactId?: boolean
   instanceId?: boolean
@@ -1014,6 +1051,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mediaUrl?: boolean
   mediaMimeType?: boolean
   mediaCaption?: boolean
+  mediaFileName?: boolean
   rawJson?: boolean
   contactId?: boolean
   instanceId?: boolean
@@ -1034,6 +1072,7 @@ export type MessageSelectScalar = {
   mediaUrl?: boolean
   mediaMimeType?: boolean
   mediaCaption?: boolean
+  mediaFileName?: boolean
   rawJson?: boolean
   contactId?: boolean
   instanceId?: boolean
@@ -1042,7 +1081,7 @@ export type MessageSelectScalar = {
   processingStatus?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "rawJson" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
@@ -1072,6 +1111,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     mediaUrl: string | null
     mediaMimeType: string | null
     mediaCaption: string | null
+    mediaFileName: string | null
     rawJson: runtime.JsonValue | null
     contactId: string
     instanceId: string
@@ -1512,6 +1552,7 @@ export interface MessageFieldRefs {
   readonly mediaUrl: Prisma.FieldRef<"Message", 'String'>
   readonly mediaMimeType: Prisma.FieldRef<"Message", 'String'>
   readonly mediaCaption: Prisma.FieldRef<"Message", 'String'>
+  readonly mediaFileName: Prisma.FieldRef<"Message", 'String'>
   readonly rawJson: Prisma.FieldRef<"Message", 'Json'>
   readonly contactId: Prisma.FieldRef<"Message", 'String'>
   readonly instanceId: Prisma.FieldRef<"Message", 'String'>

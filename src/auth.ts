@@ -4,7 +4,7 @@ import { SES, type SendEmailCommandInput } from '@aws-sdk/client-ses';
 import { fromEnv } from '@aws-sdk/credential-providers';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { admin, openAPI } from 'better-auth/plugins';
+import { admin, openAPI, organization } from 'better-auth/plugins';
 
 import { renderToStaticMarkup } from 'react-dom/server';
 import { prisma } from './db/client';
@@ -58,7 +58,7 @@ export const auth = betterAuth({
       await Promise.resolve();
     },
   },
-  plugins: [admin(), openAPI()],
+  plugins: [admin(), openAPI(), organization()],
   basePath: '/api',
   trustedOrigins: ['http://localhost:5173'],
   advanced: {

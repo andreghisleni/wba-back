@@ -56,8 +56,8 @@ const ImportResponseSchema = t.Object({
   data: t.Object({
     total: t.Number(),
     imported: t.Number(),
-    message: t.String()
-  })
+    message: t.String(),
+  }),
 });
 
 // --- 2. SCHEMAS ELYSIA (Validação) ---
@@ -133,6 +133,16 @@ const CreateTemplateBodySchema = t.Object({
   ),
   buttonExamples: t.Optional(t.Array(t.String())),
 });
+
+// const UpdateTemplateBodySchema = t.Object({
+//   category: t.Enum({
+//     MARKETING: 'MARKETING',
+//     UTILITY: 'UTILITY',
+//     AUTHENTICATION: 'AUTHENTICATION',
+//   }),
+//   // Opcional: Se quiser aproveitar e mudar o texto também
+//   bodyText: t.Optional(t.String()),
+// });
 
 // --- 3. ROTAS ---
 
@@ -287,96 +297,212 @@ export const whatsappTemplatesRoute = new Elysia({
         operationId: 'createWhatsappTemplates',
       },
     }
-  )// POST /templates/import (Sincronizar com a Meta)
-  .post('/import', async ({ user, set }) => {
-    // 1. Validar Instância
-    const instance = await prisma.whatsAppInstance.findFirst({
-      where: { userId: user.id },
-    });
+  ) // POST /templates/import (Sincronizar com a Meta)
+  .post(
+    '/import',
+    async ({ user, set }) => {
+      // 1. Validar Instância
+      const instance = await prisma.whatsAppInstance.findFirst({
+        where: { userId: user.id },
+      });
 
-    if (!instance) {
-      set.status = 404;
-      return { status: 404, error: "Instância não encontrada" };
-    }
+      if (!instance) {
+        set.status = 404;
+        return { status: 404, error: 'Instância não encontrada' };
+      }
 
-    // 2. Buscar Templates na Meta
-    // Limitamos a 100 por página (geralmente suficiente, se tiver mais, precisaria de paginação)
-    const url = `https://graph.facebook.com/v21.0/${instance.wabaId}/message_templates?fields=id,name,status,category,language,components&limit=100`;
+      // 2. Buscar Templates na Meta
+      // Limitamos a 100 por página (geralmente suficiente, se tiver mais, precisaria de paginação)
+      const url = `https://graph.facebook.com/v21.0/${instance.wabaId}/message_templates?fields=id,name,status,category,language,components&limit=100`;
 
-    const metaResponse = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${instance.accessToken}`,
-      },
-    });
+      const metaResponse = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${instance.accessToken}`,
+        },
+      });
 
-    const metaData = (await metaResponse.json()) as MetaTemplateListResponse;
+      const metaData = (await metaResponse.json()) as MetaTemplateListResponse;
 
-    if (metaData.error) {
-      set.status = 400;
-      return { status: 400, error: metaData.error.message };
-    }
+      if (metaData.error) {
+        set.status = 400;
+        return { status: 400, error: metaData.error.message };
+      }
 
-    const templates = metaData.data || [];
+      const templates = metaData.data || [];
 
-    // 3. Processar e Salvar no Banco (Upsert)
-    // Usamos Promise.all para processar em paralelo e ser rápido
-    await Promise.all(
-      templates.map(async (tpl) => {
-        // Extrair o texto do corpo para salvar na coluna 'body' (facilita busca)
-        const bodyComponent = tpl.components.find((c) => c.type === 'BODY');
-        const bodyText = bodyComponent?.text || '';
+      // 3. Processar e Salvar no Banco (Upsert)
+      // Usamos Promise.all para processar em paralelo e ser rápido
+      await Promise.all(
+        templates.map(async (tpl) => {
+          // Extrair o texto do corpo para salvar na coluna 'body' (facilita busca)
+          const bodyComponent = tpl.components.find((c) => c.type === 'BODY');
+          const bodyText = bodyComponent?.text || '';
 
-        // O Prisma UPSERT garante que não duplicamos
-        return await prisma.template.upsert({
-          where: {
-            // Chave única composta definida no Schema
-            instanceId_name_language: {
+          // O Prisma UPSERT garante que não duplicamos
+          return await prisma.template.upsert({
+            where: {
+              // Chave única composta definida no Schema
+              instanceId_name_language: {
+                instanceId: instance.id,
+                name: tpl.name,
+                language: tpl.language,
+              },
+            },
+            update: {
+              wamid: tpl.id,
+              status: tpl.status,
+              category: tpl.category,
+              body: bodyText,
+              structure: tpl.components as unknown as InputJsonObject, // Atualiza JSON completo
+            },
+            create: {
               instanceId: instance.id,
+              wamid: tpl.id,
               name: tpl.name,
               language: tpl.language,
+              status: tpl.status,
+              category: tpl.category,
+              body: bodyText,
+              structure: tpl.components as unknown as InputJsonObject,
             },
-          },
-          update: {
-            wamid: tpl.id,
-            status: tpl.status,
-            category: tpl.category,
-            body: bodyText,
-            structure: tpl.components as unknown as InputJsonObject, // Atualiza JSON completo
-          },
-          create: {
-            instanceId: instance.id,
-            wamid: tpl.id,
-            name: tpl.name,
-            language: tpl.language,
-            status: tpl.status,
-            category: tpl.category,
-            body: bodyText,
-            structure: tpl.components as unknown as InputJsonObject,
-          },
-        });
-      })
-    );
+          });
+        })
+      );
 
-    return {
-      status: 200,
-      data: {
-        total: templates.length,
-        imported: templates.length,
-        message: "Sincronização concluída com sucesso"
-      }
-    };
-  }, {
-    auth: true,
-    // Schema simples, só precisa do ID da instância
-    response: {
-      200: ImportResponseSchema,
-      400: ErrorResponseSchema,
-      404: ErrorResponseSchema
+      return {
+        status: 200,
+        data: {
+          total: templates.length,
+          imported: templates.length,
+          message: 'Sincronização concluída com sucesso',
+        },
+      };
     },
-    detail: {
-      tags: ['WhatsApp Templates'],
-      operationId: 'importWhatsappTemplates',
-      description: "Baixa todos os templates da Meta e salva/atualiza no banco local."
+    {
+      auth: true,
+      // Schema simples, só precisa do ID da instância
+      response: {
+        200: ImportResponseSchema,
+        400: ErrorResponseSchema,
+        404: ErrorResponseSchema,
+      },
+      detail: {
+        tags: ['WhatsApp Templates'],
+        operationId: 'importWhatsappTemplates',
+        description:
+          'Baixa todos os templates da Meta e salva/atualiza no banco local.',
+      },
     }
-  })
+  )
+// .patch(
+//   '/:id',
+//   async ({ params, body, user, set }) => {
+//     const { id } = params;
+//     const { category, bodyText } = body;
+
+//     // 1. Busca o template no banco
+//     const template = await prisma.template.findUnique({
+//       where: { id },
+//       include: { instance: true },
+//     });
+
+//     if (!template) {
+//       set.status = 404;
+//       return { status: 404, error: 'Template não encontrado.' };
+//     }
+
+//     if (!template.wamid) {
+//       set.status = 404;
+//       return {
+//         status: 404,
+//         error: 'Template não encontrado ou sem ID da Meta (wamid).',
+//       };
+//     }
+
+//     if (template.instance.userId !== user.id) {
+//       set.status = 403;
+//       return { status: 403, error: 'Sem permissão.' };
+//     }
+
+//     // 2. Prepara o Payload para a Meta
+//     // IMPORTANTE: Para editar, precisamos reenviar a estrutura completa dos componentes.
+//     // Se o usuário não mandou texto novo, usamos o antigo do banco.
+//     // OBS: Se o template tiver botões/exemplos complexos, você precisaria receber isso no body também.
+//     // Para simplificar aqui, vou assumir que estamos editando a categoria e mantendo a estrutura salva.
+
+//     const components = template.structure as { type: string; text?: string }[];
+
+//     // Se mudou o texto, atualiza o componente BODY
+//     if (bodyText) {
+//       const bodyCompIndex = components.findIndex((c) => c.type === 'BODY');
+//       if (bodyCompIndex >= 0) {
+//         components[bodyCompIndex].text = bodyText;
+//         // Nota: Se mudar o texto e tiver variáveis, teria que mandar os exemplos de novo.
+//       }
+//     }
+
+//     try {
+//       // 3. Chamada à API da Meta para EDITAR
+//       // Endpoint: https://graph.facebook.com/v21.0/{MESSAGE_TEMPLATE_ID}
+//       const url = `https://graph.facebook.com/v21.0/${template.wamid}`;
+
+//       const metaResponse = await fetch(url, {
+//         method: 'POST', // Sim, é POST para editar
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${template.instance.accessToken}`,
+//         },
+//         body: JSON.stringify({
+//           category, // A nova categoria
+//           components, // A estrutura (mesma ou nova)
+//         }),
+//       });
+
+//       const metaData = (await metaResponse.json()) as MetaAPIResponse;
+
+//       if (metaData.error) {
+//         set.status = 400;
+//         console.error('Erro da Meta ao atualizar template:', metaData.error, {
+//           category, // A nova categoria
+//           components, // A estrutura (mesma ou nova)
+//         });
+//         return { status: 400, error: metaData.error.message };
+//       }
+
+//       // 4. Atualiza no Banco Local
+//       // O template volta para PENDING ou o status que a Meta devolver (geralmente null no update, assumimos pending)
+//       const updatedTemplate = await prisma.template.update({
+//         where: { id },
+//         data: {
+//           category,
+//           body: bodyText || template.body, // Atualiza texto se mudou
+//           structure: components,
+//           status: 'PENDING', // Força status pendente pois foi editado
+//         },
+//       });
+
+//       return {
+//         status: 200,
+//         data: updatedTemplate,
+//       };
+//     } catch (error) {
+//       set.status = 500;
+//       return {
+//         status: 500,
+//         error: (error as Error).message || 'Erro ao atualizar template',
+//       };
+//     }
+//   },
+//   {
+//     auth: true,
+//     body: UpdateTemplateBodySchema,
+//     params: t.Object({
+//       id: t.String(),
+//     }),
+//     detail: {
+//       tags: ['WhatsApp Templates'],
+//       operationId: 'updateWhatsappTemplate',
+//     },
+//   }
+// );
