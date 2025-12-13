@@ -23,7 +23,7 @@ ENV DATABASE_URL=$DATABASE_URL
 
 # Generate Prisma client with correct binary targets
 # RUN bun db:g
-# RUN bun db:m:d
+RUN bun db:m:d
 
 COPY ./src ./src
 
@@ -55,7 +55,6 @@ COPY --from=build /app/server server
 
 ENV NODE_ENV=production
 
-# CMD ["./server"]
-CMD ["sh", "-c", "bun db:m:d && ./server"]
+CMD ["./server"]
 
 EXPOSE 3000
