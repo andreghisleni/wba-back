@@ -34,20 +34,20 @@ export const whatsappOauthLinkRoute = new Elysia({
 
     // --- AQUI ESTÁ A MÁGICA ---
     // O objeto 'extras' configura o Embedded Signup
-    const extras = JSON.stringify({
-      feature: 'whatsapp_embedded_signup',
-      version: 2,
-      sessionInfoVersion: 3,
-      setup: {
-        // Se você tiver um config_id (Tech Provider), coloque aqui:
-        config_id: env.META_CONFIG_ID,
-        // Opcional: pré-preencher dados da empresa se você já tiver
-        // business: {
-        //   name: "Nome da Empresa do Cliente",
-        //   email: "email@cliente.com"
-        // }
-      }
-    });
+    // const extras = JSON.stringify({
+    //   feature: 'whatsapp_embedded_signup',
+    //   version: 2,
+    //   sessionInfoVersion: 3,
+    //   setup: {
+    //     // Se você tiver um config_id (Tech Provider), coloque aqui:
+    //     config_id: env.META_CONFIG_ID,
+    //     // Opcional: pré-preencher dados da empresa se você já tiver
+    //     // business: {
+    //     //   name: "Nome da Empresa do Cliente",
+    //     //   email: "email@cliente.com"
+    //     // }
+    //   }
+    // });
 
     const params = new URLSearchParams({
       client_id: FACEBOOK_APP_ID,

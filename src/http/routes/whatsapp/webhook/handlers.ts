@@ -5,6 +5,7 @@
 import { prisma } from '~/db/client';
 import type { MessageStatus, MessageType } from '~/db/generated/prisma/enums';
 import { dispatchMediaProcessing } from '~/lib/media-service';
+import { webhookService } from '~/services/webhook-service';
 import type {
   WhatsAppChange,
   WhatsAppChangeValue,
@@ -37,7 +38,7 @@ function getMediaContent(msg: WhatsAppMessage): WhatsAppMediaContent | null {
 /**
  * Gerencia a atualização de status (Sent, Delivered, Read, Failed)
  */
-async function handleStatusUpdate(
+export async function handleStatusUpdate(
   value: WhatsAppChangeValue,
   instanceId: string
 ) {
@@ -45,62 +46,87 @@ async function handleStatusUpdate(
     return;
   }
 
+  // console.log(`📨 Atualização de Status: ${value.statuses.length} msgs.`);
+
   for (const statusUpdate of value.statuses) {
     const wamid = statusUpdate.id;
-    const newStatus = statusUpdate.status.toUpperCase();
+    // O status original (sent, delivered, read) é útil para o payload do webhook
+    const rawStatus = statusUpdate.status;
+    const newStatus = rawStatus.toUpperCase(); // STATUS DO BANCO (ENUM)
     const timestamp = BigInt(statusUpdate.timestamp);
+    const recipientId = statusUpdate.recipient_id; // Importante para o webhook
 
-    console.log(`🔄 Status: ${newStatus} | Msg: ${wamid}`);
+    // console.log(`🔄 Status: ${newStatus} | Msg: ${wamid}`);
 
-    // 1. DADOS DE COBRANÇA (A Meta avisa: "Abriu uma janela paga")
-    if (statusUpdate.pricing && statusUpdate.conversation) {
+    // 1. DADOS DE COBRANÇA
+    if (statusUpdate.pricing) {
       const { category } = statusUpdate.pricing;
-      const { id: conversationId } = statusUpdate.conversation;
-
-      // Salvamos a cobrança
       try {
         await prisma.conversationCharge.create({
           data: {
             wamid,
-            conversationId,
-            category: category.toUpperCase(),
-            instanceId,
+            category: category.toUpperCase(), // InstanceId já vem nos args da função
+            instance: { connect: { id: instanceId } }, // Conexão segura via relation
             timestamp,
+            // Precisamos do conversationId se estiver no schema, se não, pode omitir
+            conversationId: statusUpdate.conversation?.id || "",
           },
         });
-        console.log(`💰 Cobrança registrada: ${category.toUpperCase()}`);
+        // console.log(`💰 Cobrança: ${category.toUpperCase()}`);
       } catch (e) {
         console.error('Erro ao salvar cobrança:', e);
       }
     }
 
-    // 2. DADOS DE ERRO (Ex: Falta de Pagamento)
+    // 2. DADOS DE ERRO
     let errorData = {};
-    if (
-      newStatus === 'FAILED' &&
-      statusUpdate.errors &&
-      statusUpdate.errors.length > 0
-    ) {
+    if (newStatus === 'FAILED' && statusUpdate.errors && statusUpdate.errors.length > 0) {
       const err = statusUpdate.errors[0];
       errorData = {
         errorCode: err.code.toString(),
         errorDesc: err.message, // Ex: "Payment method not configured"
       };
-
       console.error(`❌ Falha na mensagem ${wamid}: ${err.message}`);
     }
 
-    // 3. ATUALIZAÇÃO DA MENSAGEM
+    // 3. ATUALIZAÇÃO DA MENSAGEM + WEBHOOK
     try {
-      await prisma.message.updateMany({
+      // Trocamos updateMany por UPDATE para poder pegar o retorno (organizationId)
+      // Como wamid é @unique no schema, isso funciona perfeitamente.
+      const updatedMessage = await prisma.message.update({
         where: { wamid },
         data: {
-          status: newStatus as MessageStatus,
-          ...errorData, // Espalha errorCode e errorDesc se existirem
+          status: newStatus as MessageStatus, // Cast para o Enum do Prisma
+          ...errorData,
         },
+        include: {
+          instance: true // <--- NECESSÁRIO: Pega a organização para o webhook
+        }
       });
-    } catch (error) {
-      console.error(`Erro ao atualizar mensagem ${wamid}:`, error);
+
+      // 4. DISPARAR WEBHOOK (A Novidade)
+      if (updatedMessage?.instance) {
+
+        await webhookService.dispatch(
+          updatedMessage.instance.organizationId,
+          'message.status',
+          {
+            event: rawStatus, // 'sent', 'delivered', 'read', 'failed'
+            wamid: updatedMessage.wamid,
+            to: recipientId,
+            // Converte timestamp unix (segundos) para ISO Date String legível
+            timestamp: new Date(Number(statusUpdate.timestamp) * 1000).toISOString(),
+            error: Object.keys(errorData).length > 0 ? errorData : null
+          }
+        );
+
+        // console.log(`🪝 Webhook de status disparado: ${rawStatus}`);
+      }
+
+    } catch {
+      // Se der erro no update (ex: mensagem antiga não encontrada no banco),
+      // apenas logamos e seguimos vida.
+      console.warn(`Msg ${wamid} não encontrada para atualização.`);
     }
   }
 }
@@ -111,6 +137,7 @@ async function handleStatusUpdate(
 async function handleIncomingMessage(
   value: WhatsAppChangeValue,
   instanceId: string,
+  organizationId: string,
   accessToken: string | null
 ) {
   if (!value.messages) {
@@ -194,6 +221,19 @@ async function handleIncomingMessage(
       });
     }
   }
+
+  webhookService.dispatch(organizationId, 'message.received', {
+    messageId: savedMsg.id,
+    wamid: savedMsg.wamid,
+    from: dbContact.waId,
+    type: savedMsg.type,
+    body: savedMsg.body,
+    mediaUrl: savedMsg.mediaUrl, // Se tiver
+    contact: {
+      name: dbContact.pushName,
+      phone: dbContact.waId,
+    },
+  });
 }
 
 /**
@@ -225,6 +265,11 @@ export async function processWebhookChange(change: WhatsAppChange) {
   if (value.statuses && value.statuses.length > 0) {
     await handleStatusUpdate(value, instance.id);
   } else if (value.messages && value.messages.length > 0) {
-    await handleIncomingMessage(value, instance.id, instance.accessToken);
+    await handleIncomingMessage(
+      value,
+      instance.id,
+      instance.organizationId,
+      instance.accessToken
+    );
   }
 }

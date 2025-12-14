@@ -166,10 +166,10 @@ model Template {
 }
 
 model ConversationCharge {
-  id             String @id @default(uuid())
-  wamid          String // ID da mensagem que iniciou a cobrança
-  conversationId String // ID da conversa (sessão de 24h) da Meta
-  category       String // MARKETING, UTILITY, AUTHENTICATION, SERVICE
+  id       String @id @default(uuid())
+  wamid    String // ID da mensagem que iniciou a cobrança
+  // conversationId String // ID da conversa (sessão de 24h) da Meta
+  category String // MARKETING, UTILITY, AUTHENTICATION, SERVICE
 
   // Vamos salvar qual instância pagou
   instanceId String
@@ -180,4 +180,5 @@ model ConversationCharge {
 
   @@index([instanceId, category])
   @@index([createdAt])
+  @@map("conversation_charges")
 }

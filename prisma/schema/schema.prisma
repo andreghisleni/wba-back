@@ -111,6 +111,9 @@ model Organization {
 
   whatsAppInstances WhatsAppInstance[]
 
+  apiKeys  ApiKey[]
+  webhooks Webhook[]
+
   @@unique([slug])
   @@map("organization")
 }
@@ -139,4 +142,20 @@ model Invitation {
   user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
   @@map("invitation")
+}
+
+model ApiKey {
+  id      String  @id @default(uuid())
+  name    String // Ex: "Integração N8N", "Sistema ERP"
+  key     String  @unique // O token secreto (ex: sk_123...)
+  enabled Boolean @default(true) // Para poder desativar sem deletar
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastUsedAt DateTime? // Bom para saber se a integração está ativa
+
+  @@map("api_keys")
 }

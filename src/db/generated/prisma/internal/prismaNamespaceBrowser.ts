@@ -62,7 +62,10 @@ export const ModelName = {
   Verification: 'Verification',
   Organization: 'Organization',
   Member: 'Member',
-  Invitation: 'Invitation'
+  Invitation: 'Invitation',
+  ApiKey: 'ApiKey',
+  Webhook: 'Webhook',
+  WebhookLog: 'WebhookLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -155,7 +158,6 @@ export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typ
 export const ConversationChargeScalarFieldEnum = {
   id: 'id',
   wamid: 'wamid',
-  conversationId: 'conversationId',
   category: 'category',
   instanceId: 'instanceId',
   timestamp: 'timestamp',
@@ -266,6 +268,53 @@ export const InvitationScalarFieldEnum = {
 export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
 
 
+export const ApiKeyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  key: 'key',
+  enabled: 'enabled',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastUsedAt: 'lastUsedAt'
+} as const
+
+export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+export const WebhookScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  secret: 'secret',
+  enabled: 'enabled',
+  events: 'events',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
+
+
+export const WebhookLogScalarFieldEnum = {
+  id: 'id',
+  webhookId: 'webhookId',
+  event: 'event',
+  payload: 'payload',
+  referenceId: 'referenceId',
+  attempt: 'attempt',
+  metaEvent: 'metaEvent',
+  responseStatus: 'responseStatus',
+  responseBody: 'responseBody',
+  duration: 'duration',
+  success: 'success',
+  createdAt: 'createdAt'
+} as const
+
+export type WebhookLogScalarFieldEnum = (typeof WebhookLogScalarFieldEnum)[keyof typeof WebhookLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -280,6 +329,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

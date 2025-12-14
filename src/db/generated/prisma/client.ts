@@ -99,3 +99,18 @@ export type Member = Prisma.MemberModel
  * 
  */
 export type Invitation = Prisma.InvitationModel
+/**
+ * Model ApiKey
+ * 
+ */
+export type ApiKey = Prisma.ApiKeyModel
+/**
+ * Model Webhook
+ * 
+ */
+export type Webhook = Prisma.WebhookModel
+/**
+ * Model WebhookLog
+ * 
+ */
+export type WebhookLog = Prisma.WebhookLogModel

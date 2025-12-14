@@ -395,7 +395,10 @@ export const ModelName = {
   Verification: 'Verification',
   Organization: 'Organization',
   Member: 'Member',
-  Invitation: 'Invitation'
+  Invitation: 'Invitation',
+  ApiKey: 'ApiKey',
+  Webhook: 'Webhook',
+  WebhookLog: 'WebhookLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -411,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation"
+    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "webhook" | "webhookLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1303,6 +1306,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ApiKey: {
+      payload: Prisma.$ApiKeyPayload<ExtArgs>
+      fields: Prisma.ApiKeyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApiKeyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApiKeyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        findFirst: {
+          args: Prisma.ApiKeyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApiKeyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        findMany: {
+          args: Prisma.ApiKeyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+        }
+        create: {
+          args: Prisma.ApiKeyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        createMany: {
+          args: Prisma.ApiKeyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApiKeyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+        }
+        delete: {
+          args: Prisma.ApiKeyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        update: {
+          args: Prisma.ApiKeyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApiKeyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApiKeyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApiKeyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApiKeyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+        }
+        aggregate: {
+          args: Prisma.ApiKeyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApiKey>
+        }
+        groupBy: {
+          args: Prisma.ApiKeyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApiKeyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApiKeyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApiKeyCountAggregateOutputType> | number
+        }
+      }
+    }
+    Webhook: {
+      payload: Prisma.$WebhookPayload<ExtArgs>
+      fields: Prisma.WebhookFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebhookFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebhookFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        findFirst: {
+          args: Prisma.WebhookFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebhookFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        findMany: {
+          args: Prisma.WebhookFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        create: {
+          args: Prisma.WebhookCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        createMany: {
+          args: Prisma.WebhookCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebhookCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        delete: {
+          args: Prisma.WebhookDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        update: {
+          args: Prisma.WebhookUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebhookDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebhookUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebhookUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebhookUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookPayload>
+        }
+        aggregate: {
+          args: Prisma.WebhookAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebhook>
+        }
+        groupBy: {
+          args: Prisma.WebhookGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebhookCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebhookLog: {
+      payload: Prisma.$WebhookLogPayload<ExtArgs>
+      fields: Prisma.WebhookLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebhookLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebhookLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        findFirst: {
+          args: Prisma.WebhookLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebhookLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        findMany: {
+          args: Prisma.WebhookLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>[]
+        }
+        create: {
+          args: Prisma.WebhookLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        createMany: {
+          args: Prisma.WebhookLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebhookLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>[]
+        }
+        delete: {
+          args: Prisma.WebhookLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        update: {
+          args: Prisma.WebhookLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebhookLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebhookLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebhookLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebhookLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookLogPayload>
+        }
+        aggregate: {
+          args: Prisma.WebhookLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebhookLog>
+        }
+        groupBy: {
+          args: Prisma.WebhookLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebhookLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1416,7 +1641,6 @@ export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typ
 export const ConversationChargeScalarFieldEnum = {
   id: 'id',
   wamid: 'wamid',
-  conversationId: 'conversationId',
   category: 'category',
   instanceId: 'instanceId',
   timestamp: 'timestamp',
@@ -1527,6 +1751,53 @@ export const InvitationScalarFieldEnum = {
 export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
 
 
+export const ApiKeyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  key: 'key',
+  enabled: 'enabled',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastUsedAt: 'lastUsedAt'
+} as const
+
+export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+export const WebhookScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  secret: 'secret',
+  enabled: 'enabled',
+  events: 'events',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
+
+
+export const WebhookLogScalarFieldEnum = {
+  id: 'id',
+  webhookId: 'webhookId',
+  event: 'event',
+  payload: 'payload',
+  referenceId: 'referenceId',
+  attempt: 'attempt',
+  metaEvent: 'metaEvent',
+  responseStatus: 'responseStatus',
+  responseBody: 'responseBody',
+  duration: 'duration',
+  success: 'success',
+  createdAt: 'createdAt'
+} as const
+
+export type WebhookLogScalarFieldEnum = (typeof WebhookLogScalarFieldEnum)[keyof typeof WebhookLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1541,6 +1812,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1825,6 +2103,9 @@ export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
   member?: Prisma.MemberOmit
   invitation?: Prisma.InvitationOmit
+  apiKey?: Prisma.ApiKeyOmit
+  webhook?: Prisma.WebhookOmit
+  webhookLog?: Prisma.WebhookLogOmit
 }
 
 /* Types for Logging */

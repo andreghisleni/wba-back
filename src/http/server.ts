@@ -4,7 +4,10 @@ import { Elysia, t } from 'elysia';
 import { auth } from '~/auth';
 import { env } from '~/env';
 import { tracing } from '~/tracing';
+import { apiKeysRoutes } from './routes/api-keys';
 import { dashboardRoutes } from './routes/dashboard';
+import { externalApiRoutes } from './routes/external-api';
+import { webhookRoutes } from './routes/webhooks';
 // import { event } from "./routes/event-routes";
 // import { events } from "./routes/events";
 import { whatsappRoutes } from './routes/whatsapp';
@@ -51,9 +54,9 @@ export const app = new Elysia()
   )
   .mount(auth.handler)
   // .use(events)
-  // .use(scoutSessions)
-  // .use(users)
-  // .use(event)
+  .use(webhookRoutes)
+  .use(apiKeysRoutes)
+  .use(externalApiRoutes)
   .use(dashboardRoutes)
   .use(whatsappRoutes)
   .get('/', () => 'Hello Elysia', {

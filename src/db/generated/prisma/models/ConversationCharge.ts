@@ -37,7 +37,6 @@ export type ConversationChargeSumAggregateOutputType = {
 export type ConversationChargeMinAggregateOutputType = {
   id: string | null
   wamid: string | null
-  conversationId: string | null
   category: string | null
   instanceId: string | null
   timestamp: bigint | null
@@ -47,7 +46,6 @@ export type ConversationChargeMinAggregateOutputType = {
 export type ConversationChargeMaxAggregateOutputType = {
   id: string | null
   wamid: string | null
-  conversationId: string | null
   category: string | null
   instanceId: string | null
   timestamp: bigint | null
@@ -57,7 +55,6 @@ export type ConversationChargeMaxAggregateOutputType = {
 export type ConversationChargeCountAggregateOutputType = {
   id: number
   wamid: number
-  conversationId: number
   category: number
   instanceId: number
   timestamp: number
@@ -77,7 +74,6 @@ export type ConversationChargeSumAggregateInputType = {
 export type ConversationChargeMinAggregateInputType = {
   id?: true
   wamid?: true
-  conversationId?: true
   category?: true
   instanceId?: true
   timestamp?: true
@@ -87,7 +83,6 @@ export type ConversationChargeMinAggregateInputType = {
 export type ConversationChargeMaxAggregateInputType = {
   id?: true
   wamid?: true
-  conversationId?: true
   category?: true
   instanceId?: true
   timestamp?: true
@@ -97,7 +92,6 @@ export type ConversationChargeMaxAggregateInputType = {
 export type ConversationChargeCountAggregateInputType = {
   id?: true
   wamid?: true
-  conversationId?: true
   category?: true
   instanceId?: true
   timestamp?: true
@@ -194,7 +188,6 @@ export type ConversationChargeGroupByArgs<ExtArgs extends runtime.Types.Extensio
 export type ConversationChargeGroupByOutputType = {
   id: string
   wamid: string
-  conversationId: string
   category: string
   instanceId: string
   timestamp: bigint
@@ -227,7 +220,6 @@ export type ConversationChargeWhereInput = {
   NOT?: Prisma.ConversationChargeWhereInput | Prisma.ConversationChargeWhereInput[]
   id?: Prisma.StringFilter<"ConversationCharge"> | string
   wamid?: Prisma.StringFilter<"ConversationCharge"> | string
-  conversationId?: Prisma.StringFilter<"ConversationCharge"> | string
   category?: Prisma.StringFilter<"ConversationCharge"> | string
   instanceId?: Prisma.StringFilter<"ConversationCharge"> | string
   timestamp?: Prisma.BigIntFilter<"ConversationCharge"> | bigint | number
@@ -238,7 +230,6 @@ export type ConversationChargeWhereInput = {
 export type ConversationChargeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   wamid?: Prisma.SortOrder
-  conversationId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
@@ -252,7 +243,6 @@ export type ConversationChargeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ConversationChargeWhereInput[]
   NOT?: Prisma.ConversationChargeWhereInput | Prisma.ConversationChargeWhereInput[]
   wamid?: Prisma.StringFilter<"ConversationCharge"> | string
-  conversationId?: Prisma.StringFilter<"ConversationCharge"> | string
   category?: Prisma.StringFilter<"ConversationCharge"> | string
   instanceId?: Prisma.StringFilter<"ConversationCharge"> | string
   timestamp?: Prisma.BigIntFilter<"ConversationCharge"> | bigint | number
@@ -263,7 +253,6 @@ export type ConversationChargeWhereUniqueInput = Prisma.AtLeast<{
 export type ConversationChargeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   wamid?: Prisma.SortOrder
-  conversationId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
@@ -281,7 +270,6 @@ export type ConversationChargeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ConversationChargeScalarWhereWithAggregatesInput | Prisma.ConversationChargeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ConversationCharge"> | string
   wamid?: Prisma.StringWithAggregatesFilter<"ConversationCharge"> | string
-  conversationId?: Prisma.StringWithAggregatesFilter<"ConversationCharge"> | string
   category?: Prisma.StringWithAggregatesFilter<"ConversationCharge"> | string
   instanceId?: Prisma.StringWithAggregatesFilter<"ConversationCharge"> | string
   timestamp?: Prisma.BigIntWithAggregatesFilter<"ConversationCharge"> | bigint | number
@@ -291,7 +279,6 @@ export type ConversationChargeScalarWhereWithAggregatesInput = {
 export type ConversationChargeCreateInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   timestamp: bigint | number
   createdAt?: Date | string
@@ -301,7 +288,6 @@ export type ConversationChargeCreateInput = {
 export type ConversationChargeUncheckedCreateInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   instanceId: string
   timestamp: bigint | number
@@ -311,7 +297,6 @@ export type ConversationChargeUncheckedCreateInput = {
 export type ConversationChargeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -321,7 +306,6 @@ export type ConversationChargeUpdateInput = {
 export type ConversationChargeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -331,7 +315,6 @@ export type ConversationChargeUncheckedUpdateInput = {
 export type ConversationChargeCreateManyInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   instanceId: string
   timestamp: bigint | number
@@ -341,7 +324,6 @@ export type ConversationChargeCreateManyInput = {
 export type ConversationChargeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -350,7 +332,6 @@ export type ConversationChargeUpdateManyMutationInput = {
 export type ConversationChargeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -370,7 +351,6 @@ export type ConversationChargeOrderByRelationAggregateInput = {
 export type ConversationChargeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   wamid?: Prisma.SortOrder
-  conversationId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
@@ -384,7 +364,6 @@ export type ConversationChargeAvgOrderByAggregateInput = {
 export type ConversationChargeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   wamid?: Prisma.SortOrder
-  conversationId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
@@ -394,7 +373,6 @@ export type ConversationChargeMaxOrderByAggregateInput = {
 export type ConversationChargeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   wamid?: Prisma.SortOrder
-  conversationId?: Prisma.SortOrder
   category?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
@@ -458,7 +436,6 @@ export type BigIntFieldUpdateOperationsInput = {
 export type ConversationChargeCreateWithoutInstanceInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   timestamp: bigint | number
   createdAt?: Date | string
@@ -467,7 +444,6 @@ export type ConversationChargeCreateWithoutInstanceInput = {
 export type ConversationChargeUncheckedCreateWithoutInstanceInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   timestamp: bigint | number
   createdAt?: Date | string
@@ -505,7 +481,6 @@ export type ConversationChargeScalarWhereInput = {
   NOT?: Prisma.ConversationChargeScalarWhereInput | Prisma.ConversationChargeScalarWhereInput[]
   id?: Prisma.StringFilter<"ConversationCharge"> | string
   wamid?: Prisma.StringFilter<"ConversationCharge"> | string
-  conversationId?: Prisma.StringFilter<"ConversationCharge"> | string
   category?: Prisma.StringFilter<"ConversationCharge"> | string
   instanceId?: Prisma.StringFilter<"ConversationCharge"> | string
   timestamp?: Prisma.BigIntFilter<"ConversationCharge"> | bigint | number
@@ -515,7 +490,6 @@ export type ConversationChargeScalarWhereInput = {
 export type ConversationChargeCreateManyInstanceInput = {
   id?: string
   wamid: string
-  conversationId: string
   category: string
   timestamp: bigint | number
   createdAt?: Date | string
@@ -524,7 +498,6 @@ export type ConversationChargeCreateManyInstanceInput = {
 export type ConversationChargeUpdateWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -533,7 +506,6 @@ export type ConversationChargeUpdateWithoutInstanceInput = {
 export type ConversationChargeUncheckedUpdateWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -542,7 +514,6 @@ export type ConversationChargeUncheckedUpdateWithoutInstanceInput = {
 export type ConversationChargeUncheckedUpdateManyWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wamid?: Prisma.StringFieldUpdateOperationsInput | string
-  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -553,7 +524,6 @@ export type ConversationChargeUncheckedUpdateManyWithoutInstanceInput = {
 export type ConversationChargeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   wamid?: boolean
-  conversationId?: boolean
   category?: boolean
   instanceId?: boolean
   timestamp?: boolean
@@ -564,7 +534,6 @@ export type ConversationChargeSelect<ExtArgs extends runtime.Types.Extensions.In
 export type ConversationChargeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   wamid?: boolean
-  conversationId?: boolean
   category?: boolean
   instanceId?: boolean
   timestamp?: boolean
@@ -575,7 +544,6 @@ export type ConversationChargeSelectCreateManyAndReturn<ExtArgs extends runtime.
 export type ConversationChargeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   wamid?: boolean
-  conversationId?: boolean
   category?: boolean
   instanceId?: boolean
   timestamp?: boolean
@@ -586,14 +554,13 @@ export type ConversationChargeSelectUpdateManyAndReturn<ExtArgs extends runtime.
 export type ConversationChargeSelectScalar = {
   id?: boolean
   wamid?: boolean
-  conversationId?: boolean
   category?: boolean
   instanceId?: boolean
   timestamp?: boolean
   createdAt?: boolean
 }
 
-export type ConversationChargeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "conversationId" | "category" | "instanceId" | "timestamp" | "createdAt", ExtArgs["result"]["conversationCharge"]>
+export type ConversationChargeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "category" | "instanceId" | "timestamp" | "createdAt", ExtArgs["result"]["conversationCharge"]>
 export type ConversationChargeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }
@@ -612,7 +579,6 @@ export type $ConversationChargePayload<ExtArgs extends runtime.Types.Extensions.
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     wamid: string
-    conversationId: string
     category: string
     instanceId: string
     timestamp: bigint
@@ -1043,7 +1009,6 @@ export interface Prisma__ConversationChargeClient<T, Null = never, ExtArgs exten
 export interface ConversationChargeFieldRefs {
   readonly id: Prisma.FieldRef<"ConversationCharge", 'String'>
   readonly wamid: Prisma.FieldRef<"ConversationCharge", 'String'>
-  readonly conversationId: Prisma.FieldRef<"ConversationCharge", 'String'>
   readonly category: Prisma.FieldRef<"ConversationCharge", 'String'>
   readonly instanceId: Prisma.FieldRef<"ConversationCharge", 'String'>
   readonly timestamp: Prisma.FieldRef<"ConversationCharge", 'BigInt'>

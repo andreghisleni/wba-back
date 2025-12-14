@@ -1,0 +1,47 @@
+model Webhook {
+  id      String  @id @default(uuid())
+  name    String // Ex: "Integração Typebot"
+  url     String // Onde vamos bater (POST)
+  secret  String? // Para o cliente validar que fomos nós (HMAC)
+  enabled Boolean @default(true)
+
+  // Quais eventos esse webhook quer ouvir?
+  // Ex: ["message.received", "message.sent", "status.updated"]
+  events String[]
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  logs WebhookLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("webhooks")
+}
+
+model WebhookLog {
+  id        String  @id @default(uuid())
+  webhookId String
+  webhook   Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  event   String // O evento disparado (ex: "message.received")
+  payload Json // O JSON que enviamos
+
+  referenceId String? // ID de referência relacionado (ex: mensagem ID)
+  // total de veses que foi chamado o mesmo webhook para esse referenceId
+  attempt     Int?
+  metaEvent   String? // Meta info sobre o evento (ex: "delivered", "read" para mensagens)
+
+  responseStatus Int? // Status HTTP retornado (200, 404, 500)
+  responseBody   String? // O que o servidor do cliente respondeu (útil para debug)
+
+  duration Int? // Tempo em ms que levou
+  success  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([webhookId])
+  @@index([createdAt])
+  @@map("webhook_logs")
+}
