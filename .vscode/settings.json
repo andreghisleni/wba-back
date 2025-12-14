@@ -3,7 +3,8 @@
     "Elysia",
     "elysiajs",
     "opentelemetry",
-    "otlp"
+    "otlp",
+    "wamid"
   ],
   "emmet.showExpandedAbbreviation": "never",
   "editor.defaultFormatter": "biomejs.biome",

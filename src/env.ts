@@ -21,7 +21,7 @@ const parsedEnv = schema.safeParse(process.env);
 
 // Se a validação falhar, lança um erro com detalhes e encerra a aplicação
 if (!parsedEnv.success) {
-  // biome-ignore lint/suspicious/noConsole: <explanation>
+  // biome-ignore lint/suspicious/noConsole: log env errors
   console.error(
     '❌ Variáveis de ambiente inválidas:',
     parsedEnv.error.flatten().fieldErrors

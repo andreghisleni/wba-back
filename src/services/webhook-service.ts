@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+/** biome-ignore-all lint/suspicious/noExplicitAny: i don't have the exact type for payload */
 import { prisma } from "~/db/client";
 
 export type WebhookEvent =
