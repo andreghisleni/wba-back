@@ -57,7 +57,8 @@ export const webhookService = {
             'Content-Type': 'application/json',
             // Boa prática: enviar um header com o ID do evento ou assinatura
             'X-Wba-Event': event,
-            'X-Wba-Webhook-Id': webhook.id
+            'X-Wba-Webhook-Id': webhook.id,
+            'X-Wba-Signature': webhook.secret || ''
           },
           body: JSON.stringify({
             event,

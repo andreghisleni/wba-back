@@ -18,6 +18,7 @@ const WebhookSchema = t.Object({
   name: t.String(),
   url: t.String(),
   events: t.Array(t.String()), // Array de strings no retorno para ser genérico ou EventEnum
+  secret: t.Optional(t.String()),
   enabled: t.Boolean(),
   createdAt: t.Date(),
   // Opcional: Contagem de logs (vem do include _count)
@@ -41,13 +42,18 @@ export const webhookRoutes = new Elysia({ prefix: '/webhooks' })
   .macro(authMacro)
   // --- 1. LISTAR WEBHOOKS ---
   .get('/', async ({ organizationId }) => {
-    return await prisma.webhook.findMany({
+    const webhooks = await prisma.webhook.findMany({
       where: { organizationId },
       include: {
         _count: { select: { logs: true } }
       },
       orderBy: { createdAt: 'desc' }
-    })
+    });
+
+    return webhooks.map(wh => ({
+      ...wh,
+      secret: wh.secret || undefined
+    }));
   }, {
     auth: true,
     response: {
@@ -62,20 +68,27 @@ export const webhookRoutes = new Elysia({ prefix: '/webhooks' })
 
   // --- 2. CRIAR WEBHOOK ---
   .post('/', async ({ body, organizationId }) => {
-    return await prisma.webhook.create({
+    const webhook = await prisma.webhook.create({
       data: {
         name: body.name,
         url: body.url,
         events: body.events,
+        secret: body.secret,
         organizationId
       }
-    })
+    });
+
+    return {
+      ...webhook,
+      secret: webhook.secret || undefined
+    };
   }, {
     auth: true,
     body: t.Object({
       name: t.String({ minLength: 3 }),
       url: t.String({ format: 'uri' }),
-      events: t.Array(EventEnum, { minItems: 1 })
+      events: t.Array(EventEnum, { minItems: 1 }),
+      secret: t.Optional(t.String()),
     }),
     response: {
       200: WebhookSchema
@@ -98,15 +111,21 @@ export const webhookRoutes = new Elysia({ prefix: '/webhooks' })
       return { error: 'Webhook não encontrado.' }
     }
 
-    return await prisma.webhook.update({
+    const updatedWebhook = await prisma.webhook.update({
       where: { id: params.id },
       data: {
         name: body.name,
         url: body.url,
         events: body.events,
-        enabled: body.enabled
+        enabled: body.enabled,
+        secret: body.secret,
       }
-    })
+    });
+
+    return {
+      ...updatedWebhook,
+      secret: updatedWebhook.secret || undefined
+    };
   }, {
     auth: true,
     params: t.Object({ id: t.String() }),
@@ -114,7 +133,8 @@ export const webhookRoutes = new Elysia({ prefix: '/webhooks' })
       name: t.String(),
       url: t.String(),
       events: t.Array(EventEnum),
-      enabled: t.Boolean()
+      enabled: t.Boolean(),
+      secret: t.Optional(t.String())
     }),
     response: {
       200: WebhookSchema,
@@ -248,7 +268,12 @@ export const webhookRoutes = new Elysia({ prefix: '/webhooks' })
       const startTime = Date.now()
       const res = await fetch(webhook.url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Wba-Signature': webhook.secret || '',
+          'X-Wba-Event': 'ping',
+          'X-Wba-Webhook-Id': webhook.id,
+        },
         body: JSON.stringify({
           event: 'ping',
           timestamp: new Date().toISOString(),
