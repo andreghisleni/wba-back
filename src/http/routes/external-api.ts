@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { Elysia, t } from 'elysia';
 import { parseTemplateBody } from '~/scripts/parse-template-body';
+import { upsertSmartContact } from '~/services/contact-service';
 import { webhookService } from '~/services/webhook-service';
 import { prisma } from '../../db/client';
 import { apiKeyMacro } from '../macros/api-key';
@@ -71,23 +72,11 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
 
       // 2. BUSCAR OU CRIAR O CONTATO (A lógica crucial do chat.ts adaptada)
       // O sistema externo manda o numero ("to"), nós precisamos do ID para salvar no banco.
-      let contact = await prisma.contact.findFirst({
-        where: {
-          instanceId: instance.id,
-          waId: body.to, // O número limpo (ex: 554899998888)
-        },
+      const contact = await upsertSmartContact({
+        instanceId: instance.id,
+        phoneNumber: body.to.number, // O número que a API externa enviou
+        name: body.to.name || body.to.number, // Usa o nome se disponível, senão o número
       });
-
-      if (!contact) {
-        // Se não existe, cria na hora para manter histórico
-        contact = await prisma.contact.create({
-          data: {
-            instanceId: instance.id,
-            waId: body.to,
-            pushName: body.to, // Nome provisório
-          },
-        });
-      }
 
       // 3. Montar Payload da Meta (Estritamente Template)
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -225,7 +214,15 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
     {
       // Validação de Entrada
       body: t.Object({
-        to: t.String({ description: 'Número de telefone (ex: 554899998888)' }),
+        to: t.Object(
+          {
+            number: t.String({
+              description: 'Número de telefone (ex: 554899998888)',
+            }),
+            name: t.Optional(t.String({ description: 'Nome do contato' })),
+          },
+          { description: 'Informações do contato destinatário' }
+        ),
         template: t.String({ description: 'Nome do template na Meta' }),
         language: t.Optional(t.String({ default: 'pt_BR' })),
 

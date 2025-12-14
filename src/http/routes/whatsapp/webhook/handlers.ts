@@ -5,6 +5,7 @@
 import { prisma } from '~/db/client';
 import type { MessageStatus, MessageType } from '~/db/generated/prisma/enums';
 import { dispatchMediaProcessing } from '~/lib/media-service';
+import { upsertSmartContact } from '~/services/contact-service';
 import { webhookService } from '~/services/webhook-service';
 import type {
   WhatsAppChange,
@@ -69,7 +70,7 @@ export async function handleStatusUpdate(
             instance: { connect: { id: instanceId } }, // Conexão segura via relation
             timestamp,
             // Precisamos do conversationId se estiver no schema, se não, pode omitir
-            conversationId: statusUpdate.conversation?.id || "",
+            conversationId: statusUpdate.conversation?.id || '',
           },
         });
         // console.log(`💰 Cobrança: ${category.toUpperCase()}`);
@@ -80,7 +81,11 @@ export async function handleStatusUpdate(
 
     // 2. DADOS DE ERRO
     let errorData = {};
-    if (newStatus === 'FAILED' && statusUpdate.errors && statusUpdate.errors.length > 0) {
+    if (
+      newStatus === 'FAILED' &&
+      statusUpdate.errors &&
+      statusUpdate.errors.length > 0
+    ) {
       const err = statusUpdate.errors[0];
       errorData = {
         errorCode: err.code.toString(),
@@ -100,13 +105,12 @@ export async function handleStatusUpdate(
           ...errorData,
         },
         include: {
-          instance: true // <--- NECESSÁRIO: Pega a organização para o webhook
-        }
+          instance: true, // <--- NECESSÁRIO: Pega a organização para o webhook
+        },
       });
 
       // 4. DISPARAR WEBHOOK (A Novidade)
       if (updatedMessage?.instance) {
-
         await webhookService.dispatch(
           updatedMessage.instance.organizationId,
           'message.status',
@@ -115,14 +119,15 @@ export async function handleStatusUpdate(
             wamid: updatedMessage.wamid,
             to: recipientId,
             // Converte timestamp unix (segundos) para ISO Date String legível
-            timestamp: new Date(Number(statusUpdate.timestamp) * 1000).toISOString(),
-            error: Object.keys(errorData).length > 0 ? errorData : null
+            timestamp: new Date(
+              Number(statusUpdate.timestamp) * 1000
+            ).toISOString(),
+            error: Object.keys(errorData).length > 0 ? errorData : null,
           }
         );
 
         // console.log(`🪝 Webhook de status disparado: ${rawStatus}`);
       }
-
     } catch {
       // Se der erro no update (ex: mensagem antiga não encontrada no banco),
       // apenas logamos e seguimos vida.
@@ -148,23 +153,30 @@ async function handleIncomingMessage(
   const contact = value.contacts?.[0]; // Info do perfil do contato
 
   // 1. Criar ou Atualizar Contato
-  const dbContact = await prisma.contact.upsert({
-    where: {
-      instanceId_waId: {
-        instanceId,
-        waId: msg.from,
-      },
-    },
-    update: {
-      pushName: contact?.profile?.name,
-    },
-    create: {
-      instanceId,
-      waId: msg.from,
-      pushName: contact?.profile?.name,
-      profilePicUrl: '',
-    },
+  const dbContact = await upsertSmartContact({
+    instanceId,
+    phoneNumber: msg.from, // O número que veio no webhook
+    name: contact?.profile?.name, // Nome do perfil do WhatsApp
+    // profilePicUrl: ... (se tiver essa info disponível no futuro)
   });
+
+  // await prisma.contact.upsert({
+  //   where: {
+  //     instanceId_waId: {
+  //       instanceId,
+  //       waId: msg.from,
+  //     },
+  //   },
+  //   update: {
+  //     pushName: contact?.profile?.name,
+  //   },
+  //   create: {
+  //     instanceId,
+  //     waId: msg.from,
+  //     pushName: contact?.profile?.name,
+  //     profilePicUrl: '',
+  //   },
+  // });
 
   const mediaTypes = [
     'image',
