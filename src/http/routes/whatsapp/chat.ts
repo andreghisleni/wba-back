@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/style/useBlockStatements: <explanation> */
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { Elysia, t } from 'elysia';
 import { authMacro } from '~/auth';
@@ -41,46 +42,71 @@ export const whatsappChatRoute = new Elysia()
           waId: true,
           profilePicUrl: true,
           updatedAt: true,
+          // NOVO: Conta mensagens INBOUND que ainda estão como DELIVERED
+          _count: {
+            select: {
+              messages: {
+                where: {
+                  direction: 'INBOUND',
+                  status: 'DELIVERED' // Consideramos DELIVERED como "Não Lida" para quem recebe
+                }
+              }
+            }
+          },
           messages: {
             orderBy: { timestamp: 'desc' },
-            take: 20, // Trazemos as últimas 20. Geralmente é suficiente para achar a última do cliente.
+            take: 50, // Garante que achamos a última dele mesmo se você mandou muitas
             select: {
-              body: true,
+              // Trazemos APENAS o necessário para o cálculo
+              body: true,      // Precisamos do body só da primeira (para o preview)
               timestamp: true,
               direction: true,
-            },
-          },
+              status: true,
+            }
+          }
         },
         orderBy: { updatedAt: 'desc' },
       });
-
       // Processamento em Memória (Super rápido)
-      return contacts.map((c) => {
-        const lastMsg = c.messages[0]; // A mais recente (para preview)
+      return contacts.map(c => {
+        // 1. Para o PREVIEW e ORDENAÇÃO: Usamos a última mensagem absoluta (seja sua ou dele)
+        const lastMsgAbsolute = c.messages[0];
 
-        // Procura a primeira mensagem que seja INBOUND dentro do array que retornou
-        const lastInbound = c.messages.find((m) => m.direction === 'INBOUND');
+        // 2. Para a JANELA DE 24H: Procuramos a última mensagem que O CLIENTE mandou (INBOUND)
+        // O .find() percorre o array (que tem as últimas 10 ou 50 msgs) e para na primeira que achar.
+        const lastInboundMsg = c.messages.find(m => m.direction === 'INBOUND');
 
-        // Cálculo da Janela
+        // 3. Cálculo da Janela
         let isWindowOpen = false;
-        if (lastInbound) {
-          const lastInboundTime = Number(lastInbound.timestamp) * 1000;
-          isWindowOpen = Date.now() - lastInboundTime < TWENTY_FOUR_HOURS;
+        if (lastInboundMsg) {
+          const lastInboundTime = Number(lastInboundMsg.timestamp) * 1000;
+          const diff = Date.now() - lastInboundTime;
+          isWindowOpen = diff < TWENTY_FOUR_HOURS;
         }
-        // OBS: Se não achou inbound nas últimas 20, assumimos false (fechada) por segurança.
+        // Se não achou nenhuma inbound recente no histórico buscado, assume fechada.
 
         return {
           id: c.id,
           pushName: c.pushName || c.waId,
           waId: c.waId,
           profilePicUrl: c.profilePicUrl,
-          // Dados para o Preview
-          lastMessage: lastMsg?.body || '',
-          lastMessageAt: lastMsg
-            ? new Date(Number(lastMsg.timestamp) * 1000)
+
+          // Contador de Não Lidas (Bolinha Vermelha)
+          unreadCount: c._count.messages,
+
+          // Texto cinza do preview (pode ser "Oi" dele ou "Tudo bem?" seu)
+          lastMessage: lastMsgAbsolute?.body || "",
+
+          // Status (para mostrar o check/double-check se a última for sua)
+          lastMessageStatus: lastMsgAbsolute?.status,
+
+          // Data para ordenar a lista (A última interação real)
+          lastMessageAt: lastMsgAbsolute
+            ? new Date(Number(lastMsgAbsolute.timestamp) * 1000)
             : c.updatedAt,
-          // Nossa flag calculada
-          isWindowOpen,
+
+          // Flag para habilitar/desabilitar o input de texto no front
+          isWindowOpen
         };
       });
     },
@@ -311,4 +337,81 @@ export const whatsappChatRoute = new Elysia()
         operationId: 'createWhatsappContact',
       },
     }
-  );
+  )
+  // 4. Marcar Mensagens como Lidas (Visualizadas)
+  .post("/contacts/:contactId/read", async ({ params, organizationId, set }) => {
+    const { contactId } = params;
+
+    // 1. Validação de Segurança
+    const contact = await prisma.contact.findFirst({
+      where: {
+        id: contactId,
+        instance: { organizationId }
+      },
+      include: { instance: true } // Precisamos disso se quisermos avisar o WhatsApp (Opcional)
+    });
+
+    if (!contact) {
+      set.status = 404;
+      return { error: "Contato não encontrado." };
+    }
+
+    // 2. Atualiza no Banco de Dados
+    // Muda tudo que é INBOUND + DELIVERED para READ
+    const updateResult = await prisma.message.updateMany({
+      where: {
+        contactId,
+        direction: 'INBOUND',
+        status: 'DELIVERED'
+      },
+      data: {
+        status: 'READ'
+      }
+    });
+
+    // 3. (Opcional) Enviar "Blue Ticks" para o Cliente no WhatsApp
+    // Isso faz aparecer os dois tracinhos azuis no celular da pessoa.
+    // Se não quiser isso (modo "ninja"), basta comentar este bloco.
+    if (updateResult.count > 0) {
+      try {
+        // Marcamos a ÚLTIMA mensagem como lida na API, o que implicitamente marca as anteriores
+        const lastUnread = await prisma.message.findFirst({
+          where: { contactId, direction: 'INBOUND', status: 'READ' }, // Já buscamos as que acabamos de atualizar
+          orderBy: { timestamp: 'desc' }
+        });
+
+        if (lastUnread?.wamid) {
+          const url = `https://graph.facebook.com/v21.0/${contact.instance.phoneNumberId}/messages`;
+          await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${contact.instance.accessToken}`,
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              status: "read",
+              message_id: lastUnread.wamid
+            })
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao enviar confirmação de leitura para Meta:", error);
+        // Não falhamos a request por isso, é um efeito colateral
+      }
+    }
+
+    return {
+      success: true,
+      readCount: updateResult.count
+    };
+
+  }, {
+    auth: true,
+    params: t.Object({ contactId: t.String() }),
+    detail: {
+      tags: ["WhatsApp"],
+      summary: "Marca mensagens recebidas como lidas",
+      operationId: "markWhatsappMessagesAsRead"
+    }
+  })

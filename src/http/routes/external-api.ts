@@ -76,6 +76,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         instanceId: instance.id,
         phoneNumber: body.to.number, // O número que a API externa enviou
         name: body.to.name || body.to.number, // Usa o nome se disponível, senão o número
+        replaceName: !!body.to.name, // Só substitui se veio nome novo
       });
 
       // 3. Montar Payload da Meta (Estritamente Template)

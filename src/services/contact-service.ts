@@ -47,8 +47,9 @@ export async function upsertSmartContact(data: {
   name?: string | null;
   profilePicUrl?: string;
   email?: string;
+  replaceName?: boolean;
 }) {
-  const { instanceId, phoneNumber, name, profilePicUrl, email } = data;
+  const { instanceId, phoneNumber, name, profilePicUrl, email, replaceName } = data;
 
   // 1. Gera lista de números possíveis (ex: com e sem 9)
   const variations = getPhoneVariations(phoneNumber);
@@ -72,7 +73,7 @@ export async function upsertSmartContact(data: {
       where: { id: existingContact.id },
       data: {
         // Só atualiza o nome se foi passado um novo valor
-        pushName: name || undefined,
+        pushName: replaceName ? name : existingContact.pushName,
         profilePicUrl: profilePicUrl || undefined,
         email: email || undefined,
         // Opcional: Se quiser padronizar o número no banco ao atualizar:
