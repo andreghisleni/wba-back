@@ -29,6 +29,7 @@ const ContactListItemSchema = t.Object({
   profilePicUrl: t.Nullable(t.String()),
   unreadCount: t.Number(),
   lastMessage: t.String(),
+  lastMessageType: t.String(),
   lastMessageStatus: t.Optional(t.String()),
   lastMessageAt: t.Date(),
   isWindowOpen: t.Boolean(),
@@ -124,6 +125,7 @@ export const whatsappChatRoute = new Elysia()
               timestamp: true,
               direction: true,
               status: true,
+              type: true
             }
           }
         },
@@ -161,6 +163,8 @@ export const whatsappChatRoute = new Elysia()
 
           // Status (para mostrar o check/double-check se a última for sua)
           lastMessageStatus: lastMsgAbsolute?.status,
+
+          lastMessageType: lastMsgAbsolute?.type || "text",
 
           // Data para ordenar a lista (A última interação real)
           lastMessageAt: lastMsgAbsolute
