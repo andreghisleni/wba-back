@@ -236,4 +236,63 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         summary: 'Dispara template e registra no chat',
       },
     }
+  )
+  // 2. Importação/Atualização em Massa (Versão Otimizada)
+  .post(
+    '/contacts',
+    async ({ body, organization, set }) => {
+      const instance = await prisma.whatsAppInstance.findFirst({
+        where: { organizationId: organization.id, status: 'ACTIVE' },
+      });
+
+      if (!instance) {
+        set.status = 400;
+        return { error: 'Nenhuma instância do WhatsApp conectada.' };
+      }
+
+      // 1. Pré-filtro: Limpa e valida apenas os números úteis
+      const validInputs = body
+        .map((item) => ({
+          name: item.name,
+          originalNumber: item.number,
+          cleanNumber: item.number.replace(/\D/g, ''),
+        }))
+        .filter((item) => item.cleanNumber.length >= 10);
+
+      // 2. Processamento Paralelo com Promise.all
+      // O .map dispara as promessas, o Promise.all espera todas resolverem
+      const results = await Promise.allSettled(
+        validInputs.map((item) =>
+          upsertSmartContact({
+            instanceId: instance.id,
+            phoneNumber: item.cleanNumber,
+            name: item.name || item.cleanNumber,
+          })
+        )
+      );
+
+      // 3. Contabiliza sucessos e erros
+      const processed = results.filter((r) => r.status === 'fulfilled').length;
+      const errors = results.filter((r) => r.status === 'rejected').length;
+
+      return {
+        success: true,
+        message: 'Processamento finalizado.',
+        details: {
+          totalReceived: body.length,
+          validFormat: validInputs.length,
+          savedUpdated: processed,
+          failed: errors,
+        },
+      };
+    },
+    {
+      body: t.Array(
+        t.Object({
+          number: t.String(),
+          name: t.String(),
+        })
+      ),
+      detail: { tags: ['External API'] },
+    }
   );
