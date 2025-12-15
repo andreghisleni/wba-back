@@ -22,6 +22,68 @@ const TemplateParamsSchema = t.Object({
   ),
 });
 
+const ContactListItemSchema = t.Object({
+  id: t.String(),
+  pushName: t.String(),
+  waId: t.String(),
+  profilePicUrl: t.Nullable(t.String()),
+  unreadCount: t.Number(),
+  lastMessage: t.String(),
+  lastMessageStatus: t.Optional(t.String()),
+  lastMessageAt: t.Date(),
+  isWindowOpen: t.Boolean(),
+});
+
+const MessageItemSchema = t.Object({
+  id: t.String(),
+  body: t.Nullable(t.String()),
+  type: t.String(),
+  mediaUrl: t.Nullable(t.String()),
+  mediaFileName: t.Nullable(t.String()),
+  direction: t.String(),
+  status: t.String(),
+  timestamp: t.Date(),
+});
+
+const SendMessageResponseSchema = t.Object({
+  id: t.String(),
+  wamid: t.String(),
+  type: t.String(),
+  direction: t.String(),
+  status: t.String(),
+  body: t.Nullable(t.String()),
+  mediaUrl: t.Nullable(t.String()),
+  mediaMimeType: t.Nullable(t.String()),
+  mediaCaption: t.Nullable(t.String()),
+  mediaFileName: t.Nullable(t.String()),
+  contactId: t.String(),
+  instanceId: t.String(),
+  createdAt: t.Date(),
+  timestamp: t.Date(),
+  processingStatus: t.String(),
+  errorCode: t.Nullable(t.String()),
+  errorDesc: t.Nullable(t.String()),
+});
+
+const CreateContactResponseSchema = t.Object({
+  id: t.String(),
+  waId: t.String(),
+  pushName: t.Nullable(t.String()),
+  profilePicUrl: t.Nullable(t.String()),
+  instanceId: t.String(),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
+});
+
+const ReadMessagesResponseSchema = t.Object({
+  success: t.Boolean(),
+  readCount: t.Number(),
+});
+
+const ErrorResponseSchema = t.Object({
+  error: t.String(),
+});
+
 export const whatsappChatRoute = new Elysia()
   .macro(authMacro)
   // 1. Listar Contatos (Inbox)
@@ -116,6 +178,9 @@ export const whatsappChatRoute = new Elysia()
         operationId: 'getWhatsappContacts', // <--- Isso define o nome do hook
         tags: ['WhatsApp'],
       },
+      response: {
+        200: t.Array(ContactListItemSchema),
+      },
     }
   )
 
@@ -158,6 +223,10 @@ export const whatsappChatRoute = new Elysia()
       detail: {
         operationId: 'getWhatsappContactsContactIdMessages',
         tags: ['WhatsApp'],
+      },
+      response: {
+        200: t.Array(MessageItemSchema),
+        404: ErrorResponseSchema,
       },
     }
   )
@@ -288,6 +357,11 @@ export const whatsappChatRoute = new Elysia()
         message: t.Optional(t.String()),
         template: t.Optional(TemplateParamsSchema),
       }),
+      response: {
+        200: SendMessageResponseSchema,
+        403: ErrorResponseSchema,
+        500: ErrorResponseSchema,
+      },
     }
   )
   .post(
@@ -335,6 +409,10 @@ export const whatsappChatRoute = new Elysia()
       detail: {
         tags: ['WhatsApp Contacts'],
         operationId: 'createWhatsappContact',
+      },
+      response: {
+        200: CreateContactResponseSchema,
+        400: ErrorResponseSchema,
       },
     }
   )
@@ -413,5 +491,9 @@ export const whatsappChatRoute = new Elysia()
       tags: ["WhatsApp"],
       summary: "Marca mensagens recebidas como lidas",
       operationId: "markWhatsappMessagesAsRead"
+    },
+    response: {
+      200: ReadMessagesResponseSchema,
+      404: ErrorResponseSchema,
     }
   })

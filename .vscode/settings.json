@@ -4,7 +4,8 @@
     "elysiajs",
     "opentelemetry",
     "otlp",
-    "wamid"
+    "wamid",
+    "Whatsapp"
   ],
   "emmet.showExpandedAbbreviation": "never",
   "editor.defaultFormatter": "biomejs.biome",
