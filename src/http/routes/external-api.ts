@@ -267,6 +267,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             instanceId: instance.id,
             phoneNumber: item.cleanNumber,
             name: item.name || item.cleanNumber,
+            replaceName: !!item.name,
           })
         )
       );
