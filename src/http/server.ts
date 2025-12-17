@@ -7,6 +7,7 @@ import { tracing } from '~/tracing';
 import { apiKeysRoutes } from './routes/api-keys';
 import { dashboardRoutes } from './routes/dashboard';
 import { externalApiRoutes } from './routes/external-api';
+import { sendMessagesWithErrorToWebhookRoutes } from './routes/send-messages-with-error-to-webhook';
 import { webhookRoutes } from './routes/webhooks';
 // import { event } from "./routes/event-routes";
 // import { events } from "./routes/events";
@@ -53,7 +54,7 @@ export const app = new Elysia()
     })
   )
   .mount(auth.handler)
-  // .use(events)
+  .use(sendMessagesWithErrorToWebhookRoutes)
   .use(webhookRoutes)
   .use(apiKeysRoutes)
   .use(externalApiRoutes)
