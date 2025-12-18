@@ -26,8 +26,13 @@ interface MetaButtonObj {
 
 interface MetaComponent {
   type: 'BODY' | 'FOOTER' | 'BUTTONS' | 'HEADER';
+  format?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'LOCATION';
   text?: string;
-  example?: { body_text?: string[][] };
+  example?: {
+    body_text?: string[][];
+    header_text?: string[];
+    header_handle?: string[];
+  };
   buttons?: MetaButtonObj[];
 }
 
@@ -70,10 +75,21 @@ const MetaComponentSchema = t.Object({
     t.Literal('BUTTONS'),
     t.Literal('HEADER'),
   ]),
+  format: t.Optional(
+    t.Union([
+      t.Literal('TEXT'),
+      t.Literal('IMAGE'),
+      t.Literal('VIDEO'),
+      t.Literal('DOCUMENT'),
+      t.Literal('LOCATION'),
+    ])
+  ),
   text: t.Optional(t.String()),
   example: t.Optional(
     t.Object({
       body_text: t.Optional(t.Array(t.Array(t.String()))),
+      header_text: t.Optional(t.Array(t.String())),
+      header_handle: t.Optional(t.Array(t.String())),
     })
   ),
   buttons: t.Optional(
@@ -120,6 +136,19 @@ const CreateTemplateBodySchema = t.Object({
     UTILITY: 'UTILITY',
     AUTHENTICATION: 'AUTHENTICATION',
   }),
+  // Header fields
+  headerFormat: t.Optional(
+    t.Enum({
+      NONE: 'NONE',
+      TEXT: 'TEXT',
+      IMAGE: 'IMAGE',
+      VIDEO: 'VIDEO',
+      DOCUMENT: 'DOCUMENT',
+    })
+  ),
+  headerText: t.Optional(t.String({ maxLength: 60 })),
+  exampleHeader: t.Optional(t.Array(t.String())),
+  // Body fields
   bodyText: t.String({ minLength: 1 }),
   footerText: t.Optional(t.String()),
   bodyExamples: t.Optional(t.Array(t.String())),
@@ -180,6 +209,9 @@ export const whatsappTemplatesRoute = new Elysia({
       const {
         name,
         category,
+        headerFormat,
+        headerText,
+        exampleHeader,
         bodyText,
         footerText,
         buttons,
@@ -199,6 +231,32 @@ export const whatsappTemplatesRoute = new Elysia({
 
       // 2. Montagem dos Componentes
       const components: MetaComponent[] = [];
+
+      // Header (se especificado e não for NONE)
+      if (headerFormat && headerFormat !== 'NONE') {
+        const headerComponent: MetaComponent = {
+          type: 'HEADER',
+          format: headerFormat,
+        };
+
+        if (headerFormat === 'TEXT') {
+          // Header de texto
+          if (headerText) {
+            headerComponent.text = headerText;
+            // Se tiver variáveis no texto, adiciona os exemplos
+            if (headerText.includes('{{') && exampleHeader?.length) {
+              headerComponent.example = { header_text: exampleHeader };
+            }
+          }
+        } else if (exampleHeader?.length) {
+          // Header de mídia (IMAGE, VIDEO, DOCUMENT)
+          // Para mídias, a Meta exige um exemplo (header_handle)
+          // Se não for fornecido, enviamos apenas o formato e deixamos a Meta pedir depois
+          headerComponent.example = { header_handle: exampleHeader };
+        }
+
+        components.push(headerComponent);
+      }
 
       // Body
       const bodyComponent: MetaComponent = { type: 'BODY', text: bodyText };
