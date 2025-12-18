@@ -55,14 +55,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         return { error: 'Instância desconectada ou não encontrada.' };
       }
 
-      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru)
+      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru e o ID)
       const storedTemplate = await prisma.template.findFirst({
         where: {
           instanceId: instance.id,
           name: body.template,
           status: 'APPROVED',
         },
-        select: { body: true }, // <--- Importante: selecionar o corpo
+        select: { id: true, body: true }, // <--- Importante: selecionar o id e o corpo
       });
 
       if (!storedTemplate) {
@@ -169,7 +169,19 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
           bodyToSave += ` (${body.variables.join(', ')})`;
         }
 
-        // 7. Persistência
+        // 7. Preparar templateParams para salvar (renderização no frontend)
+        const templateParams = {
+          templateId: storedTemplate.id,
+          templateName: body.template,
+          language: body.language || 'pt_BR',
+          bodyParams: body.variables,
+          buttonParams: body.buttons?.map((btn) => ({
+            index: btn.index,
+            value: btn.value,
+          })),
+        };
+
+        // 8. Persistência
         const savedMsg = await prisma.message.create({
           data: {
             wamid: responseData.messages[0].id,
@@ -180,6 +192,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             status: 'SENT',
             body: bodyToSave, // <--- Texto completo formatado
             timestamp: BigInt(Math.floor(Date.now() / 1000)),
+            templateParams, // <--- Parâmetros do template para renderização
           },
         });
 

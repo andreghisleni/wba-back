@@ -126,6 +126,7 @@ export const MessageScalarFieldEnum = {
   mediaCaption: 'mediaCaption',
   mediaFileName: 'mediaFileName',
   rawJson: 'rawJson',
+  templateParams: 'templateParams',
   contactId: 'contactId',
   instanceId: 'instanceId',
   createdAt: 'createdAt',

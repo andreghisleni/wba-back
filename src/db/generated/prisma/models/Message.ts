@@ -86,6 +86,7 @@ export type MessageCountAggregateOutputType = {
   mediaCaption: number
   mediaFileName: number
   rawJson: number
+  templateParams: number
   contactId: number
   instanceId: number
   createdAt: number
@@ -157,6 +158,7 @@ export type MessageCountAggregateInputType = {
   mediaCaption?: true
   mediaFileName?: true
   rawJson?: true
+  templateParams?: true
   contactId?: true
   instanceId?: true
   createdAt?: true
@@ -265,6 +267,7 @@ export type MessageGroupByOutputType = {
   mediaCaption: string | null
   mediaFileName: string | null
   rawJson: runtime.JsonValue | null
+  templateParams: runtime.JsonValue | null
   contactId: string
   instanceId: string
   createdAt: Date
@@ -309,6 +312,7 @@ export type MessageWhereInput = {
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
+  templateParams?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -332,6 +336,7 @@ export type MessageOrderByWithRelationInput = {
   mediaCaption?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   rawJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateParams?: Prisma.SortOrderInput | Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -358,6 +363,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
+  templateParams?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -381,6 +387,7 @@ export type MessageOrderByWithAggregationInput = {
   mediaCaption?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   rawJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateParams?: Prisma.SortOrderInput | Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -410,6 +417,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   mediaCaption?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   mediaFileName?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableWithAggregatesFilter<"Message">
+  templateParams?: Prisma.JsonNullableWithAggregatesFilter<"Message">
   contactId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   instanceId?: Prisma.StringWithAggregatesFilter<"Message"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
@@ -431,6 +439,7 @@ export type MessageCreateInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
@@ -452,6 +461,7 @@ export type MessageUncheckedCreateInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   instanceId: string
   createdAt?: Date | string
@@ -473,6 +483,7 @@ export type MessageUpdateInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
@@ -494,6 +505,7 @@ export type MessageUncheckedUpdateInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -515,6 +527,7 @@ export type MessageCreateManyInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   instanceId: string
   createdAt?: Date | string
@@ -536,6 +549,7 @@ export type MessageUpdateManyMutationInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
@@ -555,6 +569,7 @@ export type MessageUncheckedUpdateManyInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -586,6 +601,7 @@ export type MessageCountOrderByAggregateInput = {
   mediaCaption?: Prisma.SortOrder
   mediaFileName?: Prisma.SortOrder
   rawJson?: Prisma.SortOrder
+  templateParams?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -763,6 +779,7 @@ export type MessageCreateWithoutInstanceInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
@@ -783,6 +800,7 @@ export type MessageUncheckedCreateWithoutInstanceInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -832,6 +850,7 @@ export type MessageScalarWhereInput = {
   mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
   mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
   rawJson?: Prisma.JsonNullableFilter<"Message">
+  templateParams?: Prisma.JsonNullableFilter<"Message">
   contactId?: Prisma.StringFilter<"Message"> | string
   instanceId?: Prisma.StringFilter<"Message"> | string
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -853,6 +872,7 @@ export type MessageCreateWithoutContactInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   timestamp?: bigint | number | null
   processingStatus?: $Enums.ProcessingStatus
@@ -873,6 +893,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -919,6 +940,7 @@ export type MessageCreateManyInstanceInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId: string
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -939,6 +961,7 @@ export type MessageUpdateWithoutInstanceInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
@@ -959,6 +982,7 @@ export type MessageUncheckedUpdateWithoutInstanceInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -979,6 +1003,7 @@ export type MessageUncheckedUpdateManyWithoutInstanceInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -999,6 +1024,7 @@ export type MessageCreateManyContactInput = {
   mediaCaption?: string | null
   mediaFileName?: string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   createdAt?: Date | string
   timestamp?: bigint | number | null
@@ -1019,6 +1045,7 @@ export type MessageUpdateWithoutContactInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
@@ -1039,6 +1066,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -1059,6 +1087,7 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -1081,6 +1110,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   mediaCaption?: boolean
   mediaFileName?: boolean
   rawJson?: boolean
+  templateParams?: boolean
   contactId?: boolean
   instanceId?: boolean
   createdAt?: boolean
@@ -1104,6 +1134,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mediaCaption?: boolean
   mediaFileName?: boolean
   rawJson?: boolean
+  templateParams?: boolean
   contactId?: boolean
   instanceId?: boolean
   createdAt?: boolean
@@ -1127,6 +1158,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   mediaCaption?: boolean
   mediaFileName?: boolean
   rawJson?: boolean
+  templateParams?: boolean
   contactId?: boolean
   instanceId?: boolean
   createdAt?: boolean
@@ -1150,6 +1182,7 @@ export type MessageSelectScalar = {
   mediaCaption?: boolean
   mediaFileName?: boolean
   rawJson?: boolean
+  templateParams?: boolean
   contactId?: boolean
   instanceId?: boolean
   createdAt?: boolean
@@ -1159,7 +1192,7 @@ export type MessageSelectScalar = {
   errorDesc?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "templateParams" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
@@ -1191,6 +1224,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     mediaCaption: string | null
     mediaFileName: string | null
     rawJson: runtime.JsonValue | null
+    templateParams: runtime.JsonValue | null
     contactId: string
     instanceId: string
     createdAt: Date
@@ -1634,6 +1668,7 @@ export interface MessageFieldRefs {
   readonly mediaCaption: Prisma.FieldRef<"Message", 'String'>
   readonly mediaFileName: Prisma.FieldRef<"Message", 'String'>
   readonly rawJson: Prisma.FieldRef<"Message", 'Json'>
+  readonly templateParams: Prisma.FieldRef<"Message", 'Json'>
   readonly contactId: Prisma.FieldRef<"Message", 'String'>
   readonly instanceId: Prisma.FieldRef<"Message", 'String'>
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>

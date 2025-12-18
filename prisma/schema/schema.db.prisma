@@ -83,6 +83,10 @@ model Message {
   // Se eles lançarem uma feature nova (ex: Botão de Pix), seu sistema não quebra.
   rawJson Json?
 
+  // Parâmetros do template (para renderização formatada)
+  // Guarda os valores usados para substituir variáveis no template
+  templateParams Json?
+
   // Relacionamentos
   contactId String
   contact   Contact @relation(fields: [contactId], references: [id])
