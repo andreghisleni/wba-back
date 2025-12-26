@@ -397,6 +397,7 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
+  AbsenceMessage: 'AbsenceMessage',
   Webhook: 'Webhook',
   WebhookLog: 'WebhookLog'
 } as const
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "webhook" | "webhookLog"
+    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "absenceMessage" | "webhook" | "webhookLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1380,6 +1381,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AbsenceMessage: {
+      payload: Prisma.$AbsenceMessagePayload<ExtArgs>
+      fields: Prisma.AbsenceMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AbsenceMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AbsenceMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.AbsenceMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AbsenceMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        findMany: {
+          args: Prisma.AbsenceMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>[]
+        }
+        create: {
+          args: Prisma.AbsenceMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        createMany: {
+          args: Prisma.AbsenceMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AbsenceMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.AbsenceMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        update: {
+          args: Prisma.AbsenceMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.AbsenceMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AbsenceMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AbsenceMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.AbsenceMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AbsenceMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.AbsenceMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAbsenceMessage>
+        }
+        groupBy: {
+          args: Prisma.AbsenceMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AbsenceMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AbsenceMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AbsenceMessageCountAggregateOutputType> | number
+        }
+      }
+    }
     Webhook: {
       payload: Prisma.$WebhookPayload<ExtArgs>
       fields: Prisma.WebhookFieldRefs
@@ -1766,6 +1841,18 @@ export const ApiKeyScalarFieldEnum = {
 export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
 
 
+export const AbsenceMessageScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  active: 'active',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AbsenceMessageScalarFieldEnum = (typeof AbsenceMessageScalarFieldEnum)[keyof typeof AbsenceMessageScalarFieldEnum]
+
+
 export const WebhookScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -2105,6 +2192,7 @@ export type GlobalOmitConfig = {
   member?: Prisma.MemberOmit
   invitation?: Prisma.InvitationOmit
   apiKey?: Prisma.ApiKeyOmit
+  absenceMessage?: Prisma.AbsenceMessageOmit
   webhook?: Prisma.WebhookOmit
   webhookLog?: Prisma.WebhookLogOmit
 }

@@ -64,6 +64,7 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
+  AbsenceMessage: 'AbsenceMessage',
   Webhook: 'Webhook',
   WebhookLog: 'WebhookLog'
 } as const
@@ -281,6 +282,18 @@ export const ApiKeyScalarFieldEnum = {
 } as const
 
 export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+export const AbsenceMessageScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  active: 'active',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AbsenceMessageScalarFieldEnum = (typeof AbsenceMessageScalarFieldEnum)[keyof typeof AbsenceMessageScalarFieldEnum]
 
 
 export const WebhookScalarFieldEnum = {

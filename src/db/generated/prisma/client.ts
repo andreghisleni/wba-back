@@ -105,6 +105,11 @@ export type Invitation = Prisma.InvitationModel
  */
 export type ApiKey = Prisma.ApiKeyModel
 /**
+ * Model AbsenceMessage
+ * 
+ */
+export type AbsenceMessage = Prisma.AbsenceMessageModel
+/**
  * Model Webhook
  * 
  */

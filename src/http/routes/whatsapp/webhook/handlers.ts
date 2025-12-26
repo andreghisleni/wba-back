@@ -234,6 +234,52 @@ async function handleIncomingMessage(
     }
   }
 
+
+  // 4. Resposta automática de ausência, se estiver ativa
+  const absence = await prisma.absenceMessage.findFirst({
+    where: { organizationId, active: true },
+    orderBy: { createdAt: 'desc' },
+  });
+  if (absence && accessToken) {
+    // Envia mensagem de ausência via WhatsApp Cloud API
+    const resp = await fetch(`https://graph.facebook.com/v18.0/${instanceId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: msg.from,
+        type: 'text',
+        text: { body: absence.message },
+      }),
+    });
+    // Tenta extrair o wamid da resposta
+    let wamid: string | undefined = undefined;
+    try {
+      const data = await resp.json();
+      wamid = data?.messages?.[0]?.id;
+    } catch {}
+    // Salva a mensagem de ausência como OUTBOUND
+    if(wamid) {
+      await prisma.message.create({
+      data: {
+        wamid,
+        instanceId,
+        contactId: dbContact.id,
+        direction: 'OUTBOUND',
+        type: 'text',
+        processingStatus: 'NONE',
+        body: absence.message,
+        timestamp: BigInt(Date.now()),
+        rawJson: {},
+        status: 'SENT',
+      },
+    });
+    }
+  }
+
   webhookService.dispatch(organizationId, 'message.received', {
     messageId: savedMsg.id,
     wamid: savedMsg.wamid,

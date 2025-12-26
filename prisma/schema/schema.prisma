@@ -111,8 +111,9 @@ model Organization {
 
   whatsAppInstances WhatsAppInstance[]
 
-  apiKeys  ApiKey[]
-  webhooks Webhook[]
+  apiKeys         ApiKey[]
+  webhooks        Webhook[]
+  absenceMessages AbsenceMessage[]
 
   @@unique([slug])
   @@map("organization")
@@ -158,4 +159,17 @@ model ApiKey {
   lastUsedAt DateTime? // Bom para saber se a integração está ativa
 
   @@map("api_keys")
+}
+
+model AbsenceMessage {
+  id      String  @id @default(uuid())
+  message String
+  active  Boolean @default(false)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("absence_messages")
 }
