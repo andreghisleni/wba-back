@@ -70,7 +70,7 @@ export async function handleStatusUpdate(
             instance: { connect: { id: instanceId } }, // Conexão segura via relation
             timestamp,
             // Precisamos do conversationId se estiver no schema, se não, pode omitir
-            conversationId: statusUpdate.conversation?.id || '',
+            // conversationId: statusUpdate.conversation?.id || '',
           },
         });
         // console.log(`💰 Cobrança: ${category.toUpperCase()}`);
@@ -96,6 +96,14 @@ export async function handleStatusUpdate(
 
     // 3. ATUALIZAÇÃO DA MENSAGEM + WEBHOOK
     try {
+      const mss = await prisma.message.findUnique({
+        where: { wamid },
+      });
+
+      if (!mss) {
+        throw new Error('Mensagem não encontrada');
+      }
+
       // Trocamos updateMany por UPDATE para poder pegar o retorno (organizationId)
       // Como wamid é @unique no schema, isso funciona perfeitamente.
       const updatedMessage = await prisma.message.update({
@@ -143,7 +151,8 @@ async function handleIncomingMessage(
   value: WhatsAppChangeValue,
   instanceId: string,
   organizationId: string,
-  accessToken: string | null
+  accessToken: string | null,
+  instancePhoneNumberId: string
 ) {
   if (!value.messages) {
     return;
@@ -240,9 +249,14 @@ async function handleIncomingMessage(
     where: { organizationId, active: true },
     orderBy: { createdAt: 'desc' },
   });
+
+  // console.log(`🤖 Verificando ausência automática para org ${organizationId}...`);
+  // console.log(absence);
+
   if (absence && accessToken) {
+    // console.log('⏰ Enviando mensagem de ausência automática...');
     // Envia mensagem de ausência via WhatsApp Cloud API
-    const resp = await fetch(`https://graph.facebook.com/v18.0/${instanceId}/messages`, {
+    const resp = await fetch(`https://graph.facebook.com/v21.0/${instancePhoneNumberId}/messages`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -251,32 +265,39 @@ async function handleIncomingMessage(
       body: JSON.stringify({
         messaging_product: 'whatsapp',
         to: msg.from,
+        "recipient_type": "individual",
         type: 'text',
-        text: { body: absence.message },
+        text: {
+          body: absence.message,
+          preview_url: false
+        },
       }),
     });
+
     // Tenta extrair o wamid da resposta
-    let wamid: string | undefined = undefined;
+    let wamid: string | undefined;
     try {
       const data = await resp.json();
       wamid = data?.messages?.[0]?.id;
-    } catch {}
+    } catch {
+      console.warn('Não foi possível extrair o wamid da resposta de ausência.');
+    }
     // Salva a mensagem de ausência como OUTBOUND
-    if(wamid) {
+    if (wamid) {
       await prisma.message.create({
-      data: {
-        wamid,
-        instanceId,
-        contactId: dbContact.id,
-        direction: 'OUTBOUND',
-        type: 'text',
-        processingStatus: 'NONE',
-        body: absence.message,
-        timestamp: BigInt(Date.now()),
-        rawJson: {},
-        status: 'SENT',
-      },
-    });
+        data: {
+          wamid,
+          instanceId,
+          contactId: dbContact.id,
+          direction: 'OUTBOUND',
+          type: 'text',
+          processingStatus: 'NONE',
+          body: absence.message,
+          timestamp: BigInt(Math.floor(Date.now() / 1000)),
+          rawJson: {},
+          status: 'SENT',
+        },
+      });
     }
   }
 
@@ -327,7 +348,8 @@ export async function processWebhookChange(change: WhatsAppChange) {
       value,
       instance.id,
       instance.organizationId,
-      instance.accessToken
+      instance.accessToken,
+      instance.phoneNumberId
     );
   }
 }

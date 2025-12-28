@@ -27,6 +27,13 @@ export const whatsappAbsenceMessageRoute = new Elysia({
     const msg = await prisma.absenceMessage.findFirst({
       where: { organizationId },
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        message: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true,
+      }
     });
     return msg;
   }, {
@@ -41,7 +48,7 @@ export const whatsappAbsenceMessageRoute = new Elysia({
       where: { organizationId },
       orderBy: { createdAt: 'desc' },
     });
-    let msg;
+    let msg: typeof lastMsg;
     if (lastMsg) {
       msg = await prisma.absenceMessage.update({
         where: { id: lastMsg.id },
