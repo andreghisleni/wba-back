@@ -5,6 +5,7 @@ import { upsertSmartContact } from '~/services/contact-service';
 import { webhookService } from '~/services/webhook-service';
 import { prisma } from '../../db/client';
 import { apiKeyMacro } from '../macros/api-key';
+import { TemplateResponseSchema } from './whatsapp/templates';
 
 // Schema para os botões (Baseado no seu chat.ts mas expandido para quick_reply)
 const ButtonParamSchema = t.Object({
@@ -308,5 +309,22 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         })
       ),
       detail: { tags: ['External API'] },
+    }
+  )
+  .get('/templates',
+    async ({ organization }) => {
+      const templates = await prisma.template.findMany({
+        where: { instance: { organizationId: organization.id } },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      // Cast necessário pois Prisma Json é incompatível com TypeBox estrito
+      return templates as unknown as (typeof TemplateResponseSchema.static)[];
+    },
+    {
+      response: t.Array(TemplateResponseSchema),
+      detail: {
+        tags: ['External API'],
+      },
     }
   );

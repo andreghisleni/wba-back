@@ -109,7 +109,7 @@ const MetaComponentSchema = t.Object({
 });
 
 // Resposta de Sucesso (O Template)
-const TemplateResponseSchema = t.Object({
+export const TemplateResponseSchema = t.Object({
   id: t.String(),
   wamid: t.Nullable(t.String()),
   name: t.String(),
