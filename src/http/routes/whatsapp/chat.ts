@@ -286,7 +286,7 @@ export const whatsappChatRoute = new Elysia()
       };
 
       // Variável para armazenar o template buscado (usado depois para salvar params)
-      let storedTemplate: Awaited<ReturnType<typeof prisma.template.findFirst>> = null;
+      let storedTemplate: any = null;
 
       // --- LÓGICA DE MONTAGEM DO PAYLOAD ---
 
@@ -304,30 +304,29 @@ export const whatsappChatRoute = new Elysia()
             language: template.language || 'pt_BR',
             instanceId: contact.instanceId,
           },
+          select: {
+            id: true,
+            structure: true,
+            headerMediaUrl: true,
+          },
         });
 
         const components: any[] = [];
 
-        // A. Verifica se tem HEADER de vídeo e adiciona o exemplo
+        // A. Verifica se tem HEADER de vídeo e usa headerMediaUrl do banco
         if (storedTemplate?.structure && Array.isArray(storedTemplate.structure)) {
           const headerComponent = (storedTemplate.structure as any[]).find(
             (c: any) => c.type === 'HEADER' && c.format === 'VIDEO'
           );
 
-          if (headerComponent?.example?.header_handle?.[0]) {
-            const headerHandle = headerComponent.example.header_handle[0];
-
-            // header_handle pode ser um media ID (formato "4::...") ou uma URL
-            const isUrl = headerHandle.startsWith('http://') || headerHandle.startsWith('https://');
-
+          // Se tem header de vídeo E temos uma URL configurada, adiciona ao payload
+          if (headerComponent && storedTemplate.headerMediaUrl) {
             components.push({
               type: 'header',
               parameters: [
                 {
                   type: 'video',
-                  video: isUrl
-                    ? { link: headerHandle }
-                    : { id: headerHandle },
+                  video: { link: storedTemplate.headerMediaUrl },
                 },
               ],
             });

@@ -56,14 +56,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         return { error: 'Instância desconectada ou não encontrada.' };
       }
 
-      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru, ID e structure para header de vídeo)
+      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru, ID e headerMediaUrl)
       const storedTemplate = await prisma.template.findFirst({
         where: {
           instanceId: instance.id,
           name: body.template,
           status: 'APPROVED',
         },
-        select: { id: true, body: true, structure: true }, // <--- Importante: selecionar id, corpo e structure
+        select: { id: true, body: true, structure: true, headerMediaUrl: true },
       });
 
       if (!storedTemplate) {
@@ -81,30 +81,23 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       });
 
       // 3. Montar Payload da Meta (Estritamente Template)
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: payloads dinâmicos da Meta API
       const components: any[] = [];
 
-      // A. Verifica se tem HEADER de vídeo e adiciona o exemplo
+      // A. Verifica se tem HEADER de vídeo e usa headerMediaUrl do banco
       if (storedTemplate?.structure && Array.isArray(storedTemplate.structure)) {
-        const headerComponent = (storedTemplate.structure as { type: string; format: string; example?: { header_handle?: string[] } }[]).find(
+        const headerComponent = (storedTemplate.structure as { type: string; format: string }[]).find(
           (c) => c.type === 'HEADER' && c.format === 'VIDEO'
         );
 
-        if (headerComponent?.example?.header_handle?.[0]) {
-          const headerHandle = headerComponent.example.header_handle[0];
-
-          // header_handle pode ser um media ID (formato "4::...") ou uma URL
-          const isUrl = headerHandle.startsWith('http://') || headerHandle.startsWith('https://');
-
+        // Se tem header de vídeo E temos uma URL configurada, adiciona ao payload
+        if (headerComponent && storedTemplate.headerMediaUrl) {
           components.push({
             type: 'header',
             parameters: [
               {
                 type: 'video',
-                video: { link: 'https://pub-bf29d6f6bf764b1982512ad9a0b5c9c0.r2.dev/video-marco.mp4' }
-                //  isUrl
-                //   ? { link: headerHandle }
-                //   : { id: headerHandle },
+                video: { link: storedTemplate.headerMediaUrl },
               },
             ],
           });

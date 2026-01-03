@@ -121,6 +121,7 @@ export const TemplateResponseSchema = t.Object({
   createdAt: t.Date(),
   updatedAt: t.Date(),
   language: t.String(),
+  headerMediaUrl: t.Nullable(t.String()),
 });
 
 // Resposta de Erro
@@ -453,6 +454,59 @@ export const whatsappTemplatesRoute = new Elysia({
       },
     }
   )
+  // PATCH /templates/:id - Atualizar headerMediaUrl
+  .patch(
+    '/:id',
+    async ({ params, body, organizationId, set }) => {
+      const { id } = params;
+      const { headerMediaUrl } = body;
+
+      // 1. Busca o template no banco
+      const template = await prisma.template.findUnique({
+        where: { id },
+        include: { instance: true },
+      });
+
+      if (!template) {
+        set.status = 404;
+        return { error: 'Template não encontrado.' };
+      }
+
+      // 2. Verifica permissão
+      if (template.instance.organizationId !== organizationId) {
+        set.status = 403;
+        return { error: 'Sem permissão.' };
+      }
+
+      // 3. Atualiza apenas o headerMediaUrl
+      const updatedTemplate = await prisma.template.update({
+        where: { id },
+        data: { headerMediaUrl },
+      });
+
+      return updatedTemplate as unknown as (typeof TemplateResponseSchema.static);
+    },
+    {
+      auth: true,
+      body: t.Object({
+        headerMediaUrl: t.Nullable(t.String({ format: 'uri' })),
+      }),
+      params: t.Object({
+        id: t.String(),
+      }),
+      response: {
+        200: TemplateResponseSchema,
+        403: ErrorResponseSchema,
+        404: ErrorResponseSchema,
+      },
+      detail: {
+        tags: ['WhatsApp Templates'],
+        operationId: 'updateWhatsappTemplateMedia',
+        summary: 'Atualiza a URL da mídia do header do template',
+      },
+    }
+  );
+
 // .patch(
 //   '/:id',
 //   async ({ params, body, organizationId, set }) => {

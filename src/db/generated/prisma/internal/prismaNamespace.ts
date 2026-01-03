@@ -1706,6 +1706,7 @@ export const TemplateScalarFieldEnum = {
   body: 'body',
   structure: 'structure',
   status: 'status',
+  headerMediaUrl: 'headerMediaUrl',
   instanceId: 'instanceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

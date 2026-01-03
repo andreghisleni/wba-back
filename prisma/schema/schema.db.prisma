@@ -159,6 +159,9 @@ model Template {
   structure Json? // O JSON completo (botões, footer, exemplos)
   status    String // APPROVED, REJECTED, PENDING
 
+  // URL customizada para mídia do header (vídeo/imagem hospedado externamente)
+  headerMediaUrl String?
+
   instanceId String
   instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
 

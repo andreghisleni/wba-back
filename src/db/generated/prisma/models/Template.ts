@@ -32,6 +32,7 @@ export type TemplateMinAggregateOutputType = {
   category: string | null
   body: string | null
   status: string | null
+  headerMediaUrl: string | null
   instanceId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +46,7 @@ export type TemplateMaxAggregateOutputType = {
   category: string | null
   body: string | null
   status: string | null
+  headerMediaUrl: string | null
   instanceId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +61,7 @@ export type TemplateCountAggregateOutputType = {
   body: number
   structure: number
   status: number
+  headerMediaUrl: number
   instanceId: number
   createdAt: number
   updatedAt: number
@@ -74,6 +77,7 @@ export type TemplateMinAggregateInputType = {
   category?: true
   body?: true
   status?: true
+  headerMediaUrl?: true
   instanceId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +91,7 @@ export type TemplateMaxAggregateInputType = {
   category?: true
   body?: true
   status?: true
+  headerMediaUrl?: true
   instanceId?: true
   createdAt?: true
   updatedAt?: true
@@ -101,6 +106,7 @@ export type TemplateCountAggregateInputType = {
   body?: true
   structure?: true
   status?: true
+  headerMediaUrl?: true
   instanceId?: true
   createdAt?: true
   updatedAt?: true
@@ -188,6 +194,7 @@ export type TemplateGroupByOutputType = {
   body: string
   structure: runtime.JsonValue | null
   status: string
+  headerMediaUrl: string | null
   instanceId: string
   createdAt: Date
   updatedAt: Date
@@ -223,6 +230,7 @@ export type TemplateWhereInput = {
   body?: Prisma.StringFilter<"Template"> | string
   structure?: Prisma.JsonNullableFilter<"Template">
   status?: Prisma.StringFilter<"Template"> | string
+  headerMediaUrl?: Prisma.StringNullableFilter<"Template"> | string | null
   instanceId?: Prisma.StringFilter<"Template"> | string
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
@@ -238,6 +246,7 @@ export type TemplateOrderByWithRelationInput = {
   body?: Prisma.SortOrder
   structure?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  headerMediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -257,6 +266,7 @@ export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   body?: Prisma.StringFilter<"Template"> | string
   structure?: Prisma.JsonNullableFilter<"Template">
   status?: Prisma.StringFilter<"Template"> | string
+  headerMediaUrl?: Prisma.StringNullableFilter<"Template"> | string | null
   instanceId?: Prisma.StringFilter<"Template"> | string
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
@@ -272,6 +282,7 @@ export type TemplateOrderByWithAggregationInput = {
   body?: Prisma.SortOrder
   structure?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  headerMediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -292,6 +303,7 @@ export type TemplateScalarWhereWithAggregatesInput = {
   body?: Prisma.StringWithAggregatesFilter<"Template"> | string
   structure?: Prisma.JsonNullableWithAggregatesFilter<"Template">
   status?: Prisma.StringWithAggregatesFilter<"Template"> | string
+  headerMediaUrl?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
   instanceId?: Prisma.StringWithAggregatesFilter<"Template"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Template"> | Date | string
@@ -306,6 +318,7 @@ export type TemplateCreateInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutTemplatesInput
@@ -320,6 +333,7 @@ export type TemplateUncheckedCreateInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   instanceId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,6 +348,7 @@ export type TemplateUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutTemplatesNestedInput
@@ -348,6 +363,7 @@ export type TemplateUncheckedUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,6 +378,7 @@ export type TemplateCreateManyInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   instanceId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,6 +393,7 @@ export type TemplateUpdateManyMutationInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,6 +407,7 @@ export type TemplateUncheckedUpdateManyInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -419,6 +438,7 @@ export type TemplateCountOrderByAggregateInput = {
   body?: Prisma.SortOrder
   structure?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  headerMediaUrl?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -432,6 +452,7 @@ export type TemplateMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   body?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  headerMediaUrl?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -445,6 +466,7 @@ export type TemplateMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   body?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  headerMediaUrl?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -501,6 +523,7 @@ export type TemplateCreateWithoutInstanceInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -514,6 +537,7 @@ export type TemplateUncheckedCreateWithoutInstanceInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -556,6 +580,7 @@ export type TemplateScalarWhereInput = {
   body?: Prisma.StringFilter<"Template"> | string
   structure?: Prisma.JsonNullableFilter<"Template">
   status?: Prisma.StringFilter<"Template"> | string
+  headerMediaUrl?: Prisma.StringNullableFilter<"Template"> | string | null
   instanceId?: Prisma.StringFilter<"Template"> | string
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
@@ -570,6 +595,7 @@ export type TemplateCreateManyInstanceInput = {
   body: string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status: string
+  headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -583,6 +609,7 @@ export type TemplateUpdateWithoutInstanceInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -596,6 +623,7 @@ export type TemplateUncheckedUpdateWithoutInstanceInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -609,6 +637,7 @@ export type TemplateUncheckedUpdateManyWithoutInstanceInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -624,6 +653,7 @@ export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   body?: boolean
   structure?: boolean
   status?: boolean
+  headerMediaUrl?: boolean
   instanceId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -639,6 +669,7 @@ export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   body?: boolean
   structure?: boolean
   status?: boolean
+  headerMediaUrl?: boolean
   instanceId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -654,6 +685,7 @@ export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   body?: boolean
   structure?: boolean
   status?: boolean
+  headerMediaUrl?: boolean
   instanceId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -669,12 +701,13 @@ export type TemplateSelectScalar = {
   body?: boolean
   structure?: boolean
   status?: boolean
+  headerMediaUrl?: boolean
   instanceId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "name" | "language" | "category" | "body" | "structure" | "status" | "instanceId" | "createdAt" | "updatedAt", ExtArgs["result"]["template"]>
+export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "name" | "language" | "category" | "body" | "structure" | "status" | "headerMediaUrl" | "instanceId" | "createdAt" | "updatedAt", ExtArgs["result"]["template"]>
 export type TemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }
@@ -699,6 +732,7 @@ export type $TemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     body: string
     structure: runtime.JsonValue | null
     status: string
+    headerMediaUrl: string | null
     instanceId: string
     createdAt: Date
     updatedAt: Date
@@ -1134,6 +1168,7 @@ export interface TemplateFieldRefs {
   readonly body: Prisma.FieldRef<"Template", 'String'>
   readonly structure: Prisma.FieldRef<"Template", 'Json'>
   readonly status: Prisma.FieldRef<"Template", 'String'>
+  readonly headerMediaUrl: Prisma.FieldRef<"Template", 'String'>
   readonly instanceId: Prisma.FieldRef<"Template", 'String'>
   readonly createdAt: Prisma.FieldRef<"Template", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Template", 'DateTime'>
