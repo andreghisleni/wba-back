@@ -56,14 +56,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         return { error: 'Instância desconectada ou não encontrada.' };
       }
 
-      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru e o ID)
+      // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru, ID e structure para header de vídeo)
       const storedTemplate = await prisma.template.findFirst({
         where: {
           instanceId: instance.id,
           name: body.template,
           status: 'APPROVED',
         },
-        select: { id: true, body: true }, // <--- Importante: selecionar o id e o corpo
+        select: { id: true, body: true, structure: true }, // <--- Importante: selecionar id, corpo e structure
       });
 
       if (!storedTemplate) {
@@ -84,7 +84,28 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       const components: any[] = [];
 
-      // A. Variáveis de Texto (Body)
+      // A. Verifica se tem HEADER de vídeo e adiciona o exemplo
+      if (storedTemplate?.structure && Array.isArray(storedTemplate.structure)) {
+        const headerComponent = (storedTemplate.structure as { type: string; format: string; example?: { header_handle?: string[] } }[]).find(
+          (c) => c.type === 'HEADER' && c.format === 'VIDEO'
+        );
+
+        if (headerComponent?.example?.header_handle?.[0]) {
+          components.push({
+            type: 'header',
+            parameters: [
+              {
+                type: 'video',
+                video: {
+                  link: headerComponent.example.header_handle[0],
+                },
+              },
+            ],
+          });
+        }
+      }
+
+      // B. Variáveis de Texto (Body)
       if (body.variables && body.variables.length > 0) {
         components.push({
           type: 'body',
@@ -95,10 +116,9 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         });
       }
 
-      // B. Variáveis de Botão (Buttons)
+      // C. Variáveis de Botão (Buttons)
       if (body.buttons && body.buttons.length > 0) {
-        // biome-ignore lint/complexity/noForEach: <explanation>
-        body.buttons.forEach((btn) => {
+        for (const btn of body.buttons) {
           if (btn.type === 'url') {
             components.push({
               type: 'button',
@@ -114,7 +134,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
               parameters: [{ type: 'payload', payload: btn.value }],
             });
           }
-        });
+        }
       }
 
       const metaPayload = {

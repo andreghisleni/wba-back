@@ -285,6 +285,9 @@ export const whatsappChatRoute = new Elysia()
         to: contact.waId,
       };
 
+      // Variável para armazenar o template buscado (usado depois para salvar params)
+      let storedTemplate: Awaited<ReturnType<typeof prisma.template.findFirst>> = null;
+
       // --- LÓGICA DE MONTAGEM DO PAYLOAD ---
 
       if (type === 'text') {
@@ -294,9 +297,39 @@ export const whatsappChatRoute = new Elysia()
       } else if (type === 'template') {
         if (!template) throw new Error('Dados do template faltando');
 
+        // Busca o template no banco para verificar se tem header de vídeo
+        storedTemplate = await prisma.template.findFirst({
+          where: {
+            name: template.name,
+            language: template.language || 'pt_BR',
+            instanceId: contact.instanceId,
+          },
+        });
+
         const components: any[] = [];
 
-        // A. Preenche variáveis do CORPO (Body)
+        // A. Verifica se tem HEADER de vídeo e adiciona o exemplo
+        if (storedTemplate?.structure && Array.isArray(storedTemplate.structure)) {
+          const headerComponent = (storedTemplate.structure as any[]).find(
+            (c: any) => c.type === 'HEADER' && c.format === 'VIDEO'
+          );
+
+          if (headerComponent?.example?.header_handle?.[0]) {
+            components.push({
+              type: 'header',
+              parameters: [
+                {
+                  type: 'video',
+                  video: {
+                    link: headerComponent.example.header_handle[0],
+                  },
+                },
+              ],
+            });
+          }
+        }
+
+        // B. Preenche variáveis do CORPO (Body)
         if (template.bodyValues && template.bodyValues.length > 0) {
           components.push({
             type: 'body',
@@ -307,7 +340,7 @@ export const whatsappChatRoute = new Elysia()
           });
         }
 
-        // B. Preenche variáveis de BOTÕES (Buttons)
+        // C. Preenche variáveis de BOTÕES (Buttons)
         if (template.buttonValues && template.buttonValues.length > 0) {
           for (const btn of template.buttonValues) {
             components.push({
@@ -321,7 +354,7 @@ export const whatsappChatRoute = new Elysia()
                 },
               ],
             });
-          };
+          }
         }
 
         metaPayload.type = 'template';
@@ -352,27 +385,16 @@ export const whatsappChatRoute = new Elysia()
         const bodyToSave =
           type === 'text' ? textMessage : `Template: ${template?.name}`;
 
-        // Se for template, busca os dados do template e salva os parâmetros
+        // Se for template, usa os dados do template já buscado para salvar os parâmetros
         let templateParamsToSave: InputJsonValue | null = null;
-        if (type === 'template' && template) {
-          // Busca o template no banco para pegar o ID
-          const templateRecord = await prisma.template.findFirst({
-            where: {
-              name: template.name,
-              language: template.language || 'pt_BR',
-              instanceId: contact.instanceId,
-            },
-          });
-
-          if (templateRecord) {
-            templateParamsToSave = {
-              templateId: templateRecord.id,
-              templateName: template.name,
-              language: template.language || 'pt_BR',
-              bodyParams: template.bodyValues || [],
-              buttonParams: template.buttonValues || [],
-            };
-          }
+        if (type === 'template' && template && storedTemplate) {
+          templateParamsToSave = {
+            templateId: storedTemplate.id,
+            templateName: template.name,
+            language: template.language || 'pt_BR',
+            bodyParams: template.bodyValues || [],
+            buttonParams: template.buttonValues || [],
+          };
         }
 
         const savedMsg = await prisma.message.create({
