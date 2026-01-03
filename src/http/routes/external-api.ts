@@ -101,9 +101,10 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             parameters: [
               {
                 type: 'video',
-                video: isUrl
-                  ? { link: headerHandle }
-                  : { id: headerHandle },
+                video: { link: 'https://pub-bf29d6f6bf764b1982512ad9a0b5c9c0.r2.dev/video-marco.mp4' }
+                //  isUrl
+                //   ? { link: headerHandle }
+                //   : { id: headerHandle },
               },
             ],
           });
