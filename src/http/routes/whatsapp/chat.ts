@@ -315,14 +315,19 @@ export const whatsappChatRoute = new Elysia()
           );
 
           if (headerComponent?.example?.header_handle?.[0]) {
+            const headerHandle = headerComponent.example.header_handle[0];
+
+            // header_handle pode ser um media ID (formato "4::...") ou uma URL
+            const isUrl = headerHandle.startsWith('http://') || headerHandle.startsWith('https://');
+
             components.push({
               type: 'header',
               parameters: [
                 {
                   type: 'video',
-                  video: {
-                    link: headerComponent.example.header_handle[0],
-                  },
+                  video: isUrl
+                    ? { link: headerHandle }
+                    : { id: headerHandle },
                 },
               ],
             });
