@@ -5,6 +5,7 @@
 import { prisma } from '~/db/client';
 import type { MessageStatus, MessageType } from '~/db/generated/prisma/enums';
 import { dispatchMediaProcessing } from '~/lib/media-service';
+import { metaErrorsQueue } from '~/queue/setup';
 import { upsertSmartContact } from '~/services/contact-service';
 import { webhookService } from '~/services/webhook-service';
 import type {
@@ -116,6 +117,16 @@ export async function handleStatusUpdate(
           instance: true, // <--- NECESSÁRIO: Pega a organização para o webhook
         },
       });
+
+      if (updatedMessage.status === 'FAILED') {
+        // 2. Joga para a fila processar a IA e o Vínculo
+        // Importante: passamos o ID interno do banco (updatedMsg.id)
+        await metaErrorsQueue.add('analyze-error', {
+          messageId: updatedMessage.id,
+          errorCode: updatedMessage.errorCode,
+          errorDesc: updatedMessage.errorDesc,
+        });
+      }
 
       // 4. DISPARAR WEBHOOK (A Novidade)
       if (updatedMessage?.instance) {
@@ -243,7 +254,6 @@ async function handleIncomingMessage(
     }
   }
 
-
   // 4. Resposta automática de ausência, se estiver ativa
   const absence = await prisma.absenceMessage.findFirst({
     where: { organizationId, active: true },
@@ -256,23 +266,26 @@ async function handleIncomingMessage(
   if (absence && accessToken) {
     // console.log('⏰ Enviando mensagem de ausência automática...');
     // Envia mensagem de ausência via WhatsApp Cloud API
-    const resp = await fetch(`https://graph.facebook.com/v21.0/${instancePhoneNumberId}/messages`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: msg.from,
-        "recipient_type": "individual",
-        type: 'text',
-        text: {
-          body: absence.message,
-          preview_url: false
+    const resp = await fetch(
+      `https://graph.facebook.com/v21.0/${instancePhoneNumberId}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-      }),
-    });
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          to: msg.from,
+          recipient_type: 'individual',
+          type: 'text',
+          text: {
+            body: absence.message,
+            preview_url: false,
+          },
+        }),
+      }
+    );
 
     // Tenta extrair o wamid da resposta
     let wamid: string | undefined;

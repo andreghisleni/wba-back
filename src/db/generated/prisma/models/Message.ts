@@ -52,6 +52,7 @@ export type MessageMinAggregateOutputType = {
   processingStatus: $Enums.ProcessingStatus | null
   errorCode: string | null
   errorDesc: string | null
+  errorDefinitionId: string | null
 }
 
 export type MessageMaxAggregateOutputType = {
@@ -72,6 +73,7 @@ export type MessageMaxAggregateOutputType = {
   processingStatus: $Enums.ProcessingStatus | null
   errorCode: string | null
   errorDesc: string | null
+  errorDefinitionId: string | null
 }
 
 export type MessageCountAggregateOutputType = {
@@ -94,6 +96,7 @@ export type MessageCountAggregateOutputType = {
   processingStatus: number
   errorCode: number
   errorDesc: number
+  errorDefinitionId: number
   _all: number
 }
 
@@ -124,6 +127,7 @@ export type MessageMinAggregateInputType = {
   processingStatus?: true
   errorCode?: true
   errorDesc?: true
+  errorDefinitionId?: true
 }
 
 export type MessageMaxAggregateInputType = {
@@ -144,6 +148,7 @@ export type MessageMaxAggregateInputType = {
   processingStatus?: true
   errorCode?: true
   errorDesc?: true
+  errorDefinitionId?: true
 }
 
 export type MessageCountAggregateInputType = {
@@ -166,6 +171,7 @@ export type MessageCountAggregateInputType = {
   processingStatus?: true
   errorCode?: true
   errorDesc?: true
+  errorDefinitionId?: true
   _all?: true
 }
 
@@ -275,6 +281,7 @@ export type MessageGroupByOutputType = {
   processingStatus: $Enums.ProcessingStatus
   errorCode: string | null
   errorDesc: string | null
+  errorDefinitionId: string | null
   _count: MessageCountAggregateOutputType | null
   _avg: MessageAvgAggregateOutputType | null
   _sum: MessageSumAggregateOutputType | null
@@ -320,8 +327,10 @@ export type MessageWhereInput = {
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
   errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
+  errorDefinition?: Prisma.XOR<Prisma.ErrorDefinitionNullableScalarRelationFilter, Prisma.ErrorDefinitionWhereInput> | null
 }
 
 export type MessageOrderByWithRelationInput = {
@@ -344,8 +353,10 @@ export type MessageOrderByWithRelationInput = {
   processingStatus?: Prisma.SortOrder
   errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
+  errorDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
   contact?: Prisma.ContactOrderByWithRelationInput
   instance?: Prisma.WhatsAppInstanceOrderByWithRelationInput
+  errorDefinition?: Prisma.ErrorDefinitionOrderByWithRelationInput
 }
 
 export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -371,8 +382,10 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
   errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
+  errorDefinition?: Prisma.XOR<Prisma.ErrorDefinitionNullableScalarRelationFilter, Prisma.ErrorDefinitionWhereInput> | null
 }, "id" | "wamid">
 
 export type MessageOrderByWithAggregationInput = {
@@ -395,6 +408,7 @@ export type MessageOrderByWithAggregationInput = {
   processingStatus?: Prisma.SortOrder
   errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
+  errorDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MessageCountOrderByAggregateInput
   _avg?: Prisma.MessageAvgOrderByAggregateInput
   _max?: Prisma.MessageMaxOrderByAggregateInput
@@ -425,6 +439,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   processingStatus?: Prisma.EnumProcessingStatusWithAggregatesFilter<"Message"> | $Enums.ProcessingStatus
   errorCode?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  errorDefinitionId?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
 }
 
 export type MessageCreateInput = {
@@ -447,6 +462,7 @@ export type MessageCreateInput = {
   errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
+  errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateInput = {
@@ -469,6 +485,7 @@ export type MessageUncheckedCreateInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageUpdateInput = {
@@ -491,6 +508,7 @@ export type MessageUpdateInput = {
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
+  errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateInput = {
@@ -513,6 +531,7 @@ export type MessageUncheckedUpdateInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyInput = {
@@ -535,6 +554,7 @@ export type MessageCreateManyInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageUpdateManyMutationInput = {
@@ -577,6 +597,7 @@ export type MessageUncheckedUpdateManyInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageListRelationFilter = {
@@ -609,6 +630,7 @@ export type MessageCountOrderByAggregateInput = {
   processingStatus?: Prisma.SortOrder
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
+  errorDefinitionId?: Prisma.SortOrder
 }
 
 export type MessageAvgOrderByAggregateInput = {
@@ -633,6 +655,7 @@ export type MessageMaxOrderByAggregateInput = {
   processingStatus?: Prisma.SortOrder
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
+  errorDefinitionId?: Prisma.SortOrder
 }
 
 export type MessageMinOrderByAggregateInput = {
@@ -653,6 +676,7 @@ export type MessageMinOrderByAggregateInput = {
   processingStatus?: Prisma.SortOrder
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
+  errorDefinitionId?: Prisma.SortOrder
 }
 
 export type MessageSumOrderByAggregateInput = {
@@ -767,6 +791,48 @@ export type EnumProcessingStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProcessingStatus
 }
 
+export type MessageCreateNestedManyWithoutErrorDefinitionInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput> | Prisma.MessageCreateWithoutErrorDefinitionInput[] | Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput | Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput[]
+  createMany?: Prisma.MessageCreateManyErrorDefinitionInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUncheckedCreateNestedManyWithoutErrorDefinitionInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput> | Prisma.MessageCreateWithoutErrorDefinitionInput[] | Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput | Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput[]
+  createMany?: Prisma.MessageCreateManyErrorDefinitionInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUpdateManyWithoutErrorDefinitionNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput> | Prisma.MessageCreateWithoutErrorDefinitionInput[] | Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput | Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutErrorDefinitionInput | Prisma.MessageUpsertWithWhereUniqueWithoutErrorDefinitionInput[]
+  createMany?: Prisma.MessageCreateManyErrorDefinitionInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutErrorDefinitionInput | Prisma.MessageUpdateWithWhereUniqueWithoutErrorDefinitionInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutErrorDefinitionInput | Prisma.MessageUpdateManyWithWhereWithoutErrorDefinitionInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+}
+
+export type MessageUncheckedUpdateManyWithoutErrorDefinitionNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput> | Prisma.MessageCreateWithoutErrorDefinitionInput[] | Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput | Prisma.MessageCreateOrConnectWithoutErrorDefinitionInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutErrorDefinitionInput | Prisma.MessageUpsertWithWhereUniqueWithoutErrorDefinitionInput[]
+  createMany?: Prisma.MessageCreateManyErrorDefinitionInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutErrorDefinitionInput | Prisma.MessageUpdateWithWhereUniqueWithoutErrorDefinitionInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutErrorDefinitionInput | Prisma.MessageUpdateManyWithWhereWithoutErrorDefinitionInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+}
+
 export type MessageCreateWithoutInstanceInput = {
   id?: string
   wamid: string
@@ -786,6 +852,7 @@ export type MessageCreateWithoutInstanceInput = {
   errorCode?: string | null
   errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
+  errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutInstanceInput = {
@@ -807,6 +874,7 @@ export type MessageUncheckedCreateWithoutInstanceInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageCreateOrConnectWithoutInstanceInput = {
@@ -858,6 +926,7 @@ export type MessageScalarWhereInput = {
   processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
   errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
 }
 
 export type MessageCreateWithoutContactInput = {
@@ -879,6 +948,7 @@ export type MessageCreateWithoutContactInput = {
   errorCode?: string | null
   errorDesc?: string | null
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
+  errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutContactInput = {
@@ -900,6 +970,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageCreateOrConnectWithoutContactInput = {
@@ -928,6 +999,76 @@ export type MessageUpdateManyWithWhereWithoutContactInput = {
   data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutContactInput>
 }
 
+export type MessageCreateWithoutErrorDefinitionInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+  contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
+  instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
+}
+
+export type MessageUncheckedCreateWithoutErrorDefinitionInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId: string
+  instanceId: string
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+}
+
+export type MessageCreateOrConnectWithoutErrorDefinitionInput = {
+  where: Prisma.MessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput>
+}
+
+export type MessageCreateManyErrorDefinitionInputEnvelope = {
+  data: Prisma.MessageCreateManyErrorDefinitionInput | Prisma.MessageCreateManyErrorDefinitionInput[]
+  skipDuplicates?: boolean
+}
+
+export type MessageUpsertWithWhereUniqueWithoutErrorDefinitionInput = {
+  where: Prisma.MessageWhereUniqueInput
+  update: Prisma.XOR<Prisma.MessageUpdateWithoutErrorDefinitionInput, Prisma.MessageUncheckedUpdateWithoutErrorDefinitionInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutErrorDefinitionInput, Prisma.MessageUncheckedCreateWithoutErrorDefinitionInput>
+}
+
+export type MessageUpdateWithWhereUniqueWithoutErrorDefinitionInput = {
+  where: Prisma.MessageWhereUniqueInput
+  data: Prisma.XOR<Prisma.MessageUpdateWithoutErrorDefinitionInput, Prisma.MessageUncheckedUpdateWithoutErrorDefinitionInput>
+}
+
+export type MessageUpdateManyWithWhereWithoutErrorDefinitionInput = {
+  where: Prisma.MessageScalarWhereInput
+  data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutErrorDefinitionInput>
+}
+
 export type MessageCreateManyInstanceInput = {
   id?: string
   wamid: string
@@ -947,6 +1088,7 @@ export type MessageCreateManyInstanceInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageUpdateWithoutInstanceInput = {
@@ -968,6 +1110,7 @@ export type MessageUpdateWithoutInstanceInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
+  errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutInstanceInput = {
@@ -989,6 +1132,7 @@ export type MessageUncheckedUpdateWithoutInstanceInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutInstanceInput = {
@@ -1010,6 +1154,7 @@ export type MessageUncheckedUpdateManyWithoutInstanceInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyContactInput = {
@@ -1031,6 +1176,7 @@ export type MessageCreateManyContactInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  errorDefinitionId?: string | null
 }
 
 export type MessageUpdateWithoutContactInput = {
@@ -1052,6 +1198,7 @@ export type MessageUpdateWithoutContactInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
+  errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutContactInput = {
@@ -1073,6 +1220,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutContactInput = {
@@ -1088,6 +1236,95 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type MessageCreateManyErrorDefinitionInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId: string
+  instanceId: string
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+}
+
+export type MessageUpdateWithoutErrorDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
+  instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
+}
+
+export type MessageUncheckedUpdateWithoutErrorDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type MessageUncheckedUpdateManyWithoutErrorDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -1118,8 +1355,10 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   processingStatus?: boolean
   errorCode?: boolean
   errorDesc?: boolean
+  errorDefinitionId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1142,8 +1381,10 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   processingStatus?: boolean
   errorCode?: boolean
   errorDesc?: boolean
+  errorDefinitionId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1166,8 +1407,10 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   processingStatus?: boolean
   errorCode?: boolean
   errorDesc?: boolean
+  errorDefinitionId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectScalar = {
@@ -1190,20 +1433,24 @@ export type MessageSelectScalar = {
   processingStatus?: boolean
   errorCode?: boolean
   errorDesc?: boolean
+  errorDefinitionId?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "templateParams" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "templateParams" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc" | "errorDefinitionId", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }
 export type MessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }
 export type MessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
 }
 
 export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1211,6 +1458,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     contact: Prisma.$ContactPayload<ExtArgs>
     instance: Prisma.$WhatsAppInstancePayload<ExtArgs>
+    errorDefinition: Prisma.$ErrorDefinitionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1232,6 +1480,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     processingStatus: $Enums.ProcessingStatus
     errorCode: string | null
     errorDesc: string | null
+    errorDefinitionId: string | null
   }, ExtArgs["result"]["message"]>
   composites: {}
 }
@@ -1628,6 +1877,7 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   contact<T extends Prisma.ContactDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContactDefaultArgs<ExtArgs>>): Prisma.Prisma__ContactClient<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   instance<T extends Prisma.WhatsAppInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppInstanceClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  errorDefinition<T extends Prisma.Message$errorDefinitionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$errorDefinitionArgs<ExtArgs>>): Prisma.Prisma__ErrorDefinitionClient<runtime.Types.Result.GetResult<Prisma.$ErrorDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1676,6 +1926,7 @@ export interface MessageFieldRefs {
   readonly processingStatus: Prisma.FieldRef<"Message", 'ProcessingStatus'>
   readonly errorCode: Prisma.FieldRef<"Message", 'String'>
   readonly errorDesc: Prisma.FieldRef<"Message", 'String'>
+  readonly errorDefinitionId: Prisma.FieldRef<"Message", 'String'>
 }
     
 
@@ -2069,6 +2320,25 @@ export type MessageDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Messages to delete.
    */
   limit?: number
+}
+
+/**
+ * Message.errorDefinition
+ */
+export type Message$errorDefinitionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ErrorDefinition
+   */
+  select?: Prisma.ErrorDefinitionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ErrorDefinition
+   */
+  omit?: Prisma.ErrorDefinitionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ErrorDefinitionInclude<ExtArgs> | null
+  where?: Prisma.ErrorDefinitionWhereInput
 }
 
 /**

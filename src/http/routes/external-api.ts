@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { Elysia, t } from 'elysia';
+import { metaErrorsQueue } from '~/queue/setup';
 import { parseTemplateBody } from '~/scripts/parse-template-body';
 import { upsertSmartContact } from '~/services/contact-service';
 import { webhookService } from '~/services/webhook-service';
@@ -85,10 +86,13 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       const components: any[] = [];
 
       // A. Verifica se tem HEADER de vídeo e usa headerMediaUrl do banco
-      if (storedTemplate?.structure && Array.isArray(storedTemplate.structure)) {
-        const headerComponent = (storedTemplate.structure as { type: string; format: string }[]).find(
-          (c) => c.type === 'HEADER' && c.format === 'VIDEO'
-        );
+      if (
+        storedTemplate?.structure &&
+        Array.isArray(storedTemplate.structure)
+      ) {
+        const headerComponent = (
+          storedTemplate.structure as { type: string; format: string }[]
+        ).find((c) => c.type === 'HEADER' && c.format === 'VIDEO');
 
         // Se tem header de vídeo E temos uma URL configurada, adiciona ao payload
         if (headerComponent && storedTemplate.headerMediaUrl) {
@@ -255,7 +259,10 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             }),
             name: t.Optional(t.String({ description: 'Nome do contato' })),
             saveNameIfNotExists: t.Optional(
-              t.Boolean({ default: false, description: 'Salvar nome se não existir' })
+              t.Boolean({
+                default: false,
+                description: 'Salvar nome se não existir',
+              })
             ),
           },
           { description: 'Informações do contato destinatário' }
@@ -333,7 +340,8 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       detail: { tags: ['External API'] },
     }
   )
-  .get('/templates',
+  .get(
+    '/templates',
     async ({ organization }) => {
       const templates = await prisma.template.findMany({
         where: { instance: { organizationId: organization.id } },
@@ -347,6 +355,73 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       response: t.Array(TemplateResponseSchema),
       detail: {
         tags: ['External API'],
+      },
+    }
+  ) // ROTA: Reprocessar Mensagens com Erro (Backfill)
+  .post(
+    '/reprocess-messages',
+    async ({ query }) => {
+      console.log('🔄 Buscando mensagens com erro não processadas...');
+
+      // 1. Busca mensagens que têm erro mas não têm a definição vinculada
+      // Limitamos a 1000 por vez para não estourar a memória se tiver milhões
+      const limit = query.limit ? Number(query.limit) : 1000;
+
+      const messagesToProcess = await prisma.message.findMany({
+        where: {
+          errorCode: { not: null }, // Tem código de erro
+          errorDefinitionId: null, // Ainda não foi vinculada (não processada)
+          // Opcional: filtrar apenas status FAILED se sua lógica exigir
+          // status: 'FAILED'
+        },
+        take: limit,
+        select: {
+          id: true,
+          errorCode: true,
+          errorDesc: true,
+        },
+      });
+
+      if (messagesToProcess.length === 0) {
+        return {
+          success: true,
+          message: 'Nenhuma mensagem pendente de processamento de erro.',
+          count: 0,
+        };
+      }
+
+      // 2. Prepara jobs no formato exato que seu worker espera
+      const jobs = messagesToProcess.map((msg) => ({
+        name: 'process-legacy-error', // Nome descritivo (o worker aceita qualquer nome)
+        data: {
+          messageId: msg.id,
+          errorCode: msg.errorCode,
+          errorDesc: msg.errorDesc,
+        },
+        opts: {
+          jobId: `msg-err-${msg.id}`, // Garante que a mesma mensagem não entre 2x na fila
+          removeOnComplete: true,
+          attempts: 3,
+        },
+      }));
+
+      // 3. Envia para a fila 'whatsapp-error-processing'
+      await metaErrorsQueue.addBulk(jobs);
+
+      console.log(`✅ ${jobs.length} mensagens enviadas para a fila de erros.`);
+
+      return {
+        success: true,
+        message: 'Backfill iniciado.',
+        enqueued_count: jobs.length,
+        next_step:
+          'Rode novamente se houver mais registros (paginação manual).',
+      };
+    },
+    {
+      detail: {
+        tags: ['External API'],
+        summary: 'Enfileira mensagens antigas para o worker de erros',
       },
     }
   );

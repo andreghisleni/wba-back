@@ -67,6 +67,14 @@ const MessageItemSchema = t.Object({
   direction: t.String(),
   status: t.String(),
   timestamp: t.Date(),
+  errorCode: t.Nullable(t.String()),
+  errorDesc: t.Nullable(t.String()),
+  errorDefinition: t.Optional(t.Nullable(t.Object({
+    id: t.String(),
+    metaCode: t.String(),
+    shortExplanation: t.Nullable(t.String()),
+    detailedExplanation: t.Nullable(t.String()),
+  }))),
   // Novos campos para templates
   templateParams: t.Optional(t.Nullable(TemplateParamsStoredSchema)),
 });
@@ -234,6 +242,9 @@ export const whatsappChatRoute = new Elysia()
       const messages = await prisma.message.findMany({
         where: { contactId: params.contactId },
         orderBy: { timestamp: 'asc' },
+        include: {
+          errorDefinition: true,
+        }
       });
 
       return messages.map((m) => ({
@@ -247,6 +258,14 @@ export const whatsappChatRoute = new Elysia()
         timestamp: new Date(Number(m.timestamp) * 1000),
         // Parâmetros do template (se for mensagem de template)
         templateParams: (m as unknown as { templateParams: typeof TemplateParamsStoredSchema.static | null }).templateParams,
+        errorCode: m.errorCode,
+        errorDesc: m.errorDesc,
+        errorDefinition: m.errorDefinition ? {
+          id: m.errorDefinition.id,
+          metaCode: m.errorDefinition.metaCode,
+          shortExplanation: m.errorDefinition.shortExplanation,
+          detailedExplanation: m.errorDefinition.detailedExplanation,
+        } : undefined,
       }));
     },
     {

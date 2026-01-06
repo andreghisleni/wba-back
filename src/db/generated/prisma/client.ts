@@ -65,6 +65,11 @@ export type Template = Prisma.TemplateModel
  */
 export type ConversationCharge = Prisma.ConversationChargeModel
 /**
+ * Model ErrorDefinition
+ * 
+ */
+export type ErrorDefinition = Prisma.ErrorDefinitionModel
+/**
  * Model User
  * 
  */

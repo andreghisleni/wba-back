@@ -15,6 +15,9 @@ const schema = z.object({
   CF_WORKER_URL: z.url(),     // Ex: http://localhost:8787 ou https://media-worker.sua-conta.workers.dev
   CF_WORKER_SECRET: z.string(),        // A mesma senha que você colocou no wrangler.json
   API_PUBLIC_URL: z.url(),    // A URL pública da sua API (para o callback)
+
+  REDIS_URL: z.string().min(5).max(100),
+  GEMINI_API_KEY: z.string().min(10).max(200),
 });
 // Faz o "parse" das variáveis de ambiente (process.env) usando o schema definido
 const parsedEnv = schema.safeParse(process.env);

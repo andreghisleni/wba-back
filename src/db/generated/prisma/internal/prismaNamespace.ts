@@ -389,6 +389,7 @@ export const ModelName = {
   Message: 'Message',
   Template: 'Template',
   ConversationCharge: 'ConversationCharge',
+  ErrorDefinition: 'ErrorDefinition',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "absenceMessage" | "webhook" | "webhookLog"
+    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "errorDefinition" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "absenceMessage" | "webhook" | "webhookLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -786,6 +787,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ConversationChargeCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ConversationChargeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ErrorDefinition: {
+      payload: Prisma.$ErrorDefinitionPayload<ExtArgs>
+      fields: Prisma.ErrorDefinitionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ErrorDefinitionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ErrorDefinitionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        findFirst: {
+          args: Prisma.ErrorDefinitionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ErrorDefinitionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        findMany: {
+          args: Prisma.ErrorDefinitionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>[]
+        }
+        create: {
+          args: Prisma.ErrorDefinitionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        createMany: {
+          args: Prisma.ErrorDefinitionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ErrorDefinitionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>[]
+        }
+        delete: {
+          args: Prisma.ErrorDefinitionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        update: {
+          args: Prisma.ErrorDefinitionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ErrorDefinitionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ErrorDefinitionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ErrorDefinitionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ErrorDefinitionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ErrorDefinitionPayload>
+        }
+        aggregate: {
+          args: Prisma.ErrorDefinitionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateErrorDefinition>
+        }
+        groupBy: {
+          args: Prisma.ErrorDefinitionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ErrorDefinitionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ErrorDefinitionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ErrorDefinitionCountAggregateOutputType> | number
         }
       }
     }
@@ -1691,7 +1766,8 @@ export const MessageScalarFieldEnum = {
   timestamp: 'timestamp',
   processingStatus: 'processingStatus',
   errorCode: 'errorCode',
-  errorDesc: 'errorDesc'
+  errorDesc: 'errorDesc',
+  errorDefinitionId: 'errorDefinitionId'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -1725,6 +1801,20 @@ export const ConversationChargeScalarFieldEnum = {
 } as const
 
 export type ConversationChargeScalarFieldEnum = (typeof ConversationChargeScalarFieldEnum)[keyof typeof ConversationChargeScalarFieldEnum]
+
+
+export const ErrorDefinitionScalarFieldEnum = {
+  id: 'id',
+  hash: 'hash',
+  metaCode: 'metaCode',
+  rawMessage: 'rawMessage',
+  shortExplanation: 'shortExplanation',
+  detailedExplanation: 'detailedExplanation',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ErrorDefinitionScalarFieldEnum = (typeof ErrorDefinitionScalarFieldEnum)[keyof typeof ErrorDefinitionScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -2185,6 +2275,7 @@ export type GlobalOmitConfig = {
   message?: Prisma.MessageOmit
   template?: Prisma.TemplateOmit
   conversationCharge?: Prisma.ConversationChargeOmit
+  errorDefinition?: Prisma.ErrorDefinitionOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit

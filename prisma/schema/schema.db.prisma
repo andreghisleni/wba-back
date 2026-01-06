@@ -102,6 +102,10 @@ model Message {
   errorCode String? // Ex: 131047
   errorDesc String? // Ex: Payment method not configured
 
+  // ADICIONA O VÍNCULO (Opcional, pois a msg pode não ter erro)
+  errorDefinitionId String?
+  errorDefinition   ErrorDefinition? @relation(fields: [errorDefinitionId], references: [id])
+
   @@index([contactId])
   @@index([wamid])
   @@map("messages")
@@ -188,4 +192,27 @@ model ConversationCharge {
   @@index([instanceId, category])
   @@index([createdAt])
   @@map("conversation_charges")
+}
+
+// NOVA TABELA: Só armazena o "Conceito" do erro, não a ocorrência
+model ErrorDefinition {
+  id String @id @default(uuid())
+
+  // O HASH é o segredo para agrupar erros iguais
+  hash String @unique
+
+  metaCode   String // Ex: 131047
+  rawMessage String // O texto original da Meta
+
+  // As explicações geradas pelo Gemini
+  shortExplanation    String? @db.Text
+  detailedExplanation String? @db.Text
+
+  // Relação inversa (para saber quantas mensagens tiveram esse erro)
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("error_definitions")
 }
