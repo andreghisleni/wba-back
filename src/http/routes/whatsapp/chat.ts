@@ -36,6 +36,17 @@ const ContactListItemSchema = t.Object({
   isWindowOpen: t.Boolean(),
 });
 
+// Schema para resposta paginada de contatos
+const PaginatedContactsResponseSchema = t.Object({
+  data: t.Array(ContactListItemSchema),
+  meta: t.Object({
+    total: t.Number(),
+    page: t.Number(),
+    limit: t.Number(),
+    totalPages: t.Number(),
+  }),
+});
+
 // Schema para os parâmetros do template salvos
 const TemplateParamsStoredSchema = t.Object({
   templateId: t.String(),
@@ -121,41 +132,97 @@ const ErrorResponseSchema = t.Object({
 
 export const whatsappChatRoute = new Elysia()
   .macro(authMacro)
-  // 1. Listar Contatos (Inbox)
+  // 1. Listar Contatos (Inbox) com Paginação e Filtros
   .get(
     '/contacts',
-    async ({ organizationId }) => {
+    async ({ organizationId, query }) => {
+      // Parâmetros de paginação e filtros
+      const page = query.page ?? 1;
+      const limit = query.limit ?? 20;
+      const search = query.search?.trim() ?? '';
+      const unreadOnly = query.unreadOnly === 'true';
+
+      const skip = (page - 1) * limit;
+
       // 24 horas em milissegundos
       const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
+      // Construir filtro WHERE (any necessário devido à tipagem dinâmica do Prisma)
+      const whereClause: any = {
+        instance: { organizationId },
+      };
+
+      // Filtro de busca por nome ou telefone
+      if (search) {
+        whereClause.OR = [
+          { pushName: { contains: search, mode: 'insensitive' } },
+          { waId: { contains: search } }
+        ];
+      }
+
+      // Filtro de não lidas - precisa de abordagem diferente
+      // Vamos buscar IDs de contatos com mensagens não lidas primeiro
+      let contactIdsWithUnread: string[] | undefined;
+      if (unreadOnly) {
+        const contactsWithUnread = await prisma.message.groupBy({
+          by: ['contactId'],
+          where: {
+            direction: 'INBOUND',
+            status: 'DELIVERED',
+            contact: {
+              instance: { organizationId },
+            },
+          },
+          _count: { id: true },
+          having: {
+            id: { _count: { gt: 0 } },
+          },
+        });
+        contactIdsWithUnread = contactsWithUnread.map(c => c.contactId);
+
+        // Se não há contatos com mensagens não lidas, retorna vazio
+        if (contactIdsWithUnread.length === 0) {
+          return {
+            data: [],
+            meta: {
+              total: 0,
+              page,
+              limit,
+              totalPages: 0,
+            },
+          };
+        }
+
+        whereClause.id = { in: contactIdsWithUnread };
+      }
+
+      // Contar total para paginação
+      const total = await prisma.contact.count({ where: whereClause });
+      const totalPages = Math.ceil(total / limit);
+
       const contacts = await prisma.contact.findMany({
-        where: {
-          instance: { organizationId },
-        },
-        // Aqui está o segredo: Selecionamos os campos específicos + ultimas mensagens
+        where: whereClause,
         select: {
           id: true,
           pushName: true,
           waId: true,
           profilePicUrl: true,
           updatedAt: true,
-          // NOVO: Conta mensagens INBOUND que ainda estão como DELIVERED
           _count: {
             select: {
               messages: {
                 where: {
                   direction: 'INBOUND',
-                  status: 'DELIVERED' // Consideramos DELIVERED como "Não Lida" para quem recebe
+                  status: 'DELIVERED'
                 }
               }
             }
           },
           messages: {
             orderBy: { timestamp: 'desc' },
-            take: 50, // Garante que achamos a última dele mesmo se você mandou muitas
+            take: 50,
             select: {
-              // Trazemos APENAS o necessário para o cálculo
-              body: true,      // Precisamos do body só da primeira (para o preview)
+              body: true,
               timestamp: true,
               direction: true,
               status: true,
@@ -164,60 +231,62 @@ export const whatsappChatRoute = new Elysia()
           }
         },
         orderBy: { updatedAt: 'desc' },
+        skip,
+        take: limit,
       });
-      // Processamento em Memória (Super rápido)
-      return contacts.map(c => {
-        // 1. Para o PREVIEW e ORDENAÇÃO: Usamos a última mensagem absoluta (seja sua ou dele)
-        const lastMsgAbsolute = c.messages[0];
 
-        // 2. Para a JANELA DE 24H: Procuramos a última mensagem que O CLIENTE mandou (INBOUND)
-        // O .find() percorre o array (que tem as últimas 10 ou 50 msgs) e para na primeira que achar.
+      // Processamento em Memória
+      const data = contacts.map(c => {
+        const lastMsgAbsolute = c.messages[0];
         const lastInboundMsg = c.messages.find(m => m.direction === 'INBOUND');
 
-        // 3. Cálculo da Janela
         let isWindowOpen = false;
         if (lastInboundMsg) {
           const lastInboundTime = Number(lastInboundMsg.timestamp) * 1000;
           const diff = Date.now() - lastInboundTime;
           isWindowOpen = diff < TWENTY_FOUR_HOURS;
         }
-        // Se não achou nenhuma inbound recente no histórico buscado, assume fechada.
 
         return {
           id: c.id,
           pushName: c.pushName || c.waId,
           waId: c.waId,
           profilePicUrl: c.profilePicUrl,
-
-          // Contador de Não Lidas (Bolinha Vermelha)
           unreadCount: c._count.messages,
-
-          // Texto cinza do preview (pode ser "Oi" dele ou "Tudo bem?" seu)
           lastMessage: lastMsgAbsolute?.body || "",
-
-          // Status (para mostrar o check/double-check se a última for sua)
           lastMessageStatus: lastMsgAbsolute?.status,
-
           lastMessageType: lastMsgAbsolute?.type || "text",
-
-          // Data para ordenar a lista (A última interação real)
           lastMessageAt: lastMsgAbsolute
             ? new Date(Number(lastMsgAbsolute.timestamp) * 1000)
             : c.updatedAt,
-
-          // Flag para habilitar/desabilitar o input de texto no front
           isWindowOpen
         };
       });
+
+      return {
+        data,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages,
+        },
+      };
     },
     {
       auth: true,
+      query: t.Object({
+        page: t.Optional(t.Number({ default: 1 })),
+        limit: t.Optional(t.Number({ default: 20 })),
+        search: t.Optional(t.String()),
+        unreadOnly: t.Optional(t.String()), // 'true' ou 'false'
+      }),
       detail: {
-        operationId: 'getWhatsappContacts', // <--- Isso define o nome do hook
+        operationId: 'getWhatsappContacts',
         tags: ['WhatsApp'],
       },
       response: {
-        200: t.Array(ContactListItemSchema),
+        200: PaginatedContactsResponseSchema,
       },
     }
   )
