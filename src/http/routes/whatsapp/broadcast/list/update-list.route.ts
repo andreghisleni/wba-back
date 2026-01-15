@@ -41,7 +41,11 @@ export const updateListRoute = new Elysia({
     }
 
     // 3. Se houver contatos vinculados, não permitir atualizar additionalParams
-    if (additionalParams !== undefined) {
+    const additionalParamsChanged =
+      additionalParams !== undefined &&
+      JSON.stringify(additionalParams) !== JSON.stringify(broadcastList.additionalParams);
+
+    if (additionalParamsChanged) {
       const membersCount = await prisma.broadcastListMember.count({
         where: { broadcastListId: broadcastList.id },
       });
