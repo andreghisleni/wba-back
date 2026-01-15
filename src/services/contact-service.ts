@@ -49,7 +49,7 @@ export async function upsertSmartContact(data: {
   email?: string;
   replaceName?: boolean;
 }) {
-  const { instanceId, phoneNumber, name, profilePicUrl, email, replaceName } = data;
+  const { instanceId, phoneNumber, name, profilePicUrl, replaceName } = data;
 
   // 1. Gera lista de números possíveis (ex: com e sem 9)
   const variations = getPhoneVariations(phoneNumber);
@@ -75,7 +75,7 @@ export async function upsertSmartContact(data: {
         // Só atualiza o nome se foi passado um novo valor
         pushName: replaceName ? name : existingContact.pushName,
         profilePicUrl: profilePicUrl || undefined,
-        email: email || undefined,
+        // email: email || undefined,
         // Opcional: Se quiser padronizar o número no banco ao atualizar:
         waId: phoneToSave
       },
@@ -88,7 +88,7 @@ export async function upsertSmartContact(data: {
       waId: phoneToSave, // Salva a versão "correta" (com 9)
       pushName: name || phoneToSave, // Se não tiver nome, usa o número
       profilePicUrl: profilePicUrl || '',
-      email,
+      // email,
     },
   });
 }

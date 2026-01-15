@@ -51,6 +51,9 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  BroadcastList: 'BroadcastList',
+  BroadcastListMember: 'BroadcastListMember',
+  BroadcastCampaign: 'BroadcastCampaign',
   WhatsAppInstance: 'WhatsAppInstance',
   Contact: 'Contact',
   Message: 'Message',
@@ -84,6 +87,49 @@ export const TransactionIsolationLevel = {
 } as const
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const BroadcastListScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  additionalParams: 'additionalParams',
+  instanceId: 'instanceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BroadcastListScalarFieldEnum = (typeof BroadcastListScalarFieldEnum)[keyof typeof BroadcastListScalarFieldEnum]
+
+
+export const BroadcastListMemberScalarFieldEnum = {
+  id: 'id',
+  broadcastListId: 'broadcastListId',
+  contactId: 'contactId',
+  additionalParams: 'additionalParams',
+  createdAt: 'createdAt'
+} as const
+
+export type BroadcastListMemberScalarFieldEnum = (typeof BroadcastListMemberScalarFieldEnum)[keyof typeof BroadcastListMemberScalarFieldEnum]
+
+
+export const BroadcastCampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  scheduledAt: 'scheduledAt',
+  templateId: 'templateId',
+  broadcastListId: 'broadcastListId',
+  instanceId: 'instanceId',
+  totalContacts: 'totalContacts',
+  sentCount: 'sentCount',
+  failedCount: 'failedCount',
+  readCount: 'readCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BroadcastCampaignScalarFieldEnum = (typeof BroadcastCampaignScalarFieldEnum)[keyof typeof BroadcastCampaignScalarFieldEnum]
 
 
 export const WhatsAppInstanceScalarFieldEnum = {
@@ -136,7 +182,8 @@ export const MessageScalarFieldEnum = {
   processingStatus: 'processingStatus',
   errorCode: 'errorCode',
   errorDesc: 'errorDesc',
-  errorDefinitionId: 'errorDefinitionId'
+  errorDefinitionId: 'errorDefinitionId',
+  broadcastCampaignId: 'broadcastCampaignId'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]

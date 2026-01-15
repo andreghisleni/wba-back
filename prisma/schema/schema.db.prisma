@@ -25,6 +25,9 @@ model WhatsAppInstance {
   templates           Template[]
   conversationCharges ConversationCharge[]
 
+  broadcastLists     BroadcastList[]
+  broadcastCampaigns BroadcastCampaign[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -49,6 +52,8 @@ model Contact {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  broadcastListMembers BroadcastListMember[]
 
   // Garante que o contato é único POR INSTÂNCIA (Instâncias diferentes podem ter o mesmo contato)
   @@unique([instanceId, waId])
@@ -105,6 +110,9 @@ model Message {
   // ADICIONA O VÍNCULO (Opcional, pois a msg pode não ter erro)
   errorDefinitionId String?
   errorDefinition   ErrorDefinition? @relation(fields: [errorDefinitionId], references: [id])
+
+  broadcastCampaignId String?
+  broadcastCampaign   BroadcastCampaign? @relation(fields: [broadcastCampaignId], references: [id])
 
   @@index([contactId])
   @@index([wamid])
@@ -169,8 +177,9 @@ model Template {
   instanceId String
   instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  broadcastCampaigns BroadcastCampaign[]
 
   @@unique([instanceId, name, language]) // Evita nomes duplicados na mesma conta
   @@map("templates")

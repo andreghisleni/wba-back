@@ -53,6 +53,7 @@ export type MessageMinAggregateOutputType = {
   errorCode: string | null
   errorDesc: string | null
   errorDefinitionId: string | null
+  broadcastCampaignId: string | null
 }
 
 export type MessageMaxAggregateOutputType = {
@@ -74,6 +75,7 @@ export type MessageMaxAggregateOutputType = {
   errorCode: string | null
   errorDesc: string | null
   errorDefinitionId: string | null
+  broadcastCampaignId: string | null
 }
 
 export type MessageCountAggregateOutputType = {
@@ -97,6 +99,7 @@ export type MessageCountAggregateOutputType = {
   errorCode: number
   errorDesc: number
   errorDefinitionId: number
+  broadcastCampaignId: number
   _all: number
 }
 
@@ -128,6 +131,7 @@ export type MessageMinAggregateInputType = {
   errorCode?: true
   errorDesc?: true
   errorDefinitionId?: true
+  broadcastCampaignId?: true
 }
 
 export type MessageMaxAggregateInputType = {
@@ -149,6 +153,7 @@ export type MessageMaxAggregateInputType = {
   errorCode?: true
   errorDesc?: true
   errorDefinitionId?: true
+  broadcastCampaignId?: true
 }
 
 export type MessageCountAggregateInputType = {
@@ -172,6 +177,7 @@ export type MessageCountAggregateInputType = {
   errorCode?: true
   errorDesc?: true
   errorDefinitionId?: true
+  broadcastCampaignId?: true
   _all?: true
 }
 
@@ -282,6 +288,7 @@ export type MessageGroupByOutputType = {
   errorCode: string | null
   errorDesc: string | null
   errorDefinitionId: string | null
+  broadcastCampaignId: string | null
   _count: MessageCountAggregateOutputType | null
   _avg: MessageAvgAggregateOutputType | null
   _sum: MessageSumAggregateOutputType | null
@@ -328,9 +335,11 @@ export type MessageWhereInput = {
   errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
+  broadcastCampaignId?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   errorDefinition?: Prisma.XOR<Prisma.ErrorDefinitionNullableScalarRelationFilter, Prisma.ErrorDefinitionWhereInput> | null
+  broadcastCampaign?: Prisma.XOR<Prisma.BroadcastCampaignNullableScalarRelationFilter, Prisma.BroadcastCampaignWhereInput> | null
 }
 
 export type MessageOrderByWithRelationInput = {
@@ -354,9 +363,11 @@ export type MessageOrderByWithRelationInput = {
   errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  broadcastCampaignId?: Prisma.SortOrderInput | Prisma.SortOrder
   contact?: Prisma.ContactOrderByWithRelationInput
   instance?: Prisma.WhatsAppInstanceOrderByWithRelationInput
   errorDefinition?: Prisma.ErrorDefinitionOrderByWithRelationInput
+  broadcastCampaign?: Prisma.BroadcastCampaignOrderByWithRelationInput
 }
 
 export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -383,9 +394,11 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
   errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
+  broadcastCampaignId?: Prisma.StringNullableFilter<"Message"> | string | null
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   errorDefinition?: Prisma.XOR<Prisma.ErrorDefinitionNullableScalarRelationFilter, Prisma.ErrorDefinitionWhereInput> | null
+  broadcastCampaign?: Prisma.XOR<Prisma.BroadcastCampaignNullableScalarRelationFilter, Prisma.BroadcastCampaignWhereInput> | null
 }, "id" | "wamid">
 
 export type MessageOrderByWithAggregationInput = {
@@ -409,6 +422,7 @@ export type MessageOrderByWithAggregationInput = {
   errorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDesc?: Prisma.SortOrderInput | Prisma.SortOrder
   errorDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  broadcastCampaignId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MessageCountOrderByAggregateInput
   _avg?: Prisma.MessageAvgOrderByAggregateInput
   _max?: Prisma.MessageMaxOrderByAggregateInput
@@ -440,6 +454,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   errorCode?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   errorDesc?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   errorDefinitionId?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  broadcastCampaignId?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
 }
 
 export type MessageCreateInput = {
@@ -463,6 +478,7 @@ export type MessageCreateInput = {
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
   errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
+  broadcastCampaign?: Prisma.BroadcastCampaignCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateInput = {
@@ -486,6 +502,7 @@ export type MessageUncheckedCreateInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageUpdateInput = {
@@ -509,6 +526,7 @@ export type MessageUpdateInput = {
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
   errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
+  broadcastCampaign?: Prisma.BroadcastCampaignUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateInput = {
@@ -532,6 +550,7 @@ export type MessageUncheckedUpdateInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyInput = {
@@ -555,6 +574,7 @@ export type MessageCreateManyInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageUpdateManyMutationInput = {
@@ -598,6 +618,7 @@ export type MessageUncheckedUpdateManyInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageListRelationFilter = {
@@ -631,6 +652,7 @@ export type MessageCountOrderByAggregateInput = {
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
   errorDefinitionId?: Prisma.SortOrder
+  broadcastCampaignId?: Prisma.SortOrder
 }
 
 export type MessageAvgOrderByAggregateInput = {
@@ -656,6 +678,7 @@ export type MessageMaxOrderByAggregateInput = {
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
   errorDefinitionId?: Prisma.SortOrder
+  broadcastCampaignId?: Prisma.SortOrder
 }
 
 export type MessageMinOrderByAggregateInput = {
@@ -677,10 +700,53 @@ export type MessageMinOrderByAggregateInput = {
   errorCode?: Prisma.SortOrder
   errorDesc?: Prisma.SortOrder
   errorDefinitionId?: Prisma.SortOrder
+  broadcastCampaignId?: Prisma.SortOrder
 }
 
 export type MessageSumOrderByAggregateInput = {
   timestamp?: Prisma.SortOrder
+}
+
+export type MessageCreateNestedManyWithoutBroadcastCampaignInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput> | Prisma.MessageCreateWithoutBroadcastCampaignInput[] | Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput | Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput[]
+  createMany?: Prisma.MessageCreateManyBroadcastCampaignInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUncheckedCreateNestedManyWithoutBroadcastCampaignInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput> | Prisma.MessageCreateWithoutBroadcastCampaignInput[] | Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput | Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput[]
+  createMany?: Prisma.MessageCreateManyBroadcastCampaignInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUpdateManyWithoutBroadcastCampaignNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput> | Prisma.MessageCreateWithoutBroadcastCampaignInput[] | Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput | Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutBroadcastCampaignInput | Prisma.MessageUpsertWithWhereUniqueWithoutBroadcastCampaignInput[]
+  createMany?: Prisma.MessageCreateManyBroadcastCampaignInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutBroadcastCampaignInput | Prisma.MessageUpdateWithWhereUniqueWithoutBroadcastCampaignInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutBroadcastCampaignInput | Prisma.MessageUpdateManyWithWhereWithoutBroadcastCampaignInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+}
+
+export type MessageUncheckedUpdateManyWithoutBroadcastCampaignNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput> | Prisma.MessageCreateWithoutBroadcastCampaignInput[] | Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput | Prisma.MessageCreateOrConnectWithoutBroadcastCampaignInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutBroadcastCampaignInput | Prisma.MessageUpsertWithWhereUniqueWithoutBroadcastCampaignInput[]
+  createMany?: Prisma.MessageCreateManyBroadcastCampaignInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutBroadcastCampaignInput | Prisma.MessageUpdateWithWhereUniqueWithoutBroadcastCampaignInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutBroadcastCampaignInput | Prisma.MessageUpdateManyWithWhereWithoutBroadcastCampaignInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
 }
 
 export type MessageCreateNestedManyWithoutInstanceInput = {
@@ -833,6 +899,105 @@ export type MessageUncheckedUpdateManyWithoutErrorDefinitionNestedInput = {
   deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
 }
 
+export type MessageCreateWithoutBroadcastCampaignInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+  contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
+  instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
+  errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
+}
+
+export type MessageUncheckedCreateWithoutBroadcastCampaignInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId: string
+  instanceId: string
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+  errorDefinitionId?: string | null
+}
+
+export type MessageCreateOrConnectWithoutBroadcastCampaignInput = {
+  where: Prisma.MessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput>
+}
+
+export type MessageCreateManyBroadcastCampaignInputEnvelope = {
+  data: Prisma.MessageCreateManyBroadcastCampaignInput | Prisma.MessageCreateManyBroadcastCampaignInput[]
+  skipDuplicates?: boolean
+}
+
+export type MessageUpsertWithWhereUniqueWithoutBroadcastCampaignInput = {
+  where: Prisma.MessageWhereUniqueInput
+  update: Prisma.XOR<Prisma.MessageUpdateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedUpdateWithoutBroadcastCampaignInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedCreateWithoutBroadcastCampaignInput>
+}
+
+export type MessageUpdateWithWhereUniqueWithoutBroadcastCampaignInput = {
+  where: Prisma.MessageWhereUniqueInput
+  data: Prisma.XOR<Prisma.MessageUpdateWithoutBroadcastCampaignInput, Prisma.MessageUncheckedUpdateWithoutBroadcastCampaignInput>
+}
+
+export type MessageUpdateManyWithWhereWithoutBroadcastCampaignInput = {
+  where: Prisma.MessageScalarWhereInput
+  data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutBroadcastCampaignInput>
+}
+
+export type MessageScalarWhereInput = {
+  AND?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+  OR?: Prisma.MessageScalarWhereInput[]
+  NOT?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+  id?: Prisma.StringFilter<"Message"> | string
+  wamid?: Prisma.StringFilter<"Message"> | string
+  type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFilter<"Message"> | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
+  body?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaUrl?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaMimeType?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
+  mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
+  rawJson?: Prisma.JsonNullableFilter<"Message">
+  templateParams?: Prisma.JsonNullableFilter<"Message">
+  contactId?: Prisma.StringFilter<"Message"> | string
+  instanceId?: Prisma.StringFilter<"Message"> | string
+  createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
+  timestamp?: Prisma.BigIntNullableFilter<"Message"> | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
+  errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
+  errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
+  broadcastCampaignId?: Prisma.StringNullableFilter<"Message"> | string | null
+}
+
 export type MessageCreateWithoutInstanceInput = {
   id?: string
   wamid: string
@@ -853,6 +1018,7 @@ export type MessageCreateWithoutInstanceInput = {
   errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
+  broadcastCampaign?: Prisma.BroadcastCampaignCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutInstanceInput = {
@@ -875,6 +1041,7 @@ export type MessageUncheckedCreateWithoutInstanceInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageCreateOrConnectWithoutInstanceInput = {
@@ -903,32 +1070,6 @@ export type MessageUpdateManyWithWhereWithoutInstanceInput = {
   data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutInstanceInput>
 }
 
-export type MessageScalarWhereInput = {
-  AND?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
-  OR?: Prisma.MessageScalarWhereInput[]
-  NOT?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
-  id?: Prisma.StringFilter<"Message"> | string
-  wamid?: Prisma.StringFilter<"Message"> | string
-  type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
-  direction?: Prisma.EnumMessageDirectionFilter<"Message"> | $Enums.MessageDirection
-  status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
-  body?: Prisma.StringNullableFilter<"Message"> | string | null
-  mediaUrl?: Prisma.StringNullableFilter<"Message"> | string | null
-  mediaMimeType?: Prisma.StringNullableFilter<"Message"> | string | null
-  mediaCaption?: Prisma.StringNullableFilter<"Message"> | string | null
-  mediaFileName?: Prisma.StringNullableFilter<"Message"> | string | null
-  rawJson?: Prisma.JsonNullableFilter<"Message">
-  templateParams?: Prisma.JsonNullableFilter<"Message">
-  contactId?: Prisma.StringFilter<"Message"> | string
-  instanceId?: Prisma.StringFilter<"Message"> | string
-  createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
-  timestamp?: Prisma.BigIntNullableFilter<"Message"> | bigint | number | null
-  processingStatus?: Prisma.EnumProcessingStatusFilter<"Message"> | $Enums.ProcessingStatus
-  errorCode?: Prisma.StringNullableFilter<"Message"> | string | null
-  errorDesc?: Prisma.StringNullableFilter<"Message"> | string | null
-  errorDefinitionId?: Prisma.StringNullableFilter<"Message"> | string | null
-}
-
 export type MessageCreateWithoutContactInput = {
   id?: string
   wamid: string
@@ -949,6 +1090,7 @@ export type MessageCreateWithoutContactInput = {
   errorDesc?: string | null
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
   errorDefinition?: Prisma.ErrorDefinitionCreateNestedOneWithoutMessagesInput
+  broadcastCampaign?: Prisma.BroadcastCampaignCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutContactInput = {
@@ -971,6 +1113,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageCreateOrConnectWithoutContactInput = {
@@ -1019,6 +1162,7 @@ export type MessageCreateWithoutErrorDefinitionInput = {
   errorDesc?: string | null
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutMessagesInput
+  broadcastCampaign?: Prisma.BroadcastCampaignCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutErrorDefinitionInput = {
@@ -1041,6 +1185,7 @@ export type MessageUncheckedCreateWithoutErrorDefinitionInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageCreateOrConnectWithoutErrorDefinitionInput = {
@@ -1069,6 +1214,98 @@ export type MessageUpdateManyWithWhereWithoutErrorDefinitionInput = {
   data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutErrorDefinitionInput>
 }
 
+export type MessageCreateManyBroadcastCampaignInput = {
+  id?: string
+  wamid: string
+  type?: $Enums.MessageType
+  direction: $Enums.MessageDirection
+  status?: $Enums.MessageStatus
+  body?: string | null
+  mediaUrl?: string | null
+  mediaMimeType?: string | null
+  mediaCaption?: string | null
+  mediaFileName?: string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId: string
+  instanceId: string
+  createdAt?: Date | string
+  timestamp?: bigint | number | null
+  processingStatus?: $Enums.ProcessingStatus
+  errorCode?: string | null
+  errorDesc?: string | null
+  errorDefinitionId?: string | null
+}
+
+export type MessageUpdateWithoutBroadcastCampaignInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
+  instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
+  errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
+}
+
+export type MessageUncheckedUpdateWithoutBroadcastCampaignInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type MessageUncheckedUpdateManyWithoutBroadcastCampaignInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaCaption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timestamp?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type MessageCreateManyInstanceInput = {
   id?: string
   wamid: string
@@ -1089,6 +1326,7 @@ export type MessageCreateManyInstanceInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageUpdateWithoutInstanceInput = {
@@ -1111,6 +1349,7 @@ export type MessageUpdateWithoutInstanceInput = {
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
+  broadcastCampaign?: Prisma.BroadcastCampaignUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutInstanceInput = {
@@ -1133,6 +1372,7 @@ export type MessageUncheckedUpdateWithoutInstanceInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutInstanceInput = {
@@ -1155,6 +1395,7 @@ export type MessageUncheckedUpdateManyWithoutInstanceInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyContactInput = {
@@ -1177,6 +1418,7 @@ export type MessageCreateManyContactInput = {
   errorCode?: string | null
   errorDesc?: string | null
   errorDefinitionId?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageUpdateWithoutContactInput = {
@@ -1199,6 +1441,7 @@ export type MessageUpdateWithoutContactInput = {
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
   errorDefinition?: Prisma.ErrorDefinitionUpdateOneWithoutMessagesNestedInput
+  broadcastCampaign?: Prisma.BroadcastCampaignUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutContactInput = {
@@ -1221,6 +1464,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutContactInput = {
@@ -1243,6 +1487,7 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageCreateManyErrorDefinitionInput = {
@@ -1265,6 +1510,7 @@ export type MessageCreateManyErrorDefinitionInput = {
   processingStatus?: $Enums.ProcessingStatus
   errorCode?: string | null
   errorDesc?: string | null
+  broadcastCampaignId?: string | null
 }
 
 export type MessageUpdateWithoutErrorDefinitionInput = {
@@ -1287,6 +1533,7 @@ export type MessageUpdateWithoutErrorDefinitionInput = {
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutMessagesNestedInput
+  broadcastCampaign?: Prisma.BroadcastCampaignUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutErrorDefinitionInput = {
@@ -1309,6 +1556,7 @@ export type MessageUncheckedUpdateWithoutErrorDefinitionInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MessageUncheckedUpdateManyWithoutErrorDefinitionInput = {
@@ -1331,6 +1579,7 @@ export type MessageUncheckedUpdateManyWithoutErrorDefinitionInput = {
   processingStatus?: Prisma.EnumProcessingStatusFieldUpdateOperationsInput | $Enums.ProcessingStatus
   errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorDesc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  broadcastCampaignId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1356,9 +1605,11 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   errorCode?: boolean
   errorDesc?: boolean
   errorDefinitionId?: boolean
+  broadcastCampaignId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1382,9 +1633,11 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   errorCode?: boolean
   errorDesc?: boolean
   errorDefinitionId?: boolean
+  broadcastCampaignId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1408,9 +1661,11 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   errorCode?: boolean
   errorDesc?: boolean
   errorDefinitionId?: boolean
+  broadcastCampaignId?: boolean
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectScalar = {
@@ -1434,23 +1689,27 @@ export type MessageSelectScalar = {
   errorCode?: boolean
   errorDesc?: boolean
   errorDefinitionId?: boolean
+  broadcastCampaignId?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "templateParams" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc" | "errorDefinitionId", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "type" | "direction" | "status" | "body" | "mediaUrl" | "mediaMimeType" | "mediaCaption" | "mediaFileName" | "rawJson" | "templateParams" | "contactId" | "instanceId" | "createdAt" | "timestamp" | "processingStatus" | "errorCode" | "errorDesc" | "errorDefinitionId" | "broadcastCampaignId", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }
 export type MessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }
 export type MessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   errorDefinition?: boolean | Prisma.Message$errorDefinitionArgs<ExtArgs>
+  broadcastCampaign?: boolean | Prisma.Message$broadcastCampaignArgs<ExtArgs>
 }
 
 export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1459,6 +1718,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     contact: Prisma.$ContactPayload<ExtArgs>
     instance: Prisma.$WhatsAppInstancePayload<ExtArgs>
     errorDefinition: Prisma.$ErrorDefinitionPayload<ExtArgs> | null
+    broadcastCampaign: Prisma.$BroadcastCampaignPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1481,6 +1741,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     errorCode: string | null
     errorDesc: string | null
     errorDefinitionId: string | null
+    broadcastCampaignId: string | null
   }, ExtArgs["result"]["message"]>
   composites: {}
 }
@@ -1878,6 +2139,7 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
   contact<T extends Prisma.ContactDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContactDefaultArgs<ExtArgs>>): Prisma.Prisma__ContactClient<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   instance<T extends Prisma.WhatsAppInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppInstanceClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   errorDefinition<T extends Prisma.Message$errorDefinitionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$errorDefinitionArgs<ExtArgs>>): Prisma.Prisma__ErrorDefinitionClient<runtime.Types.Result.GetResult<Prisma.$ErrorDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  broadcastCampaign<T extends Prisma.Message$broadcastCampaignArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$broadcastCampaignArgs<ExtArgs>>): Prisma.Prisma__BroadcastCampaignClient<runtime.Types.Result.GetResult<Prisma.$BroadcastCampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1927,6 +2189,7 @@ export interface MessageFieldRefs {
   readonly errorCode: Prisma.FieldRef<"Message", 'String'>
   readonly errorDesc: Prisma.FieldRef<"Message", 'String'>
   readonly errorDefinitionId: Prisma.FieldRef<"Message", 'String'>
+  readonly broadcastCampaignId: Prisma.FieldRef<"Message", 'String'>
 }
     
 
@@ -2339,6 +2602,25 @@ export type Message$errorDefinitionArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.ErrorDefinitionInclude<ExtArgs> | null
   where?: Prisma.ErrorDefinitionWhereInput
+}
+
+/**
+ * Message.broadcastCampaign
+ */
+export type Message$broadcastCampaignArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BroadcastCampaign
+   */
+  select?: Prisma.BroadcastCampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BroadcastCampaign
+   */
+  omit?: Prisma.BroadcastCampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BroadcastCampaignInclude<ExtArgs> | null
+  where?: Prisma.BroadcastCampaignWhereInput
 }
 
 /**

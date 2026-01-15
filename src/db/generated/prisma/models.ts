@@ -8,6 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/BroadcastList.js'
+export type * from './models/BroadcastListMember.js'
+export type * from './models/BroadcastCampaign.js'
 export type * from './models/WhatsAppInstance.js'
 export type * from './models/Contact.js'
 export type * from './models/Message.js'

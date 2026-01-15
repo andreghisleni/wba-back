@@ -384,6 +384,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  BroadcastList: 'BroadcastList',
+  BroadcastListMember: 'BroadcastListMember',
+  BroadcastCampaign: 'BroadcastCampaign',
   WhatsAppInstance: 'WhatsAppInstance',
   Contact: 'Contact',
   Message: 'Message',
@@ -416,10 +419,232 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "errorDefinition" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "absenceMessage" | "webhook" | "webhookLog"
+    modelProps: "broadcastList" | "broadcastListMember" | "broadcastCampaign" | "whatsAppInstance" | "contact" | "message" | "template" | "conversationCharge" | "errorDefinition" | "user" | "session" | "account" | "verification" | "organization" | "member" | "invitation" | "apiKey" | "absenceMessage" | "webhook" | "webhookLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    BroadcastList: {
+      payload: Prisma.$BroadcastListPayload<ExtArgs>
+      fields: Prisma.BroadcastListFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BroadcastListFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BroadcastListFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        findFirst: {
+          args: Prisma.BroadcastListFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BroadcastListFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        findMany: {
+          args: Prisma.BroadcastListFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>[]
+        }
+        create: {
+          args: Prisma.BroadcastListCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        createMany: {
+          args: Prisma.BroadcastListCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BroadcastListCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>[]
+        }
+        delete: {
+          args: Prisma.BroadcastListDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        update: {
+          args: Prisma.BroadcastListUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        deleteMany: {
+          args: Prisma.BroadcastListDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BroadcastListUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BroadcastListUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>[]
+        }
+        upsert: {
+          args: Prisma.BroadcastListUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListPayload>
+        }
+        aggregate: {
+          args: Prisma.BroadcastListAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBroadcastList>
+        }
+        groupBy: {
+          args: Prisma.BroadcastListGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastListGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BroadcastListCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastListCountAggregateOutputType> | number
+        }
+      }
+    }
+    BroadcastListMember: {
+      payload: Prisma.$BroadcastListMemberPayload<ExtArgs>
+      fields: Prisma.BroadcastListMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BroadcastListMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BroadcastListMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.BroadcastListMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BroadcastListMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        findMany: {
+          args: Prisma.BroadcastListMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>[]
+        }
+        create: {
+          args: Prisma.BroadcastListMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        createMany: {
+          args: Prisma.BroadcastListMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BroadcastListMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.BroadcastListMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        update: {
+          args: Prisma.BroadcastListMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.BroadcastListMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BroadcastListMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BroadcastListMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.BroadcastListMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastListMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.BroadcastListMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBroadcastListMember>
+        }
+        groupBy: {
+          args: Prisma.BroadcastListMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastListMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BroadcastListMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastListMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    BroadcastCampaign: {
+      payload: Prisma.$BroadcastCampaignPayload<ExtArgs>
+      fields: Prisma.BroadcastCampaignFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BroadcastCampaignFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BroadcastCampaignFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        findFirst: {
+          args: Prisma.BroadcastCampaignFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BroadcastCampaignFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        findMany: {
+          args: Prisma.BroadcastCampaignFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>[]
+        }
+        create: {
+          args: Prisma.BroadcastCampaignCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        createMany: {
+          args: Prisma.BroadcastCampaignCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BroadcastCampaignCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>[]
+        }
+        delete: {
+          args: Prisma.BroadcastCampaignDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        update: {
+          args: Prisma.BroadcastCampaignUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        deleteMany: {
+          args: Prisma.BroadcastCampaignDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BroadcastCampaignUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BroadcastCampaignUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>[]
+        }
+        upsert: {
+          args: Prisma.BroadcastCampaignUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BroadcastCampaignPayload>
+        }
+        aggregate: {
+          args: Prisma.BroadcastCampaignAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBroadcastCampaign>
+        }
+        groupBy: {
+          args: Prisma.BroadcastCampaignGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastCampaignGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BroadcastCampaignCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BroadcastCampaignCountAggregateOutputType> | number
+        }
+      }
+    }
     WhatsAppInstance: {
       payload: Prisma.$WhatsAppInstancePayload<ExtArgs>
       fields: Prisma.WhatsAppInstanceFieldRefs
@@ -1717,6 +1942,49 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const BroadcastListScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  additionalParams: 'additionalParams',
+  instanceId: 'instanceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BroadcastListScalarFieldEnum = (typeof BroadcastListScalarFieldEnum)[keyof typeof BroadcastListScalarFieldEnum]
+
+
+export const BroadcastListMemberScalarFieldEnum = {
+  id: 'id',
+  broadcastListId: 'broadcastListId',
+  contactId: 'contactId',
+  additionalParams: 'additionalParams',
+  createdAt: 'createdAt'
+} as const
+
+export type BroadcastListMemberScalarFieldEnum = (typeof BroadcastListMemberScalarFieldEnum)[keyof typeof BroadcastListMemberScalarFieldEnum]
+
+
+export const BroadcastCampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  scheduledAt: 'scheduledAt',
+  templateId: 'templateId',
+  broadcastListId: 'broadcastListId',
+  instanceId: 'instanceId',
+  totalContacts: 'totalContacts',
+  sentCount: 'sentCount',
+  failedCount: 'failedCount',
+  readCount: 'readCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BroadcastCampaignScalarFieldEnum = (typeof BroadcastCampaignScalarFieldEnum)[keyof typeof BroadcastCampaignScalarFieldEnum]
+
+
 export const WhatsAppInstanceScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1767,7 +2035,8 @@ export const MessageScalarFieldEnum = {
   processingStatus: 'processingStatus',
   errorCode: 'errorCode',
   errorDesc: 'errorDesc',
-  errorDefinitionId: 'errorDefinitionId'
+  errorDefinitionId: 'errorDefinitionId',
+  broadcastCampaignId: 'broadcastCampaignId'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -2046,20 +2315,6 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'InstanceStatus'
- */
-export type EnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstanceStatus'>
-    
-
-
-/**
- * Reference to a field of type 'InstanceStatus[]'
- */
-export type ListEnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstanceStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -2070,6 +2325,62 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignStatus'
+ */
+export type EnumCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignStatus[]'
+ */
+export type ListEnumCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InstanceStatus'
+ */
+export type EnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstanceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InstanceStatus[]'
+ */
+export type ListEnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstanceStatus[]'>
     
 
 
@@ -2116,20 +2427,6 @@ export type ListEnumMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
  * Reference to a field of type 'BigInt'
  */
 export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -2161,20 +2458,6 @@ export type ListEnumProcessingStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -2270,6 +2553,9 @@ export type PrismaClientOptions = ({
   omit?: GlobalOmitConfig
 }
 export type GlobalOmitConfig = {
+  broadcastList?: Prisma.BroadcastListOmit
+  broadcastListMember?: Prisma.BroadcastListMemberOmit
+  broadcastCampaign?: Prisma.BroadcastCampaignOmit
   whatsAppInstance?: Prisma.WhatsAppInstanceOmit
   contact?: Prisma.ContactOmit
   message?: Prisma.MessageOmit

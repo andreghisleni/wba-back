@@ -18,6 +18,21 @@ export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
+ * Model BroadcastList
+ * 
+ */
+export type BroadcastList = Prisma.BroadcastListModel
+/**
+ * Model BroadcastListMember
+ * 
+ */
+export type BroadcastListMember = Prisma.BroadcastListMemberModel
+/**
+ * Model BroadcastCampaign
+ * 
+ */
+export type BroadcastCampaign = Prisma.BroadcastCampaignModel
+/**
  * Model WhatsAppInstance
  * 
  */

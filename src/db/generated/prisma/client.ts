@@ -29,8 +29,8 @@ export * from "./enums.js"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more WhatsAppInstances
- * const whatsAppInstances = await prisma.whatsAppInstance.findMany()
+ * // Fetch zero or more BroadcastLists
+ * const broadcastLists = await prisma.broadcastList.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -39,6 +39,21 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model BroadcastList
+ * 
+ */
+export type BroadcastList = Prisma.BroadcastListModel
+/**
+ * Model BroadcastListMember
+ * 
+ */
+export type BroadcastListMember = Prisma.BroadcastListMemberModel
+/**
+ * Model BroadcastCampaign
+ * 
+ */
+export type BroadcastCampaign = Prisma.BroadcastCampaignModel
 /**
  * Model WhatsAppInstance
  * 

@@ -235,6 +235,7 @@ export type TemplateWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
+  broadcastCampaigns?: Prisma.BroadcastCampaignListRelationFilter
 }
 
 export type TemplateOrderByWithRelationInput = {
@@ -251,6 +252,7 @@ export type TemplateOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   instance?: Prisma.WhatsAppInstanceOrderByWithRelationInput
+  broadcastCampaigns?: Prisma.BroadcastCampaignOrderByRelationAggregateInput
 }
 
 export type TemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +273,7 @@ export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
+  broadcastCampaigns?: Prisma.BroadcastCampaignListRelationFilter
 }, "id" | "instanceId_name_language">
 
 export type TemplateOrderByWithAggregationInput = {
@@ -322,6 +325,7 @@ export type TemplateCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutTemplatesInput
+  broadcastCampaigns?: Prisma.BroadcastCampaignCreateNestedManyWithoutTemplateInput
 }
 
 export type TemplateUncheckedCreateInput = {
@@ -337,6 +341,7 @@ export type TemplateUncheckedCreateInput = {
   instanceId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type TemplateUpdateInput = {
@@ -352,6 +357,7 @@ export type TemplateUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutTemplatesNestedInput
+  broadcastCampaigns?: Prisma.BroadcastCampaignUpdateManyWithoutTemplateNestedInput
 }
 
 export type TemplateUncheckedUpdateInput = {
@@ -367,6 +373,7 @@ export type TemplateUncheckedUpdateInput = {
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 export type TemplateCreateManyInput = {
@@ -411,6 +418,11 @@ export type TemplateUncheckedUpdateManyInput = {
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TemplateNullableScalarRelationFilter = {
+  is?: Prisma.TemplateWhereInput | null
+  isNot?: Prisma.TemplateWhereInput | null
 }
 
 export type TemplateListRelationFilter = {
@@ -472,6 +484,22 @@ export type TemplateMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type TemplateCreateNestedOneWithoutBroadcastCampaignsInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedCreateWithoutBroadcastCampaignsInput>
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutBroadcastCampaignsInput
+  connect?: Prisma.TemplateWhereUniqueInput
+}
+
+export type TemplateUpdateOneWithoutBroadcastCampaignsNestedInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedCreateWithoutBroadcastCampaignsInput>
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutBroadcastCampaignsInput
+  upsert?: Prisma.TemplateUpsertWithoutBroadcastCampaignsInput
+  disconnect?: Prisma.TemplateWhereInput | boolean
+  delete?: Prisma.TemplateWhereInput | boolean
+  connect?: Prisma.TemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TemplateUpdateToOneWithWhereWithoutBroadcastCampaignsInput, Prisma.TemplateUpdateWithoutBroadcastCampaignsInput>, Prisma.TemplateUncheckedUpdateWithoutBroadcastCampaignsInput>
+}
+
 export type TemplateCreateNestedManyWithoutInstanceInput = {
   create?: Prisma.XOR<Prisma.TemplateCreateWithoutInstanceInput, Prisma.TemplateUncheckedCreateWithoutInstanceInput> | Prisma.TemplateCreateWithoutInstanceInput[] | Prisma.TemplateUncheckedCreateWithoutInstanceInput[]
   connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutInstanceInput | Prisma.TemplateCreateOrConnectWithoutInstanceInput[]
@@ -514,6 +542,82 @@ export type TemplateUncheckedUpdateManyWithoutInstanceNestedInput = {
   deleteMany?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
 }
 
+export type TemplateCreateWithoutBroadcastCampaignsInput = {
+  id?: string
+  wamid?: string | null
+  name: string
+  language?: string
+  category: string
+  body: string
+  structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status: string
+  headerMediaUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutTemplatesInput
+}
+
+export type TemplateUncheckedCreateWithoutBroadcastCampaignsInput = {
+  id?: string
+  wamid?: string | null
+  name: string
+  language?: string
+  category: string
+  body: string
+  structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status: string
+  headerMediaUrl?: string | null
+  instanceId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TemplateCreateOrConnectWithoutBroadcastCampaignsInput = {
+  where: Prisma.TemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.TemplateCreateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedCreateWithoutBroadcastCampaignsInput>
+}
+
+export type TemplateUpsertWithoutBroadcastCampaignsInput = {
+  update: Prisma.XOR<Prisma.TemplateUpdateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedUpdateWithoutBroadcastCampaignsInput>
+  create: Prisma.XOR<Prisma.TemplateCreateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedCreateWithoutBroadcastCampaignsInput>
+  where?: Prisma.TemplateWhereInput
+}
+
+export type TemplateUpdateToOneWithWhereWithoutBroadcastCampaignsInput = {
+  where?: Prisma.TemplateWhereInput
+  data: Prisma.XOR<Prisma.TemplateUpdateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedUpdateWithoutBroadcastCampaignsInput>
+}
+
+export type TemplateUpdateWithoutBroadcastCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutTemplatesNestedInput
+}
+
+export type TemplateUncheckedUpdateWithoutBroadcastCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  wamid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  structure?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type TemplateCreateWithoutInstanceInput = {
   id?: string
   wamid?: string | null
@@ -526,6 +630,7 @@ export type TemplateCreateWithoutInstanceInput = {
   headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignCreateNestedManyWithoutTemplateInput
 }
 
 export type TemplateUncheckedCreateWithoutInstanceInput = {
@@ -540,6 +645,7 @@ export type TemplateUncheckedCreateWithoutInstanceInput = {
   headerMediaUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type TemplateCreateOrConnectWithoutInstanceInput = {
@@ -612,6 +718,7 @@ export type TemplateUpdateWithoutInstanceInput = {
   headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignUpdateManyWithoutTemplateNestedInput
 }
 
 export type TemplateUncheckedUpdateWithoutInstanceInput = {
@@ -626,6 +733,7 @@ export type TemplateUncheckedUpdateWithoutInstanceInput = {
   headerMediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  broadcastCampaigns?: Prisma.BroadcastCampaignUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 export type TemplateUncheckedUpdateManyWithoutInstanceInput = {
@@ -643,6 +751,35 @@ export type TemplateUncheckedUpdateManyWithoutInstanceInput = {
 }
 
 
+/**
+ * Count Type TemplateCountOutputType
+ */
+
+export type TemplateCountOutputType = {
+  broadcastCampaigns: number
+}
+
+export type TemplateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  broadcastCampaigns?: boolean | TemplateCountOutputTypeCountBroadcastCampaignsArgs
+}
+
+/**
+ * TemplateCountOutputType without action
+ */
+export type TemplateCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TemplateCountOutputType
+   */
+  select?: Prisma.TemplateCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TemplateCountOutputType without action
+ */
+export type TemplateCountOutputTypeCountBroadcastCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BroadcastCampaignWhereInput
+}
+
 
 export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -658,6 +795,8 @@ export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  broadcastCampaigns?: boolean | Prisma.Template$broadcastCampaignsArgs<ExtArgs>
+  _count?: boolean | Prisma.TemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["template"]>
 
 export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -710,6 +849,8 @@ export type TemplateSelectScalar = {
 export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "wamid" | "name" | "language" | "category" | "body" | "structure" | "status" | "headerMediaUrl" | "instanceId" | "createdAt" | "updatedAt", ExtArgs["result"]["template"]>
 export type TemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
+  broadcastCampaigns?: boolean | Prisma.Template$broadcastCampaignsArgs<ExtArgs>
+  _count?: boolean | Prisma.TemplateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
@@ -722,6 +863,7 @@ export type $TemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Template"
   objects: {
     instance: Prisma.$WhatsAppInstancePayload<ExtArgs>
+    broadcastCampaigns: Prisma.$BroadcastCampaignPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1131,6 +1273,7 @@ readonly fields: TemplateFieldRefs;
 export interface Prisma__TemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   instance<T extends Prisma.WhatsAppInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppInstanceClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  broadcastCampaigns<T extends Prisma.Template$broadcastCampaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Template$broadcastCampaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BroadcastCampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1565,6 +1708,30 @@ export type TemplateDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Templates to delete.
    */
   limit?: number
+}
+
+/**
+ * Template.broadcastCampaigns
+ */
+export type Template$broadcastCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BroadcastCampaign
+   */
+  select?: Prisma.BroadcastCampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BroadcastCampaign
+   */
+  omit?: Prisma.BroadcastCampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BroadcastCampaignInclude<ExtArgs> | null
+  where?: Prisma.BroadcastCampaignWhereInput
+  orderBy?: Prisma.BroadcastCampaignOrderByWithRelationInput | Prisma.BroadcastCampaignOrderByWithRelationInput[]
+  cursor?: Prisma.BroadcastCampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BroadcastCampaignScalarFieldEnum | Prisma.BroadcastCampaignScalarFieldEnum[]
 }
 
 /**

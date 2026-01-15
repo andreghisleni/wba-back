@@ -1,0 +1,89 @@
+// ---------------------------------------------------------
+// 5. MÓDULO DE TRANSMISSÃO (BROADCAST)
+// ---------------------------------------------------------
+
+model BroadcastList {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  additionalParams String[] @default([]) // Para armazenar dados extras se necessário
+
+  // A lista pertence a uma instância (número) específica
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  // Membros da lista (Tabela Pivô)
+  members BroadcastListMember[]
+
+  // Campanhas enviadas para esta lista
+  campaigns BroadcastCampaign[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("broadcast_lists")
+}
+
+// Tabela Pivô para ligar Contatos às Listas
+// Usamos tabela explícita para facilitar a importação e remoção rápida
+model BroadcastListMember {
+  id String @id @default(uuid())
+
+  broadcastListId String
+  broadcastList   BroadcastList @relation(fields: [broadcastListId], references: [id], onDelete: Cascade)
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  additionalParams Json? // Para armazenar dados extras se necessário
+
+  createdAt DateTime @default(now())
+
+  @@unique([broadcastListId, contactId]) // Garante que o contato não entre 2x na mesma lista
+  @@map("broadcast_list_members")
+}
+
+model BroadcastCampaign {
+  id   String @id @default(uuid())
+  name String // Ex: "Oferta de Natal", "Aviso de Manutenção"
+
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime? // Para agendamento futuro
+
+  // Se for Template
+  templateId String?
+  template   Template? @relation(fields: [templateId], references: [id])
+
+  //templateParams Json? // Variáveis do template
+
+  // Relacionamentos
+  broadcastListId String
+  broadcastList   BroadcastList @relation(fields: [broadcastListId], references: [id])
+
+  instanceId String
+  instance   WhatsAppInstance @relation(fields: [instanceId], references: [id])
+
+  // Métricas (Para monitoramento rápido sem count(*) toda hora)
+  totalContacts Int @default(0)
+  sentCount     Int @default(0)
+  failedCount   Int @default(0)
+  readCount     Int @default(0)
+
+  // Link com as mensagens individuais geradas
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("broadcast_campaigns")
+}
+
+enum CampaignStatus {
+  DRAFT
+  PROCESSING
+  COMPLETED
+  PAUSED
+  FAILED
+  CANCELED
+}

@@ -9,6 +9,18 @@
 * 🟢 You can import this file directly.
 */
 
+export const CampaignStatus = {
+  DRAFT: 'DRAFT',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  PAUSED: 'PAUSED',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED'
+} as const
+
+export type CampaignStatus = (typeof CampaignStatus)[keyof typeof CampaignStatus]
+
+
 export const InstanceStatus = {
   ACTIVE: 'ACTIVE',
   DISCONNECTED: 'DISCONNECTED',

@@ -200,6 +200,7 @@ export type ContactWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   messages?: Prisma.MessageListRelationFilter
+  broadcastListMembers?: Prisma.BroadcastListMemberListRelationFilter
 }
 
 export type ContactOrderByWithRelationInput = {
@@ -212,6 +213,7 @@ export type ContactOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   instance?: Prisma.WhatsAppInstanceOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  broadcastListMembers?: Prisma.BroadcastListMemberOrderByRelationAggregateInput
 }
 
 export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -228,6 +230,7 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   messages?: Prisma.MessageListRelationFilter
+  broadcastListMembers?: Prisma.BroadcastListMemberListRelationFilter
 }, "id" | "instanceId_waId">
 
 export type ContactOrderByWithAggregationInput = {
@@ -265,6 +268,7 @@ export type ContactCreateInput = {
   updatedAt?: Date | string
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutContactsInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  broadcastListMembers?: Prisma.BroadcastListMemberCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateInput = {
@@ -276,6 +280,7 @@ export type ContactUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactUpdateInput = {
@@ -287,6 +292,7 @@ export type ContactUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutContactsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateInput = {
@@ -298,6 +304,7 @@ export type ContactUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateManyInput = {
@@ -327,6 +334,11 @@ export type ContactUncheckedUpdateManyInput = {
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ContactScalarRelationFilter = {
+  is?: Prisma.ContactWhereInput
+  isNot?: Prisma.ContactWhereInput
 }
 
 export type ContactListRelationFilter = {
@@ -374,9 +386,18 @@ export type ContactMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ContactScalarRelationFilter = {
-  is?: Prisma.ContactWhereInput
-  isNot?: Prisma.ContactWhereInput
+export type ContactCreateNestedOneWithoutBroadcastListMembersInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedCreateWithoutBroadcastListMembersInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutBroadcastListMembersInput
+  connect?: Prisma.ContactWhereUniqueInput
+}
+
+export type ContactUpdateOneRequiredWithoutBroadcastListMembersNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedCreateWithoutBroadcastListMembersInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutBroadcastListMembersInput
+  upsert?: Prisma.ContactUpsertWithoutBroadcastListMembersInput
+  connect?: Prisma.ContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutBroadcastListMembersInput, Prisma.ContactUpdateWithoutBroadcastListMembersInput>, Prisma.ContactUncheckedUpdateWithoutBroadcastListMembersInput>
 }
 
 export type ContactCreateNestedManyWithoutInstanceInput = {
@@ -435,6 +456,66 @@ export type ContactUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutMessagesInput, Prisma.ContactUpdateWithoutMessagesInput>, Prisma.ContactUncheckedUpdateWithoutMessagesInput>
 }
 
+export type ContactCreateWithoutBroadcastListMembersInput = {
+  id?: string
+  waId: string
+  pushName?: string | null
+  profilePicUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutContactsInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutBroadcastListMembersInput = {
+  id?: string
+  waId: string
+  pushName?: string | null
+  profilePicUrl?: string | null
+  instanceId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutBroadcastListMembersInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedCreateWithoutBroadcastListMembersInput>
+}
+
+export type ContactUpsertWithoutBroadcastListMembersInput = {
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedUpdateWithoutBroadcastListMembersInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedCreateWithoutBroadcastListMembersInput>
+  where?: Prisma.ContactWhereInput
+}
+
+export type ContactUpdateToOneWithWhereWithoutBroadcastListMembersInput = {
+  where?: Prisma.ContactWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutBroadcastListMembersInput, Prisma.ContactUncheckedUpdateWithoutBroadcastListMembersInput>
+}
+
+export type ContactUpdateWithoutBroadcastListMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  waId?: Prisma.StringFieldUpdateOperationsInput | string
+  pushName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutContactsNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutBroadcastListMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  waId?: Prisma.StringFieldUpdateOperationsInput | string
+  pushName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+}
+
 export type ContactCreateWithoutInstanceInput = {
   id?: string
   waId: string
@@ -443,6 +524,7 @@ export type ContactCreateWithoutInstanceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  broadcastListMembers?: Prisma.BroadcastListMemberCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutInstanceInput = {
@@ -453,6 +535,7 @@ export type ContactUncheckedCreateWithoutInstanceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutInstanceInput = {
@@ -502,6 +585,7 @@ export type ContactCreateWithoutMessagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutContactsInput
+  broadcastListMembers?: Prisma.BroadcastListMemberCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutMessagesInput = {
@@ -512,6 +596,7 @@ export type ContactUncheckedCreateWithoutMessagesInput = {
   instanceId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutMessagesInput = {
@@ -538,6 +623,7 @@ export type ContactUpdateWithoutMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutContactsNestedInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutMessagesInput = {
@@ -548,6 +634,7 @@ export type ContactUncheckedUpdateWithoutMessagesInput = {
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateManyInstanceInput = {
@@ -567,6 +654,7 @@ export type ContactUpdateWithoutInstanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutInstanceInput = {
@@ -577,6 +665,7 @@ export type ContactUncheckedUpdateWithoutInstanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  broadcastListMembers?: Prisma.BroadcastListMemberUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateManyWithoutInstanceInput = {
@@ -595,10 +684,12 @@ export type ContactUncheckedUpdateManyWithoutInstanceInput = {
 
 export type ContactCountOutputType = {
   messages: number
+  broadcastListMembers: number
 }
 
 export type ContactCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | ContactCountOutputTypeCountMessagesArgs
+  broadcastListMembers?: boolean | ContactCountOutputTypeCountBroadcastListMembersArgs
 }
 
 /**
@@ -618,6 +709,13 @@ export type ContactCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Type
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * ContactCountOutputType without action
+ */
+export type ContactCountOutputTypeCountBroadcastListMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BroadcastListMemberWhereInput
+}
+
 
 export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -629,6 +727,7 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
+  broadcastListMembers?: boolean | Prisma.Contact$broadcastListMembersArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["contact"]>
 
@@ -668,6 +767,7 @@ export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
+  broadcastListMembers?: boolean | Prisma.Contact$broadcastListMembersArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContactIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -682,6 +782,7 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     instance: Prisma.$WhatsAppInstancePayload<ExtArgs>
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    broadcastListMembers: Prisma.$BroadcastListMemberPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1087,6 +1188,7 @@ export interface Prisma__ContactClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   instance<T extends Prisma.WhatsAppInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppInstanceClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.Contact$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  broadcastListMembers<T extends Prisma.Contact$broadcastListMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$broadcastListMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BroadcastListMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1540,6 +1642,30 @@ export type Contact$messagesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Contact.broadcastListMembers
+ */
+export type Contact$broadcastListMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BroadcastListMember
+   */
+  select?: Prisma.BroadcastListMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BroadcastListMember
+   */
+  omit?: Prisma.BroadcastListMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BroadcastListMemberInclude<ExtArgs> | null
+  where?: Prisma.BroadcastListMemberWhereInput
+  orderBy?: Prisma.BroadcastListMemberOrderByWithRelationInput | Prisma.BroadcastListMemberOrderByWithRelationInput[]
+  cursor?: Prisma.BroadcastListMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BroadcastListMemberScalarFieldEnum | Prisma.BroadcastListMemberScalarFieldEnum[]
 }
 
 /**

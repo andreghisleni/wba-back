@@ -1,11 +1,12 @@
 import Elysia from 'elysia';
+import { whatsappAbsenceMessageRoute } from './absence-message';
+import { broadcastRoutes } from './broadcast';
 import { whatsappChatRoute } from './chat';
 import { mediaCallbackRoute } from './media-callback';
 import { whatsappOauthLinkRoute } from './oauth-link';
 import { whatsappOnboardingRoute } from './onboarding';
 import { whatsappTemplatesRoute } from './templates';
 import { whatsappWebhookRoute } from './webhook';
-import { whatsappAbsenceMessageRoute } from './absence-message';
 
 export const whatsappRoutes = new Elysia({
   prefix: '/whatsapp',
@@ -19,4 +20,5 @@ export const whatsappRoutes = new Elysia({
   .use(whatsappOauthLinkRoute)
 
   // Nova rota de mensagem de ausência
-  .use(whatsappAbsenceMessageRoute);
+  .use(whatsappAbsenceMessageRoute)
+  .use(broadcastRoutes);
