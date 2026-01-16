@@ -10,6 +10,19 @@ services:
   #   volumes:
   #     - ./docker:/docker-entrypoint-initdb.d
 
+  # wba-broadcast-worker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-broadcast-worker
+  #     args:
+  #       DATABASE_URL: ${DATABASE_URL}
+  #   environment:
+  #     - DATABASE_URL=${DATABASE_URL}
+  #     - REDIS_URL=${REDIS_URL}
+  #   depends_on:
+  #     - wba-redis
+  #   restart: unless-stopped
+
   wba-jaeger:
     image: jaegertracing/all-in-one:1.57
     ports:

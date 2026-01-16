@@ -48,14 +48,13 @@ model BroadcastCampaign {
   id   String @id @default(uuid())
   name String // Ex: "Oferta de Natal", "Aviso de Manutenção"
 
-  status      CampaignStatus @default(DRAFT)
-  scheduledAt DateTime? // Para agendamento futuro
+  status CampaignStatus @default(DRAFT)
 
   // Se for Template
-  templateId String?
-  template   Template? @relation(fields: [templateId], references: [id])
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id])
 
-  //templateParams Json? // Variáveis do template
+  templateParams Json? // Variáveis do template
 
   // Relacionamentos
   broadcastListId String

@@ -1,4 +1,5 @@
 import Elysia from 'elysia';
+import { campaignsRoutes } from './campaign';
 import { createListRoute } from './create-list.route';
 import { getListRoute } from './get-list.route';
 import { getListsRoute } from './get-lists.route';
@@ -15,4 +16,5 @@ export const listRoutes = new Elysia({
   .use(getListsRoute)
   .use(getListRoute)
   .use(importMembersRoute)
-  .use(membersRoutes);
+  .use(membersRoutes)
+  .use(campaignsRoutes);

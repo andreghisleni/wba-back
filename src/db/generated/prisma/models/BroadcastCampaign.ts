@@ -44,7 +44,6 @@ export type BroadcastCampaignMinAggregateOutputType = {
   id: string | null
   name: string | null
   status: $Enums.CampaignStatus | null
-  scheduledAt: Date | null
   templateId: string | null
   broadcastListId: string | null
   instanceId: string | null
@@ -60,7 +59,6 @@ export type BroadcastCampaignMaxAggregateOutputType = {
   id: string | null
   name: string | null
   status: $Enums.CampaignStatus | null
-  scheduledAt: Date | null
   templateId: string | null
   broadcastListId: string | null
   instanceId: string | null
@@ -76,8 +74,8 @@ export type BroadcastCampaignCountAggregateOutputType = {
   id: number
   name: number
   status: number
-  scheduledAt: number
   templateId: number
+  templateParams: number
   broadcastListId: number
   instanceId: number
   totalContacts: number
@@ -108,7 +106,6 @@ export type BroadcastCampaignMinAggregateInputType = {
   id?: true
   name?: true
   status?: true
-  scheduledAt?: true
   templateId?: true
   broadcastListId?: true
   instanceId?: true
@@ -124,7 +121,6 @@ export type BroadcastCampaignMaxAggregateInputType = {
   id?: true
   name?: true
   status?: true
-  scheduledAt?: true
   templateId?: true
   broadcastListId?: true
   instanceId?: true
@@ -140,8 +136,8 @@ export type BroadcastCampaignCountAggregateInputType = {
   id?: true
   name?: true
   status?: true
-  scheduledAt?: true
   templateId?: true
+  templateParams?: true
   broadcastListId?: true
   instanceId?: true
   totalContacts?: true
@@ -243,8 +239,8 @@ export type BroadcastCampaignGroupByOutputType = {
   id: string
   name: string
   status: $Enums.CampaignStatus
-  scheduledAt: Date | null
-  templateId: string | null
+  templateId: string
+  templateParams: runtime.JsonValue | null
   broadcastListId: string
   instanceId: string
   totalContacts: number
@@ -282,8 +278,8 @@ export type BroadcastCampaignWhereInput = {
   id?: Prisma.StringFilter<"BroadcastCampaign"> | string
   name?: Prisma.StringFilter<"BroadcastCampaign"> | string
   status?: Prisma.EnumCampaignStatusFilter<"BroadcastCampaign"> | $Enums.CampaignStatus
-  scheduledAt?: Prisma.DateTimeNullableFilter<"BroadcastCampaign"> | Date | string | null
-  templateId?: Prisma.StringNullableFilter<"BroadcastCampaign"> | string | null
+  templateId?: Prisma.StringFilter<"BroadcastCampaign"> | string
+  templateParams?: Prisma.JsonNullableFilter<"BroadcastCampaign">
   broadcastListId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   instanceId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   totalContacts?: Prisma.IntFilter<"BroadcastCampaign"> | number
@@ -292,7 +288,7 @@ export type BroadcastCampaignWhereInput = {
   readCount?: Prisma.IntFilter<"BroadcastCampaign"> | number
   createdAt?: Prisma.DateTimeFilter<"BroadcastCampaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BroadcastCampaign"> | Date | string
-  template?: Prisma.XOR<Prisma.TemplateNullableScalarRelationFilter, Prisma.TemplateWhereInput> | null
+  template?: Prisma.XOR<Prisma.TemplateScalarRelationFilter, Prisma.TemplateWhereInput>
   broadcastList?: Prisma.XOR<Prisma.BroadcastListScalarRelationFilter, Prisma.BroadcastListWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   messages?: Prisma.MessageListRelationFilter
@@ -302,8 +298,8 @@ export type BroadcastCampaignOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  scheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  templateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  templateParams?: Prisma.SortOrderInput | Prisma.SortOrder
   broadcastListId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   totalContacts?: Prisma.SortOrder
@@ -325,8 +321,8 @@ export type BroadcastCampaignWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BroadcastCampaignWhereInput | Prisma.BroadcastCampaignWhereInput[]
   name?: Prisma.StringFilter<"BroadcastCampaign"> | string
   status?: Prisma.EnumCampaignStatusFilter<"BroadcastCampaign"> | $Enums.CampaignStatus
-  scheduledAt?: Prisma.DateTimeNullableFilter<"BroadcastCampaign"> | Date | string | null
-  templateId?: Prisma.StringNullableFilter<"BroadcastCampaign"> | string | null
+  templateId?: Prisma.StringFilter<"BroadcastCampaign"> | string
+  templateParams?: Prisma.JsonNullableFilter<"BroadcastCampaign">
   broadcastListId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   instanceId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   totalContacts?: Prisma.IntFilter<"BroadcastCampaign"> | number
@@ -335,7 +331,7 @@ export type BroadcastCampaignWhereUniqueInput = Prisma.AtLeast<{
   readCount?: Prisma.IntFilter<"BroadcastCampaign"> | number
   createdAt?: Prisma.DateTimeFilter<"BroadcastCampaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BroadcastCampaign"> | Date | string
-  template?: Prisma.XOR<Prisma.TemplateNullableScalarRelationFilter, Prisma.TemplateWhereInput> | null
+  template?: Prisma.XOR<Prisma.TemplateScalarRelationFilter, Prisma.TemplateWhereInput>
   broadcastList?: Prisma.XOR<Prisma.BroadcastListScalarRelationFilter, Prisma.BroadcastListWhereInput>
   instance?: Prisma.XOR<Prisma.WhatsAppInstanceScalarRelationFilter, Prisma.WhatsAppInstanceWhereInput>
   messages?: Prisma.MessageListRelationFilter
@@ -345,8 +341,8 @@ export type BroadcastCampaignOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  scheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  templateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  templateParams?: Prisma.SortOrderInput | Prisma.SortOrder
   broadcastListId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   totalContacts?: Prisma.SortOrder
@@ -369,8 +365,8 @@ export type BroadcastCampaignScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"BroadcastCampaign"> | string
   name?: Prisma.StringWithAggregatesFilter<"BroadcastCampaign"> | string
   status?: Prisma.EnumCampaignStatusWithAggregatesFilter<"BroadcastCampaign"> | $Enums.CampaignStatus
-  scheduledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BroadcastCampaign"> | Date | string | null
-  templateId?: Prisma.StringNullableWithAggregatesFilter<"BroadcastCampaign"> | string | null
+  templateId?: Prisma.StringWithAggregatesFilter<"BroadcastCampaign"> | string
+  templateParams?: Prisma.JsonNullableWithAggregatesFilter<"BroadcastCampaign">
   broadcastListId?: Prisma.StringWithAggregatesFilter<"BroadcastCampaign"> | string
   instanceId?: Prisma.StringWithAggregatesFilter<"BroadcastCampaign"> | string
   totalContacts?: Prisma.IntWithAggregatesFilter<"BroadcastCampaign"> | number
@@ -385,14 +381,14 @@ export type BroadcastCampaignCreateInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: number
   sentCount?: number
   failedCount?: number
   readCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  template?: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
+  template: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
   broadcastList: Prisma.BroadcastListCreateNestedOneWithoutCampaignsInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutBroadcastCampaignsInput
   messages?: Prisma.MessageCreateNestedManyWithoutBroadcastCampaignInput
@@ -402,8 +398,8 @@ export type BroadcastCampaignUncheckedCreateInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   instanceId: string
   totalContacts?: number
@@ -419,14 +415,14 @@ export type BroadcastCampaignUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  template?: Prisma.TemplateUpdateOneWithoutBroadcastCampaignsNestedInput
+  template?: Prisma.TemplateUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   broadcastList?: Prisma.BroadcastListUpdateOneRequiredWithoutCampaignsNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutBroadcastCampaignNestedInput
@@ -436,8 +432,8 @@ export type BroadcastCampaignUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -453,8 +449,8 @@ export type BroadcastCampaignCreateManyInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   instanceId: string
   totalContacts?: number
@@ -469,7 +465,7 @@ export type BroadcastCampaignUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -482,8 +478,8 @@ export type BroadcastCampaignUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -508,8 +504,8 @@ export type BroadcastCampaignCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  scheduledAt?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
+  templateParams?: Prisma.SortOrder
   broadcastListId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
   totalContacts?: Prisma.SortOrder
@@ -531,7 +527,6 @@ export type BroadcastCampaignMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  scheduledAt?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   broadcastListId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
@@ -547,7 +542,6 @@ export type BroadcastCampaignMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  scheduledAt?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   broadcastListId?: Prisma.SortOrder
   instanceId?: Prisma.SortOrder
@@ -615,10 +609,6 @@ export type BroadcastCampaignUncheckedUpdateManyWithoutBroadcastListNestedInput 
 
 export type EnumCampaignStatusFieldUpdateOperationsInput = {
   set?: $Enums.CampaignStatus
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -733,14 +723,14 @@ export type BroadcastCampaignCreateWithoutBroadcastListInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: number
   sentCount?: number
   failedCount?: number
   readCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  template?: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
+  template: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutBroadcastCampaignsInput
   messages?: Prisma.MessageCreateNestedManyWithoutBroadcastCampaignInput
 }
@@ -749,8 +739,8 @@ export type BroadcastCampaignUncheckedCreateWithoutBroadcastListInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   totalContacts?: number
   sentCount?: number
@@ -794,8 +784,8 @@ export type BroadcastCampaignScalarWhereInput = {
   id?: Prisma.StringFilter<"BroadcastCampaign"> | string
   name?: Prisma.StringFilter<"BroadcastCampaign"> | string
   status?: Prisma.EnumCampaignStatusFilter<"BroadcastCampaign"> | $Enums.CampaignStatus
-  scheduledAt?: Prisma.DateTimeNullableFilter<"BroadcastCampaign"> | Date | string | null
-  templateId?: Prisma.StringNullableFilter<"BroadcastCampaign"> | string | null
+  templateId?: Prisma.StringFilter<"BroadcastCampaign"> | string
+  templateParams?: Prisma.JsonNullableFilter<"BroadcastCampaign">
   broadcastListId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   instanceId?: Prisma.StringFilter<"BroadcastCampaign"> | string
   totalContacts?: Prisma.IntFilter<"BroadcastCampaign"> | number
@@ -810,14 +800,14 @@ export type BroadcastCampaignCreateWithoutInstanceInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: number
   sentCount?: number
   failedCount?: number
   readCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  template?: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
+  template: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
   broadcastList: Prisma.BroadcastListCreateNestedOneWithoutCampaignsInput
   messages?: Prisma.MessageCreateNestedManyWithoutBroadcastCampaignInput
 }
@@ -826,8 +816,8 @@ export type BroadcastCampaignUncheckedCreateWithoutInstanceInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   totalContacts?: number
   sentCount?: number
@@ -868,14 +858,14 @@ export type BroadcastCampaignCreateWithoutMessagesInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: number
   sentCount?: number
   failedCount?: number
   readCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  template?: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
+  template: Prisma.TemplateCreateNestedOneWithoutBroadcastCampaignsInput
   broadcastList: Prisma.BroadcastListCreateNestedOneWithoutCampaignsInput
   instance: Prisma.WhatsAppInstanceCreateNestedOneWithoutBroadcastCampaignsInput
 }
@@ -884,8 +874,8 @@ export type BroadcastCampaignUncheckedCreateWithoutMessagesInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   instanceId: string
   totalContacts?: number
@@ -916,14 +906,14 @@ export type BroadcastCampaignUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  template?: Prisma.TemplateUpdateOneWithoutBroadcastCampaignsNestedInput
+  template?: Prisma.TemplateUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   broadcastList?: Prisma.BroadcastListUpdateOneRequiredWithoutCampaignsNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
 }
@@ -932,8 +922,8 @@ export type BroadcastCampaignUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -948,7 +938,7 @@ export type BroadcastCampaignCreateWithoutTemplateInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: number
   sentCount?: number
   failedCount?: number
@@ -964,7 +954,7 @@ export type BroadcastCampaignUncheckedCreateWithoutTemplateInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   instanceId: string
   totalContacts?: number
@@ -1006,8 +996,8 @@ export type BroadcastCampaignCreateManyBroadcastListInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId: string
   totalContacts?: number
   sentCount?: number
@@ -1021,14 +1011,14 @@ export type BroadcastCampaignUpdateWithoutBroadcastListInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  template?: Prisma.TemplateUpdateOneWithoutBroadcastCampaignsNestedInput
+  template?: Prisma.TemplateUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   instance?: Prisma.WhatsAppInstanceUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutBroadcastCampaignNestedInput
 }
@@ -1037,8 +1027,8 @@ export type BroadcastCampaignUncheckedUpdateWithoutBroadcastListInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1053,8 +1043,8 @@ export type BroadcastCampaignUncheckedUpdateManyWithoutBroadcastListInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1068,8 +1058,8 @@ export type BroadcastCampaignCreateManyInstanceInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
-  templateId?: string | null
+  templateId: string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   totalContacts?: number
   sentCount?: number
@@ -1083,14 +1073,14 @@ export type BroadcastCampaignUpdateWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  template?: Prisma.TemplateUpdateOneWithoutBroadcastCampaignsNestedInput
+  template?: Prisma.TemplateUpdateOneRequiredWithoutBroadcastCampaignsNestedInput
   broadcastList?: Prisma.BroadcastListUpdateOneRequiredWithoutCampaignsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutBroadcastCampaignNestedInput
 }
@@ -1099,8 +1089,8 @@ export type BroadcastCampaignUncheckedUpdateWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1115,8 +1105,8 @@ export type BroadcastCampaignUncheckedUpdateManyWithoutInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1130,7 +1120,7 @@ export type BroadcastCampaignCreateManyTemplateInput = {
   id?: string
   name: string
   status?: $Enums.CampaignStatus
-  scheduledAt?: Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId: string
   instanceId: string
   totalContacts?: number
@@ -1145,7 +1135,7 @@ export type BroadcastCampaignUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
   sentCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1161,7 +1151,7 @@ export type BroadcastCampaignUncheckedUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1177,7 +1167,7 @@ export type BroadcastCampaignUncheckedUpdateManyWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
-  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  templateParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   broadcastListId?: Prisma.StringFieldUpdateOperationsInput | string
   instanceId?: Prisma.StringFieldUpdateOperationsInput | string
   totalContacts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1223,8 +1213,8 @@ export type BroadcastCampaignSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   name?: boolean
   status?: boolean
-  scheduledAt?: boolean
   templateId?: boolean
+  templateParams?: boolean
   broadcastListId?: boolean
   instanceId?: boolean
   totalContacts?: boolean
@@ -1233,7 +1223,7 @@ export type BroadcastCampaignSelect<ExtArgs extends runtime.Types.Extensions.Int
   readCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.BroadcastCampaign$messagesArgs<ExtArgs>
@@ -1244,8 +1234,8 @@ export type BroadcastCampaignSelectCreateManyAndReturn<ExtArgs extends runtime.T
   id?: boolean
   name?: boolean
   status?: boolean
-  scheduledAt?: boolean
   templateId?: boolean
+  templateParams?: boolean
   broadcastListId?: boolean
   instanceId?: boolean
   totalContacts?: boolean
@@ -1254,7 +1244,7 @@ export type BroadcastCampaignSelectCreateManyAndReturn<ExtArgs extends runtime.T
   readCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["broadcastCampaign"]>
@@ -1263,8 +1253,8 @@ export type BroadcastCampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   id?: boolean
   name?: boolean
   status?: boolean
-  scheduledAt?: boolean
   templateId?: boolean
+  templateParams?: boolean
   broadcastListId?: boolean
   instanceId?: boolean
   totalContacts?: boolean
@@ -1273,7 +1263,7 @@ export type BroadcastCampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   readCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["broadcastCampaign"]>
@@ -1282,8 +1272,8 @@ export type BroadcastCampaignSelectScalar = {
   id?: boolean
   name?: boolean
   status?: boolean
-  scheduledAt?: boolean
   templateId?: boolean
+  templateParams?: boolean
   broadcastListId?: boolean
   instanceId?: boolean
   totalContacts?: boolean
@@ -1294,21 +1284,21 @@ export type BroadcastCampaignSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BroadcastCampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "status" | "scheduledAt" | "templateId" | "broadcastListId" | "instanceId" | "totalContacts" | "sentCount" | "failedCount" | "readCount" | "createdAt" | "updatedAt", ExtArgs["result"]["broadcastCampaign"]>
+export type BroadcastCampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "status" | "templateId" | "templateParams" | "broadcastListId" | "instanceId" | "totalContacts" | "sentCount" | "failedCount" | "readCount" | "createdAt" | "updatedAt", ExtArgs["result"]["broadcastCampaign"]>
 export type BroadcastCampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.BroadcastCampaign$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.BroadcastCampaignCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BroadcastCampaignIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }
 export type BroadcastCampaignIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  template?: boolean | Prisma.BroadcastCampaign$templateArgs<ExtArgs>
+  template?: boolean | Prisma.TemplateDefaultArgs<ExtArgs>
   broadcastList?: boolean | Prisma.BroadcastListDefaultArgs<ExtArgs>
   instance?: boolean | Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>
 }
@@ -1316,7 +1306,7 @@ export type BroadcastCampaignIncludeUpdateManyAndReturn<ExtArgs extends runtime.
 export type $BroadcastCampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BroadcastCampaign"
   objects: {
-    template: Prisma.$TemplatePayload<ExtArgs> | null
+    template: Prisma.$TemplatePayload<ExtArgs>
     broadcastList: Prisma.$BroadcastListPayload<ExtArgs>
     instance: Prisma.$WhatsAppInstancePayload<ExtArgs>
     messages: Prisma.$MessagePayload<ExtArgs>[]
@@ -1325,8 +1315,8 @@ export type $BroadcastCampaignPayload<ExtArgs extends runtime.Types.Extensions.I
     id: string
     name: string
     status: $Enums.CampaignStatus
-    scheduledAt: Date | null
-    templateId: string | null
+    templateId: string
+    templateParams: runtime.JsonValue | null
     broadcastListId: string
     instanceId: string
     totalContacts: number
@@ -1729,7 +1719,7 @@ readonly fields: BroadcastCampaignFieldRefs;
  */
 export interface Prisma__BroadcastCampaignClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  template<T extends Prisma.BroadcastCampaign$templateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BroadcastCampaign$templateArgs<ExtArgs>>): Prisma.Prisma__TemplateClient<runtime.Types.Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  template<T extends Prisma.TemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__TemplateClient<runtime.Types.Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   broadcastList<T extends Prisma.BroadcastListDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BroadcastListDefaultArgs<ExtArgs>>): Prisma.Prisma__BroadcastListClient<runtime.Types.Result.GetResult<Prisma.$BroadcastListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   instance<T extends Prisma.WhatsAppInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppInstanceClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.BroadcastCampaign$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BroadcastCampaign$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1765,8 +1755,8 @@ export interface BroadcastCampaignFieldRefs {
   readonly id: Prisma.FieldRef<"BroadcastCampaign", 'String'>
   readonly name: Prisma.FieldRef<"BroadcastCampaign", 'String'>
   readonly status: Prisma.FieldRef<"BroadcastCampaign", 'CampaignStatus'>
-  readonly scheduledAt: Prisma.FieldRef<"BroadcastCampaign", 'DateTime'>
   readonly templateId: Prisma.FieldRef<"BroadcastCampaign", 'String'>
+  readonly templateParams: Prisma.FieldRef<"BroadcastCampaign", 'Json'>
   readonly broadcastListId: Prisma.FieldRef<"BroadcastCampaign", 'String'>
   readonly instanceId: Prisma.FieldRef<"BroadcastCampaign", 'String'>
   readonly totalContacts: Prisma.FieldRef<"BroadcastCampaign", 'Int'>
@@ -2168,25 +2158,6 @@ export type BroadcastCampaignDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many BroadcastCampaigns to delete.
    */
   limit?: number
-}
-
-/**
- * BroadcastCampaign.template
- */
-export type BroadcastCampaign$templateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Template
-   */
-  select?: Prisma.TemplateSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Template
-   */
-  omit?: Prisma.TemplateOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TemplateInclude<ExtArgs> | null
-  where?: Prisma.TemplateWhereInput
 }
 
 /**

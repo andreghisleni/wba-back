@@ -420,9 +420,9 @@ export type TemplateUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type TemplateNullableScalarRelationFilter = {
-  is?: Prisma.TemplateWhereInput | null
-  isNot?: Prisma.TemplateWhereInput | null
+export type TemplateScalarRelationFilter = {
+  is?: Prisma.TemplateWhereInput
+  isNot?: Prisma.TemplateWhereInput
 }
 
 export type TemplateListRelationFilter = {
@@ -490,12 +490,10 @@ export type TemplateCreateNestedOneWithoutBroadcastCampaignsInput = {
   connect?: Prisma.TemplateWhereUniqueInput
 }
 
-export type TemplateUpdateOneWithoutBroadcastCampaignsNestedInput = {
+export type TemplateUpdateOneRequiredWithoutBroadcastCampaignsNestedInput = {
   create?: Prisma.XOR<Prisma.TemplateCreateWithoutBroadcastCampaignsInput, Prisma.TemplateUncheckedCreateWithoutBroadcastCampaignsInput>
   connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutBroadcastCampaignsInput
   upsert?: Prisma.TemplateUpsertWithoutBroadcastCampaignsInput
-  disconnect?: Prisma.TemplateWhereInput | boolean
-  delete?: Prisma.TemplateWhereInput | boolean
   connect?: Prisma.TemplateWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TemplateUpdateToOneWithWhereWithoutBroadcastCampaignsInput, Prisma.TemplateUpdateWithoutBroadcastCampaignsInput>, Prisma.TemplateUncheckedUpdateWithoutBroadcastCampaignsInput>
 }
