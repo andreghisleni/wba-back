@@ -128,34 +128,59 @@ const worker = new Worker<BroadcastJobData>(
         `❌ Erro ao enviar para ${contactWaId}: ${responseData.error.message}`
       );
 
-      // Atualiza contador de falhas na campanha
-      await prisma.broadcastCampaign.update({
-        where: { id: campaignId },
-        data: { failedCount: { increment: 1 } },
-      });
-
-      // Salva a mensagem com status de erro
-      await prisma.message.create({
-        data: {
-          wamid: `failed-${campaignId}-${memberId}-${Date.now()}`,
-          contactId,
-          instanceId,
-          direction: 'OUTBOUND',
-          body: `Template: ${templateName}`,
-          type: 'template',
-          status: 'FAILED',
-          timestamp: BigInt(Math.floor(Date.now() / 1000)),
-          errorCode: String(responseData.error.code),
-          errorDesc: responseData.error.message,
-          broadcastCampaignId: campaignId,
-          templateParams: {
-            templateId,
-            templateName,
-            language: templateLanguage,
-            bodyParams: bodyValues ?? [],
-            buttonParams: buttonValues ?? [],
+      // Atualiza contador de falhas e salva mensagem em transação
+      await prisma.$transaction(async (tx) => {
+        // Salva a mensagem com status de erro
+        await tx.message.create({
+          data: {
+            wamid: `failed-${campaignId}-${memberId}-${Date.now()}`,
+            contactId,
+            instanceId,
+            direction: 'OUTBOUND',
+            body: `Template: ${templateName}`,
+            type: 'template',
+            status: 'FAILED',
+            timestamp: BigInt(Math.floor(Date.now() / 1000)),
+            errorCode: String(responseData.error?.code),
+            errorDesc: responseData.error?.message,
+            broadcastCampaignId: campaignId,
+            templateParams: {
+              templateId,
+              templateName,
+              language: templateLanguage,
+              bodyParams: bodyValues ?? [],
+              buttonParams: buttonValues ?? [],
+            },
           },
-        },
+        });
+
+        // Atualiza contador e verifica se finalizou (com lock)
+        const [campaign] = await tx.$queryRaw<
+          Array<{
+            id: string;
+            totalContacts: number;
+            sentCount: number;
+            failedCount: number;
+            status: string;
+          }>
+        >`
+          UPDATE broadcast_campaigns
+          SET "failedCount" = "failedCount" + 1
+          WHERE id = ${campaignId}
+          RETURNING id, "totalContacts", "sentCount", "failedCount", status
+        `;
+
+        if (!campaign) { return; }
+
+        const processedCount = campaign.sentCount + campaign.failedCount;
+
+        if (processedCount >= campaign.totalContacts && campaign.status === 'PROCESSING') {
+          await tx.broadcastCampaign.update({
+            where: { id: campaignId },
+            data: { status: 'COMPLETED' },
+          });
+          console.log(`🏁 Campanha ${campaignId} finalizada (com erros)!`);
+        }
       });
 
       throw new Error(responseData.error.message);
@@ -168,31 +193,57 @@ const worker = new Worker<BroadcastJobData>(
       throw new Error('Resposta da Meta não contém ID da mensagem');
     }
 
-    await prisma.message.create({
-      data: {
-        wamid,
-        contactId,
-        instanceId,
-        direction: 'OUTBOUND',
-        body: `Template: ${templateName}`,
-        type: 'template',
-        status: 'SENT',
-        timestamp: BigInt(Math.floor(Date.now() / 1000)),
-        broadcastCampaignId: campaignId,
-        templateParams: {
-          templateId,
-          templateName,
-          language: templateLanguage,
-          bodyParams: bodyValues ?? [],
-          buttonParams: buttonValues ?? [],
+    // 8. Salva mensagem, atualiza contador e verifica finalização em transação atômica
+    await prisma.$transaction(async (tx) => {
+      await tx.message.create({
+        data: {
+          wamid,
+          contactId,
+          instanceId,
+          direction: 'OUTBOUND',
+          body: `Template: ${templateName}`,
+          type: 'template',
+          status: 'SENT',
+          timestamp: BigInt(Math.floor(Date.now() / 1000)),
+          broadcastCampaignId: campaignId,
+          templateParams: {
+            templateId,
+            templateName,
+            language: templateLanguage,
+            bodyParams: bodyValues ?? [],
+            buttonParams: buttonValues ?? [],
+          },
         },
-      },
-    });
+      });
 
-    // 8. Atualiza contador de enviados na campanha
-    await prisma.broadcastCampaign.update({
-      where: { id: campaignId },
-      data: { sentCount: { increment: 1 } },
+      // Atualiza contador e verifica se finalizou (UPDATE ... RETURNING para atomicidade)
+      const [campaign] = await tx.$queryRaw<
+        Array<{
+          id: string;
+          totalContacts: number;
+          sentCount: number;
+          failedCount: number;
+          status: string;
+        }>
+      >`
+        UPDATE broadcast_campaigns
+        SET "sentCount" = "sentCount" + 1
+        WHERE id = ${campaignId}
+        RETURNING id, "totalContacts", "sentCount", "failedCount", status
+      `;
+
+      if (!campaign) {
+        return;
+      }
+      const processedCount = campaign.sentCount + campaign.failedCount;
+
+      if (processedCount >= campaign.totalContacts && campaign.status === 'PROCESSING') {
+        await tx.broadcastCampaign.update({
+          where: { id: campaignId },
+          data: { status: 'COMPLETED' },
+        });
+        console.log(`🏁 Campanha ${campaignId} finalizada!`);
+      }
     });
 
     console.log(`✅ Mensagem enviada: ${wamid} -> ${contactWaId}`);
@@ -203,7 +254,7 @@ const worker = new Worker<BroadcastJobData>(
     connection: connection as never,
     concurrency: 5, // Processa até 5 jobs simultaneamente
     limiter: {
-      max: 80, // Máximo 80 mensagens por minuto (limite da Meta é ~80/s, mas vamos ser conservadores)
+      max: 160, // Máximo 80 mensagens por minuto (limite da Meta é ~80/s, mas vamos ser conservadores)
       duration: 60_000,
     },
   }

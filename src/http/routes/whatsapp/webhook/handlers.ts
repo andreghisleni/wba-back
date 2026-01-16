@@ -118,6 +118,15 @@ export async function handleStatusUpdate(
         },
       });
 
+      if (updatedMessage.status === 'READ' && updatedMessage.broadcastCampaignId) {
+        await prisma.broadcastCampaign.update({
+          where: { id: updatedMessage.broadcastCampaignId },
+          data: {
+            readCount: { increment: 1 },
+          },
+        });
+      }
+
       if (updatedMessage.status === 'FAILED') {
         // 2. Joga para a fila processar a IA e o Vínculo
         // Importante: passamos o ID interno do banco (updatedMsg.id)
