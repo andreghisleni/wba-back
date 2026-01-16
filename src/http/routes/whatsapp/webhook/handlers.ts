@@ -118,13 +118,17 @@ export async function handleStatusUpdate(
         },
       });
 
-      if (updatedMessage.status === 'READ' && updatedMessage.broadcastCampaignId) {
-        await prisma.broadcastCampaign.update({
-          where: { id: updatedMessage.broadcastCampaignId },
-          data: {
-            readCount: { increment: 1 },
-          },
-        });
+      try {
+        if (updatedMessage.status === 'READ' && updatedMessage.broadcastCampaignId) {
+          await prisma.broadcastCampaign.update({
+            where: { id: updatedMessage.broadcastCampaignId },
+            data: {
+              readCount: { increment: 1 },
+            },
+          });
+        }
+      } catch (e) {
+        console.error('Erro ao atualizar readCount da campanha:', e);
       }
 
       if (updatedMessage.status === 'FAILED') {
