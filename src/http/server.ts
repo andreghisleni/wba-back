@@ -28,11 +28,11 @@ export const app = new Elysia()
   )
   // .use(
   //   openapi({
-  //     path: "/docs",
+  //     path: '/docs2',
   //     documentation: {
   //       info: {
-  //         title: "Vortex API",
-  //         version: "1.0.0",
+  //         title: 'Vortex API',
+  //         version: '1.0.0',
   //       },
   //     },
   //     mapJsonSchema: {
@@ -45,7 +45,7 @@ export const app = new Elysia()
       path: '/docs',
       documentation: {
         info: {
-          title: 'Gestão Som API',
+          title: 'WBA',
           version: '1.0.0',
         },
         // components: await OpenAPI.components,
