@@ -2,35 +2,35 @@
 /** biome-ignore-all lint/nursery/noAwaitInLoop: <explanation> */
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 
-import { prisma } from '~/db/client';
-import type { MessageStatus, MessageType } from '~/db/generated/prisma/enums';
-import { dispatchMediaProcessing } from '~/lib/media-service';
-import { metaErrorsQueue } from '~/queue/setup';
-import { upsertSmartContact } from '~/services/contact-service';
-import { webhookService } from '~/services/webhook-service';
+import { prisma } from "~/db/client";
+import type { MessageStatus, MessageType } from "~/db/generated/prisma/enums";
+import { dispatchMediaProcessing } from "~/lib/media-service";
+import { metaErrorsQueue } from "~/queue/setup";
+import { upsertSmartContact } from "~/services/contact-service";
+import { webhookService } from "~/services/webhook-service";
 import type {
   WhatsAppChange,
   WhatsAppChangeValue,
   WhatsAppMediaContent,
   WhatsAppMessage,
-} from './types';
+} from "./types";
 
 /**
  * Helper para extrair conteúdo de mídia de forma tipada
  */
 function getMediaContent(msg: WhatsAppMessage): WhatsAppMediaContent | null {
   switch (msg.type) {
-    case 'image':
+    case "image":
       return msg.image || null;
-    case 'video':
+    case "video":
       return msg.video || null;
-    case 'audio':
+    case "audio":
       return msg.audio || null;
-    case 'voice':
+    case "voice":
       return msg.voice || null;
-    case 'document':
+    case "document":
       return msg.document || null;
-    case 'sticker':
+    case "sticker":
       return msg.sticker || null;
     default:
       return null;
@@ -42,7 +42,7 @@ function getMediaContent(msg: WhatsAppMessage): WhatsAppMediaContent | null {
  */
 export async function handleStatusUpdate(
   value: WhatsAppChangeValue,
-  instanceId: string
+  instanceId: string,
 ) {
   if (!value.statuses) {
     return;
@@ -76,14 +76,14 @@ export async function handleStatusUpdate(
         });
         // console.log(`💰 Cobrança: ${category.toUpperCase()}`);
       } catch (e) {
-        console.error('Erro ao salvar cobrança:', e);
+        console.error("Erro ao salvar cobrança:", e);
       }
     }
 
     // 2. DADOS DE ERRO
     let errorData = {};
     if (
-      newStatus === 'FAILED' &&
+      newStatus === "FAILED" &&
       statusUpdate.errors &&
       statusUpdate.errors.length > 0
     ) {
@@ -102,7 +102,7 @@ export async function handleStatusUpdate(
       });
 
       if (!mss) {
-        throw new Error('Mensagem não encontrada');
+        throw new Error("Mensagem não encontrada");
       }
 
       // Trocamos updateMany por UPDATE para poder pegar o retorno (organizationId)
@@ -119,7 +119,10 @@ export async function handleStatusUpdate(
       });
 
       try {
-        if (updatedMessage.status === 'READ' && updatedMessage.broadcastCampaignId) {
+        if (
+          updatedMessage.status === "READ" &&
+          updatedMessage.broadcastCampaignId
+        ) {
           await prisma.broadcastCampaign.update({
             where: { id: updatedMessage.broadcastCampaignId },
             data: {
@@ -128,13 +131,13 @@ export async function handleStatusUpdate(
           });
         }
       } catch (e) {
-        console.error('Erro ao atualizar readCount da campanha:', e);
+        console.error("Erro ao atualizar readCount da campanha:", e);
       }
 
-      if (updatedMessage.status === 'FAILED') {
+      if (updatedMessage.status === "FAILED") {
         // 2. Joga para a fila processar a IA e o Vínculo
         // Importante: passamos o ID interno do banco (updatedMsg.id)
-        await metaErrorsQueue.add('analyze-error', {
+        await metaErrorsQueue.add("analyze-error", {
           messageId: updatedMessage.id,
           errorCode: updatedMessage.errorCode,
           errorDesc: updatedMessage.errorDesc,
@@ -145,17 +148,17 @@ export async function handleStatusUpdate(
       if (updatedMessage?.instance) {
         await webhookService.dispatch(
           updatedMessage.instance.organizationId,
-          'message.status',
+          "message.status",
           {
             event: rawStatus, // 'sent', 'delivered', 'read', 'failed'
             wamid: updatedMessage.wamid,
             to: recipientId,
             // Converte timestamp unix (segundos) para ISO Date String legível
             timestamp: new Date(
-              Number(statusUpdate.timestamp) * 1000
+              Number(statusUpdate.timestamp) * 1000,
             ).toISOString(),
             error: Object.keys(errorData).length > 0 ? errorData : null,
-          }
+          },
         );
 
         // console.log(`🪝 Webhook de status disparado: ${rawStatus}`);
@@ -176,7 +179,7 @@ async function handleIncomingMessage(
   instanceId: string,
   organizationId: string,
   accessToken: string | null,
-  instancePhoneNumberId: string
+  instancePhoneNumberId: string,
 ) {
   if (!value.messages) {
     return;
@@ -212,32 +215,34 @@ async function handleIncomingMessage(
   // });
 
   const mediaTypes = [
-    'image',
-    'video',
-    'audio',
-    'document',
-    'sticker',
-    'voice',
+    "image",
+    "video",
+    "audio",
+    "document",
+    "sticker",
+    "voice",
   ];
   const isMedia = mediaTypes.includes(msg.type);
 
   // Normaliza tipos de mensagem para os suportados pelo banco
   const validMessageTypes = [
-    'text',
-    'image',
-    'video',
-    'audio',
-    'voice',
-    'document',
-    'sticker',
-    'reaction',
-    'button',
-    'interactive',
-    'template',
-    'unsupported',
-    'unknown',
+    "text",
+    "image",
+    "video",
+    "audio",
+    "voice",
+    "document",
+    "sticker",
+    "reaction",
+    "button",
+    "interactive",
+    "template",
+    "unsupported",
+    "unknown",
   ];
-  const normalizedType = validMessageTypes.includes(msg.type) ? msg.type : 'unknown';
+  const normalizedType = validMessageTypes.includes(msg.type)
+    ? msg.type
+    : "unknown";
 
   // Extrai corpo da mensagem (texto ou legenda da mídia)
   const bodyText =
@@ -245,7 +250,7 @@ async function handleIncomingMessage(
     msg.caption ||
     msg.image?.caption ||
     msg.video?.caption ||
-    '';
+    "";
 
   // 2. Salvar Mensagem
   // rawJson precisa de cast para 'object' ou 'InputJsonValue' dependendo da config do Prisma,
@@ -256,13 +261,13 @@ async function handleIncomingMessage(
       wamid: msg.id,
       instanceId,
       contactId: dbContact.id,
-      direction: 'INBOUND',
+      direction: "INBOUND",
       type: normalizedType as MessageType,
-      processingStatus: isMedia ? 'PENDING' : 'NONE',
+      processingStatus: isMedia ? "PENDING" : "NONE",
       body: bodyText,
       timestamp: BigInt(msg.timestamp),
       rawJson: msg as unknown as object, // Cast seguro para JSON do Prisma (inclui context se for reply)
-      status: 'DELIVERED',
+      status: "DELIVERED",
     },
   });
 
@@ -289,64 +294,85 @@ async function handleIncomingMessage(
   // 4. Resposta automática de ausência, se estiver ativa
   const absence = await prisma.absenceMessage.findFirst({
     where: { organizationId, active: true },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   // console.log(`🤖 Verificando ausência automática para org ${organizationId}...`);
   // console.log(absence);
 
   if (absence && accessToken) {
-    // console.log('⏰ Enviando mensagem de ausência automática...');
-    // Envia mensagem de ausência via WhatsApp Cloud API
-    const resp = await fetch(
-      `https://graph.facebook.com/v21.0/${instancePhoneNumberId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: msg.from,
-          recipient_type: 'individual',
-          type: 'text',
-          text: {
-            body: absence.message,
-            preview_url: false,
-          },
-        }),
-      }
+    // Verifica se já foi enviada uma mensagem OUTBOUND nos últimos 30 minutos para este contato
+    const thirtyMinutesAgo = BigInt(
+      Math.floor((Date.now() - 30 * 60 * 1000) / 1000),
     );
 
-    // Tenta extrair o wamid da resposta
-    let wamid: string | undefined;
-    try {
-      const data = await resp.json();
-      wamid = data?.messages?.[0]?.id;
-    } catch {
-      console.warn('Não foi possível extrair o wamid da resposta de ausência.');
-    }
-    // Salva a mensagem de ausência como OUTBOUND
-    if (wamid) {
-      await prisma.message.create({
-        data: {
-          wamid,
-          instanceId,
-          contactId: dbContact.id,
-          direction: 'OUTBOUND',
-          type: 'text',
-          processingStatus: 'NONE',
-          body: absence.message,
-          timestamp: BigInt(Math.floor(Date.now() / 1000)),
-          rawJson: {},
-          status: 'SENT',
+    const recentOutboundMessage = await prisma.message.findFirst({
+      where: {
+        contactId: dbContact.id,
+        direction: "OUTBOUND",
+        timestamp: { gte: thirtyMinutesAgo },
+      },
+      orderBy: { timestamp: "desc" },
+    });
+
+    // Se já enviou mensagem nos últimos 30 min, não envia novamente
+    if (recentOutboundMessage) {
+      // console.log('⏭️ Mensagem de ausência ignorada: já foi enviada mensagem recentemente.');
+    } else {
+      // console.log('⏰ Enviando mensagem de ausência automática...');
+      // Envia mensagem de ausência via WhatsApp Cloud API
+      const resp = await fetch(
+        `https://graph.facebook.com/v21.0/${instancePhoneNumberId}/messages`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messaging_product: "whatsapp",
+            to: msg.from,
+            recipient_type: "individual",
+            type: "text",
+            text: {
+              body: absence.message,
+              preview_url: false,
+            },
+          }),
         },
-      });
+      );
+
+      // Tenta extrair o wamid da resposta
+      let wamid: string | undefined;
+      try {
+        const data = await resp.json();
+        wamid = data?.messages?.[0]?.id;
+      } catch {
+        console.warn(
+          "Não foi possível extrair o wamid da resposta de ausência.",
+        );
+      }
+      // Salva a mensagem de ausência como OUTBOUND
+      if (wamid) {
+        await prisma.message.create({
+          data: {
+            wamid,
+            instanceId,
+            contactId: dbContact.id,
+            direction: "OUTBOUND",
+            type: "text",
+            processingStatus: "NONE",
+            body: absence.message,
+            timestamp: BigInt(Math.floor(Date.now() / 1000)),
+            rawJson: {},
+            status: "SENT",
+          },
+        });
+      }
     }
   }
 
-  webhookService.dispatch(organizationId, 'message.received', {
+  webhookService.dispatch(organizationId, "message.received", {
     messageId: savedMsg.id,
     wamid: savedMsg.wamid,
     from: dbContact.waId,
@@ -358,10 +384,12 @@ async function handleIncomingMessage(
       phone: dbContact.waId,
     },
     // Contexto de resposta (quando é uma reply)
-    replyTo: msg.context ? {
-      wamid: msg.context.id,
-      from: msg.context.from,
-    } : null,
+    replyTo: msg.context
+      ? {
+          wamid: msg.context.id,
+          from: msg.context.from,
+        }
+      : null,
   });
 }
 
@@ -385,7 +413,7 @@ export async function processWebhookChange(change: WhatsAppChange) {
 
   if (!instance) {
     console.warn(
-      `⚠️ Webhook ignorado: Instância não encontrada para ID ${phoneNumberId}`
+      `⚠️ Webhook ignorado: Instância não encontrada para ID ${phoneNumberId}`,
     );
     return;
   }
@@ -399,7 +427,7 @@ export async function processWebhookChange(change: WhatsAppChange) {
       instance.id,
       instance.organizationId,
       instance.accessToken,
-      instance.phoneNumberId
+      instance.phoneNumberId,
     );
   }
 }
