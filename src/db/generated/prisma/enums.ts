@@ -54,10 +54,14 @@ export const MessageType = {
   image: 'image',
   video: 'video',
   audio: 'audio',
+  voice: 'voice',
   document: 'document',
   sticker: 'sticker',
+  reaction: 'reaction',
+  button: 'button',
   interactive: 'interactive',
   template: 'template',
+  unsupported: 'unsupported',
   unknown: 'unknown'
 } as const
 

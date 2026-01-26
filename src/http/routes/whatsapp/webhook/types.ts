@@ -25,7 +25,7 @@ export interface WhatsAppError {
 
 export interface WhatsAppStatus {
   id: string;
-  status: 'sent' | 'delivered' | 'read' | 'failed';
+  status: "sent" | "delivered" | "read" | "failed";
   timestamp: string;
   recipient_id: string;
 
@@ -47,11 +47,31 @@ export interface WhatsAppTextContent {
   body: string;
 }
 
+// Contexto de resposta (quando o usuário responde/marca uma mensagem)
+export interface WhatsAppContext {
+  from: string; // Número do remetente original
+  id: string; // WAMID da mensagem sendo respondida
+}
+
 export interface WhatsAppMessage {
   from: string;
   id: string;
   timestamp: string;
-  type: 'text' | 'image' | 'video' | 'audio' | 'document' | 'sticker' | 'voice' | 'unknown';
+  type:
+    | "text"
+    | "image"
+    | "video"
+    | "audio"
+    | "document"
+    | "sticker"
+    | "voice"
+    | "reaction"
+    | "button"
+    | "interactive"
+    | "unknown";
+
+  // Contexto de resposta (presente quando é uma reply)
+  context?: WhatsAppContext;
 
   // Campos opcionais dependendo do 'type'
   text?: WhatsAppTextContent;
@@ -66,7 +86,7 @@ export interface WhatsAppMessage {
 }
 
 export interface WhatsAppChangeValue {
-  messaging_product: 'whatsapp';
+  messaging_product: "whatsapp";
   metadata: WhatsAppMetadata;
   contacts?: WhatsAppContact[];
   messages?: WhatsAppMessage[];
@@ -84,14 +104,14 @@ export interface WhatsAppEntry {
 }
 
 export interface WhatsAppWebhookPayload {
-  object: 'whatsapp_business_account';
+  object: "whatsapp_business_account";
   entry: WhatsAppEntry[];
 }
 
 export interface WhatsAppPricing {
   billable: boolean;
   pricing_model: string; // "CBP"
-  category: 'marketing' | 'utility' | 'authentication' | 'service';
+  category: "marketing" | "utility" | "authentication" | "service";
 }
 
 export interface WhatsAppConversation {

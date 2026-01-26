@@ -147,10 +147,14 @@ enum MessageType {
   image
   video
   audio
+  voice
   document
   sticker
+  reaction
+  button
   interactive // Botões e Listas
   template // Mensagens prontas (HSM)
+  unsupported
   unknown
 }
 

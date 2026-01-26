@@ -221,6 +221,24 @@ async function handleIncomingMessage(
   ];
   const isMedia = mediaTypes.includes(msg.type);
 
+  // Normaliza tipos de mensagem para os suportados pelo banco
+  const validMessageTypes = [
+    'text',
+    'image',
+    'video',
+    'audio',
+    'voice',
+    'document',
+    'sticker',
+    'reaction',
+    'button',
+    'interactive',
+    'template',
+    'unsupported',
+    'unknown',
+  ];
+  const normalizedType = validMessageTypes.includes(msg.type) ? msg.type : 'unknown';
+
   // Extrai corpo da mensagem (texto ou legenda da mídia)
   const bodyText =
     msg.text?.body ||
@@ -232,17 +250,18 @@ async function handleIncomingMessage(
   // 2. Salvar Mensagem
   // rawJson precisa de cast para 'object' ou 'InputJsonValue' dependendo da config do Prisma,
   // mas como msg é um objeto JS puro, passa direto na maioria dos casos.
+  // O campo context (se presente) contém a referência à mensagem sendo respondida
   const savedMsg = await prisma.message.create({
     data: {
       wamid: msg.id,
       instanceId,
       contactId: dbContact.id,
       direction: 'INBOUND',
-      type: msg.type as MessageType,
+      type: normalizedType as MessageType,
       processingStatus: isMedia ? 'PENDING' : 'NONE',
       body: bodyText,
       timestamp: BigInt(msg.timestamp),
-      rawJson: msg as unknown as object, // Cast seguro para JSON do Prisma
+      rawJson: msg as unknown as object, // Cast seguro para JSON do Prisma (inclui context se for reply)
       status: 'DELIVERED',
     },
   });
@@ -338,6 +357,11 @@ async function handleIncomingMessage(
       name: dbContact.pushName,
       phone: dbContact.waId,
     },
+    // Contexto de resposta (quando é uma reply)
+    replyTo: msg.context ? {
+      wamid: msg.context.id,
+      from: msg.context.from,
+    } : null,
   });
 }
 
