@@ -93,6 +93,16 @@ const MessageItemSchema = t.Object({
   ),
   // Novos campos para templates
   templateParams: t.Optional(t.Nullable(TemplateParamsStoredSchema)),
+  // Context de resposta (quando é reply a outra mensagem)
+  replyContext: t.Optional(
+    t.Nullable(
+      t.Object({
+        quotedMessageId: t.String(),
+        quotedMessageBody: t.Nullable(t.String()),
+        quotedMessageType: t.Nullable(t.String()),
+      }),
+    ),
+  ),
 });
 
 const SendMessageResponseSchema = t.Object({
@@ -323,32 +333,51 @@ export const whatsappChatRoute = new Elysia()
         },
       });
 
-      return messages.map((m) => ({
-        id: m.id,
-        body: m.body, // Se for imagem, aqui pode ser a legenda
-        type: m.type, // 'text', 'image', 'video', etc.
-        mediaUrl: m.mediaUrl, // URL da imagem
-        mediaFileName: m.mediaFileName,
-        direction: m.direction,
-        status: m.status,
-        timestamp: new Date(Number(m.timestamp) * 1000),
-        // Parâmetros do template (se for mensagem de template)
-        templateParams: (
-          m as unknown as {
-            templateParams: typeof TemplateParamsStoredSchema.static | null;
-          }
-        ).templateParams,
-        errorCode: m.errorCode,
-        errorDesc: m.errorDesc,
-        errorDefinition: m.errorDefinition
-          ? {
-              id: m.errorDefinition.id,
-              metaCode: m.errorDefinition.metaCode,
-              shortExplanation: m.errorDefinition.shortExplanation,
-              detailedExplanation: m.errorDefinition.detailedExplanation,
+      return messages.map((m) => {
+        // Extrai contexto de resposta do rawJson
+        const rawJson = m.rawJson as { context?: { id: string; from?: string } } | null;
+        const contextId = rawJson?.context?.id;
+
+        // Se tiver context, busca a mensagem citada
+        const quotedMessage = contextId
+          ? messages.find((msg) => msg.wamid === contextId)
+          : null;
+
+        return {
+          id: m.id,
+          body: m.body, // Se for imagem, aqui pode ser a legenda
+          type: m.type, // 'text', 'image', 'video', etc.
+          mediaUrl: m.mediaUrl, // URL da imagem
+          mediaFileName: m.mediaFileName,
+          direction: m.direction,
+          status: m.status,
+          timestamp: new Date(Number(m.timestamp) * 1000),
+          // Parâmetros do template (se for mensagem de template)
+          templateParams: (
+            m as unknown as {
+              templateParams: typeof TemplateParamsStoredSchema.static | null;
             }
-          : undefined,
-      }));
+          ).templateParams,
+          errorCode: m.errorCode,
+          errorDesc: m.errorDesc,
+          errorDefinition: m.errorDefinition
+            ? {
+                id: m.errorDefinition.id,
+                metaCode: m.errorDefinition.metaCode,
+                shortExplanation: m.errorDefinition.shortExplanation,
+                detailedExplanation: m.errorDefinition.detailedExplanation,
+              }
+            : undefined,
+          // Context de resposta (quando é reply)
+          replyContext: quotedMessage
+            ? {
+                quotedMessageId: quotedMessage.wamid,
+                quotedMessageBody: quotedMessage.body,
+                quotedMessageType: quotedMessage.type,
+              }
+            : null,
+        };
+      });
     },
     {
       auth: true,
