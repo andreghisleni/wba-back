@@ -335,7 +335,9 @@ export const whatsappChatRoute = new Elysia()
 
       return messages.map((m) => {
         // Extrai contexto de resposta do rawJson
-        const rawJson = m.rawJson as { context?: { id: string; from?: string } } | null;
+        const rawJson = m.rawJson as {
+          context?: { id: string; from?: string };
+        } | null;
         const contextId = rawJson?.context?.id;
 
         // Se tiver context, busca a mensagem citada
@@ -405,6 +407,7 @@ export const whatsappChatRoute = new Elysia()
         image,
         video,
         audio,
+        document,
       } = body;
 
       // 1. Busca dados do contato e instância
@@ -466,6 +469,22 @@ export const whatsappChatRoute = new Elysia()
         metaPayload.audio = {
           link: audio.url,
         };
+      } else if (type === "document") {
+        // LÓGICA PARA DOCUMENTOS (PDF, etc)
+        if (!document?.url) throw new Error("URL do documento é obrigatória");
+        if (!document?.filename)
+          throw new Error("Nome do arquivo é obrigatório");
+
+        metaPayload.type = "document";
+        metaPayload.document = {
+          link: document.url,
+          filename: document.filename,
+        };
+
+        // Se tiver legenda (caption), adiciona
+        if (document.caption) {
+          metaPayload.document.caption = document.caption;
+        }
       } else if (type === "template") {
         if (!template) throw new Error("Dados do template faltando");
 
@@ -579,6 +598,10 @@ export const whatsappChatRoute = new Elysia()
           bodyToSave = null;
           mediaUrlToSave = audio?.url || null;
           messageType = "audio";
+        } else if (type === "document") {
+          bodyToSave = document?.caption || null;
+          mediaUrlToSave = document?.url || null;
+          messageType = "document";
         } else {
           bodyToSave = `Template: ${template?.name}`;
           messageType = "template";
@@ -641,6 +664,7 @@ export const whatsappChatRoute = new Elysia()
           t.Literal("image"),
           t.Literal("video"),
           t.Literal("audio"),
+          t.Literal("document"),
         ]),
         message: t.Optional(t.String()),
         template: t.Optional(TemplateParamsSchema),
@@ -659,6 +683,13 @@ export const whatsappChatRoute = new Elysia()
         audio: t.Optional(
           t.Object({
             url: t.String({ format: "uri" }),
+          }),
+        ),
+        document: t.Optional(
+          t.Object({
+            url: t.String({ format: "uri" }),
+            filename: t.String(),
+            caption: t.Optional(t.String()),
           }),
         ),
       }),
