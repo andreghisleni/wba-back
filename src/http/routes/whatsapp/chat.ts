@@ -7,6 +7,7 @@ import { authMacro } from "~/auth";
 import { prisma } from "~/db/client";
 import type { MessageType } from "~/db/generated/prisma/enums";
 import { upsertSmartContact } from "~/services/contact-service";
+import { socketService } from "~/services/socket-service";
 
 const TemplateParamsSchema = t.Object({
   name: t.String(),
@@ -640,6 +641,14 @@ export const whatsappChatRoute = new Elysia()
         await prisma.contact.update({
           where: { id: contact.id },
           data: { updatedAt: new Date() },
+        });
+
+        // --- WEBSOCKET BROADCAST ---
+        socketService.broadcast(organizationId, "chat:message:new", {
+          ...savedMsg, // Espalha as propriedades do prisma
+          timestamp: new Date(Number(savedMsg.timestamp) * 1000),
+          templateParams: templateParamsToSave,
+          // Garanta que o payload bate com o que o front espera (MessageItemSchema)
         });
 
         return {

@@ -1,38 +1,39 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
-import { Elysia, t } from 'elysia';
-import { metaErrorsQueue } from '~/queue/setup';
-import { parseTemplateBody } from '~/scripts/parse-template-body';
-import { upsertSmartContact } from '~/services/contact-service';
-import { webhookService } from '~/services/webhook-service';
-import { prisma } from '../../db/client';
-import { apiKeyMacro } from '../macros/api-key';
-import { TemplateResponseSchema } from './whatsapp/templates';
+import { Elysia, t } from "elysia";
+import { metaErrorsQueue } from "~/queue/setup";
+import { parseTemplateBody } from "~/scripts/parse-template-body";
+import { upsertSmartContact } from "~/services/contact-service";
+import { socketService } from "~/services/socket-service";
+import { webhookService } from "~/services/webhook-service";
+import { prisma } from "../../db/client";
+import { apiKeyMacro } from "../macros/api-key";
+import { TemplateResponseSchema } from "./whatsapp/templates";
 
 // Schema para os botões (Baseado no seu chat.ts mas expandido para quick_reply)
 const ButtonParamSchema = t.Object({
   index: t.Number(),
-  type: t.Union([t.Literal('url'), t.Literal('quick_reply')]),
-  value: t.String({ description: 'Sufixo da URL ou Payload do botão' }),
+  type: t.Union([t.Literal("url"), t.Literal("quick_reply")]),
+  value: t.String({ description: "Sufixo da URL ou Payload do botão" }),
 });
 
-export const externalApiRoutes = new Elysia({ prefix: '/v1' })
+export const externalApiRoutes = new Elysia({ prefix: "/v1" })
   .use(apiKeyMacro) // Carrega a macro
   .guard({ apiKeyAuth: true }) // Protege TODAS as rotas abaixo com a chave
 
   // 1. Rota de Teste (Ping)
   .get(
-    '/status',
+    "/status",
     ({ organization }) => {
       return {
-        status: 'ok',
+        status: "ok",
         message: `Conexão estabelecida com sucesso para: ${organization.name}`,
         timestamp: new Date().toISOString(),
       };
     },
     {
       detail: {
-        summary: 'Testar conexão da API Key',
-        tags: ['External API'],
+        summary: "Testar conexão da API Key",
+        tags: ["External API"],
       },
       response: {
         200: t.Object({
@@ -41,20 +42,20 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
           timestamp: t.String(),
         }),
       },
-    }
+    },
   )
   // Rota de Envio de Template (Baseada no chat.ts)
   .post(
-    '/messages',
+    "/messages",
     async ({ body, organization, set }) => {
       // 1. Validar Instância Ativa
       const instance = await prisma.whatsAppInstance.findFirst({
-        where: { organizationId: organization.id, status: 'ACTIVE' },
+        where: { organizationId: organization.id, status: "ACTIVE" },
       });
 
       if (!instance) {
         set.status = 400;
-        return { error: 'Instância desconectada ou não encontrada.' };
+        return { error: "Instância desconectada ou não encontrada." };
       }
 
       // 2. Buscar Template no Banco (NECESSÁRIO para pegar o texto cru, ID e headerMediaUrl)
@@ -62,14 +63,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         where: {
           instanceId: instance.id,
           name: body.template,
-          status: 'APPROVED',
+          status: "APPROVED",
         },
         select: { id: true, body: true, structure: true, headerMediaUrl: true },
       });
 
       if (!storedTemplate) {
         set.status = 404;
-        return { error: 'Template não encontrado ou não aprovado na Meta.' };
+        return { error: "Template não encontrado ou não aprovado na Meta." };
       }
 
       // 2. BUSCAR OU CRIAR O CONTATO (A lógica crucial do chat.ts adaptada)
@@ -92,15 +93,15 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       ) {
         const headerComponent = (
           storedTemplate.structure as { type: string; format: string }[]
-        ).find((c) => c.type === 'HEADER' && c.format === 'VIDEO');
+        ).find((c) => c.type === "HEADER" && c.format === "VIDEO");
 
         // Se tem header de vídeo E temos uma URL configurada, adiciona ao payload
         if (headerComponent && storedTemplate.headerMediaUrl) {
           components.push({
-            type: 'header',
+            type: "header",
             parameters: [
               {
-                type: 'video',
+                type: "video",
                 video: { link: storedTemplate.headerMediaUrl },
               },
             ],
@@ -111,9 +112,9 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       // B. Variáveis de Texto (Body)
       if (body.variables && body.variables.length > 0) {
         components.push({
-          type: 'body',
+          type: "body",
           parameters: body.variables.map((val) => ({
-            type: 'text',
+            type: "text",
             text: val,
           })),
         });
@@ -122,31 +123,31 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       // C. Variáveis de Botão (Buttons)
       if (body.buttons && body.buttons.length > 0) {
         for (const btn of body.buttons) {
-          if (btn.type === 'url') {
+          if (btn.type === "url") {
             components.push({
-              type: 'button',
-              sub_type: 'url',
+              type: "button",
+              sub_type: "url",
               index: btn.index,
-              parameters: [{ type: 'text', text: btn.value }],
+              parameters: [{ type: "text", text: btn.value }],
             });
-          } else if (btn.type === 'quick_reply') {
+          } else if (btn.type === "quick_reply") {
             components.push({
-              type: 'button',
-              sub_type: 'quick_reply',
+              type: "button",
+              sub_type: "quick_reply",
               index: btn.index,
-              parameters: [{ type: 'payload', payload: btn.value }],
+              parameters: [{ type: "payload", payload: btn.value }],
             });
           }
         }
       }
 
       const metaPayload = {
-        messaging_product: 'whatsapp',
+        messaging_product: "whatsapp",
         to: contact.waId,
-        type: 'template',
+        type: "template",
         template: {
           name: body.template,
-          language: { code: body.language || 'pt_BR' },
+          language: { code: body.language || "pt_BR" },
           components: components.length > 0 ? components : undefined,
         },
       };
@@ -155,9 +156,9 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         // 4. Envio para a Meta (Igual ao chat.ts)
         const url = `https://graph.facebook.com/v21.0/${instance.phoneNumberId}/messages`;
         const res = await fetch(url, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${instance.accessToken}`,
           },
           body: JSON.stringify(metaPayload),
@@ -167,7 +168,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
 
         if (!res.ok || responseData.error) {
           throw new Error(
-            responseData.error?.message || 'Erro desconhecido na Meta'
+            responseData.error?.message || "Erro desconhecido na Meta",
           );
         }
 
@@ -184,20 +185,20 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
           bodyToSave += `\n\n Botões:\n ${body.buttons
             ?.map(
               (b) =>
-                `- [${b.type === 'url' ? 'URL' : 'Quick Reply'}] ${b.value}`
+                `- [${b.type === "url" ? "URL" : "Quick Reply"}] ${b.value}`,
             )
-            .join('\n')}`;
+            .join("\n")}`;
 
-          bodyToSave += '\n\n [Enviado via api externa]'; // Marcação extra
+          bodyToSave += "\n\n [Enviado via api externa]"; // Marcação extra
         } else if (body.variables && body.variables.length > 0) {
-          bodyToSave += ` (${body.variables.join(', ')})`;
+          bodyToSave += ` (${body.variables.join(", ")})`;
         }
 
         // 7. Preparar templateParams para salvar (renderização no frontend)
         const templateParams = {
           templateId: storedTemplate.id,
           templateName: body.template,
-          language: body.language || 'pt_BR',
+          language: body.language || "pt_BR",
           bodyParams: body.variables,
           buttonParams: body.buttons?.map((btn) => ({
             index: btn.index,
@@ -211,9 +212,9 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             wamid: responseData.messages[0].id,
             contactId: contact.id,
             instanceId: instance.id,
-            direction: 'OUTBOUND',
-            type: 'template',
-            status: 'SENT',
+            direction: "OUTBOUND",
+            type: "template",
+            status: "SENT",
             body: bodyToSave, // <--- Texto completo formatado
             timestamp: BigInt(Math.floor(Date.now() / 1000)),
             templateParams, // <--- Parâmetros do template para renderização
@@ -226,25 +227,31 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
           data: { updatedAt: new Date() },
         });
 
-        webhookService.dispatch(organization.id, 'message.sent', {
+        webhookService.dispatch(organization.id, "message.sent", {
           to: body.to,
           template: body.template,
           wamid: savedMsg.wamid,
-          status: 'queued',
+          status: "queued",
+        });
+
+        socketService.broadcast(organization.id, "chat:message:new", {
+          ...savedMsg,
+          timestamp: new Date(Number(savedMsg.timestamp) * 1000),
+          templateParams,
         });
 
         return {
           success: true,
           messageId: savedMsg.wamid,
-          status: 'queued',
+          status: "queued",
         };
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       } catch (error: any) {
-        console.error('[External API Error]', error);
+        console.error("[External API Error]", error);
         set.status = 500;
         return {
-          error: 'Falha no envio',
+          error: "Falha no envio",
           details: error.message,
         };
       }
@@ -255,42 +262,42 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         to: t.Object(
           {
             number: t.String({
-              description: 'Número de telefone (ex: 554899998888)',
+              description: "Número de telefone (ex: 554899998888)",
             }),
-            name: t.Optional(t.String({ description: 'Nome do contato' })),
+            name: t.Optional(t.String({ description: "Nome do contato" })),
             saveNameIfNotExists: t.Optional(
               t.Boolean({
                 default: false,
-                description: 'Salvar nome se não existir',
-              })
+                description: "Salvar nome se não existir",
+              }),
             ),
           },
-          { description: 'Informações do contato destinatário' }
+          { description: "Informações do contato destinatário" },
         ),
-        template: t.String({ description: 'Nome do template na Meta' }),
-        language: t.Optional(t.String({ default: 'pt_BR' })),
+        template: t.String({ description: "Nome do template na Meta" }),
+        language: t.Optional(t.String({ default: "pt_BR" })),
 
         // Flattened params (mais fácil para API externa usar)
         variables: t.Optional(t.Array(t.String())), // Array simples de strings
         buttons: t.Optional(t.Array(ButtonParamSchema)),
       }),
       detail: {
-        tags: ['External API'],
-        summary: 'Dispara template e registra no chat',
+        tags: ["External API"],
+        summary: "Dispara template e registra no chat",
       },
-    }
+    },
   )
   // 2. Importação/Atualização em Massa (Versão Otimizada)
   .post(
-    '/contacts',
+    "/contacts",
     async ({ body, organization, set }) => {
       const instance = await prisma.whatsAppInstance.findFirst({
-        where: { organizationId: organization.id, status: 'ACTIVE' },
+        where: { organizationId: organization.id, status: "ACTIVE" },
       });
 
       if (!instance) {
         set.status = 400;
-        return { error: 'Nenhuma instância do WhatsApp conectada.' };
+        return { error: "Nenhuma instância do WhatsApp conectada." };
       }
 
       // 1. Pré-filtro: Limpa e valida apenas os números úteis
@@ -298,7 +305,7 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         .map((item) => ({
           name: item.name,
           originalNumber: item.number,
-          cleanNumber: item.number.replace(/\D/g, ''),
+          cleanNumber: item.number.replace(/\D/g, ""),
         }))
         .filter((item) => item.cleanNumber.length >= 10);
 
@@ -311,17 +318,17 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
             phoneNumber: item.cleanNumber,
             name: item.name || item.cleanNumber,
             replaceName: !!item.name,
-          })
-        )
+          }),
+        ),
       );
 
       // 3. Contabiliza sucessos e erros
-      const processed = results.filter((r) => r.status === 'fulfilled').length;
-      const errors = results.filter((r) => r.status === 'rejected').length;
+      const processed = results.filter((r) => r.status === "fulfilled").length;
+      const errors = results.filter((r) => r.status === "rejected").length;
 
       return {
         success: true,
-        message: 'Processamento finalizado.',
+        message: "Processamento finalizado.",
         details: {
           totalReceived: body.length,
           validFormat: validInputs.length,
@@ -335,17 +342,17 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
         t.Object({
           number: t.String(),
           name: t.String(),
-        })
+        }),
       ),
-      detail: { tags: ['External API'] },
-    }
+      detail: { tags: ["External API"] },
+    },
   )
   .get(
-    '/templates',
+    "/templates",
     async ({ organization }) => {
       const templates = await prisma.template.findMany({
         where: { instance: { organizationId: organization.id } },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       });
 
       // Cast necessário pois Prisma Json é incompatível com TypeBox estrito
@@ -354,14 +361,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
     {
       response: t.Array(TemplateResponseSchema),
       detail: {
-        tags: ['External API'],
+        tags: ["External API"],
       },
-    }
+    },
   ) // ROTA: Reprocessar Mensagens com Erro (Backfill)
   .post(
-    '/reprocess-messages',
+    "/reprocess-messages",
     async ({ query }) => {
-      console.log('🔄 Buscando mensagens com erro não processadas...');
+      console.log("🔄 Buscando mensagens com erro não processadas...");
 
       // 1. Busca mensagens que têm erro mas não têm a definição vinculada
       // Limitamos a 1000 por vez para não estourar a memória se tiver milhões
@@ -385,14 +392,14 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
       if (messagesToProcess.length === 0) {
         return {
           success: true,
-          message: 'Nenhuma mensagem pendente de processamento de erro.',
+          message: "Nenhuma mensagem pendente de processamento de erro.",
           count: 0,
         };
       }
 
       // 2. Prepara jobs no formato exato que seu worker espera
       const jobs = messagesToProcess.map((msg) => ({
-        name: 'process-legacy-error', // Nome descritivo (o worker aceita qualquer nome)
+        name: "process-legacy-error", // Nome descritivo (o worker aceita qualquer nome)
         data: {
           messageId: msg.id,
           errorCode: msg.errorCode,
@@ -412,16 +419,16 @@ export const externalApiRoutes = new Elysia({ prefix: '/v1' })
 
       return {
         success: true,
-        message: 'Backfill iniciado.',
+        message: "Backfill iniciado.",
         enqueued_count: jobs.length,
         next_step:
-          'Rode novamente se houver mais registros (paginação manual).',
+          "Rode novamente se houver mais registros (paginação manual).",
       };
     },
     {
       detail: {
-        tags: ['External API'],
-        summary: 'Enfileira mensagens antigas para o worker de erros',
+        tags: ["External API"],
+        summary: "Enfileira mensagens antigas para o worker de erros",
       },
-    }
+    },
   );

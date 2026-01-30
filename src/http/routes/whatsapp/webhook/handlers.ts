@@ -7,6 +7,7 @@ import type { MessageStatus, MessageType } from "~/db/generated/prisma/enums";
 import { dispatchMediaProcessing } from "~/lib/media-service";
 import { metaErrorsQueue } from "~/queue/setup";
 import { upsertSmartContact } from "~/services/contact-service";
+import { socketService } from "~/services/socket-service";
 import { webhookService } from "~/services/webhook-service";
 import type {
   WhatsAppChange,
@@ -115,8 +116,29 @@ export async function handleStatusUpdate(
         },
         include: {
           instance: true, // <--- NECESSÁRIO: Pega a organização para o webhook
+          contact: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
+
+      // --- WEBSOCKET BROADCAST (Status) ---
+      if (updatedMessage.instance) {
+        socketService.broadcast(
+          updatedMessage.instance.organizationId,
+          "chat:message:update",
+          {
+            contactId: updatedMessage.contact.id,
+            id: updatedMessage.id,
+            wamid: updatedMessage.wamid,
+            status: updatedMessage.status, // SENT, DELIVERED, READ, FAILED
+            errorCode: updatedMessage.errorCode,
+            errorDesc: updatedMessage.errorDesc,
+          },
+        );
+      }
 
       try {
         if (
@@ -390,6 +412,39 @@ async function handleIncomingMessage(
           from: msg.context.from,
         }
       : null,
+  });
+
+  // 6. DISPARAR WEBSOCKET (NOVO) 🚀
+  // Enviamos o objeto formatado que o front espera
+  socketService.broadcast(organizationId, "chat:message:new", {
+    id: savedMsg.id,
+    body: savedMsg.body,
+    type: savedMsg.type,
+    mediaUrl: savedMsg.mediaUrl,
+    direction: savedMsg.direction,
+    status: savedMsg.status,
+    timestamp: new Date(Number(savedMsg.timestamp) * 1000), // Converta para Date JS
+    contactId: dbContact.id,
+    // Adicione outros campos que seu MessageItemSchema no front usa
+    // replyContext: msg.context
+    //   ? {
+    //       /* ... */
+    //     }
+    //   : null,
+    // 🔥 NOVO: Enviar dados do contato para criar o card na sidebar se precisar
+    contact: {
+      id: dbContact.id,
+      pushName: dbContact.pushName || dbContact.waId,
+      waId: dbContact.waId,
+      profilePicUrl: dbContact.profilePicUrl,
+      unreadCount: 1, // Se acabou de chegar, tem 1 não lida
+      lastMessage:
+        savedMsg.body || (savedMsg.type === "image" ? "📷 Imagem" : "📎 Anexo"),
+      lastMessageAt: new Date(Number(savedMsg.timestamp) * 1000),
+      lastMessageStatus: savedMsg.status,
+      lastMessageType: savedMsg.type,
+      isWindowOpen: true, // Assumindo janela aberta pois acabou de chegar
+    },
   });
 }
 
