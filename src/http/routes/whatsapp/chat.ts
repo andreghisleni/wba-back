@@ -146,147 +146,137 @@ const ErrorResponseSchema = t.Object({
   error: t.String(),
 });
 
-interface ContactRaw {
-  id: string;
-  pushName: string | null;
-  waId: string;
-  profilePicUrl: string | null;
-  unreadCount: bigint; // O count do SQL retorna BigInt/Int
-  lastMessageBody: string | null;
-  lastMessageStatus: string | null;
-  lastMessageType: string | null;
-  lastMessageTimestamp: bigint | null; // Timestamp da mensagem
-  lastInboundTimestamp: bigint | null; // Para cálculo da janela 24h
-  contactUpdatedAt: Date; // Fallback se não houver mensagem
-  total_count: bigint; // Trazido via Window Function
-}
-
 export const whatsappChatRoute = new Elysia()
   .macro(authMacro)
   // 1. Listar Contatos (Inbox) com Paginação e Filtros
   .get(
     "/contacts",
     async ({ organizationId, query }) => {
-      const page = Math.max(1, query.page ?? 1);
-      const limit = Math.max(1, Math.min(100, query.limit ?? 20));
-      const offset = (page - 1) * limit;
-      const search = query.search?.trim() ? `%${query.search.trim()}%` : null;
+      // Parâmetros de paginação e filtros
+      const page = query.page ?? 1;
+      const limit = query.limit ?? 20;
+      const search = query.search?.trim() ?? "";
       const unreadOnly = query.unreadOnly === "true";
 
-      // 2. A Query Raw Poderosa
-      // Usamos Prisma.sql para proteção contra SQL Injection
-      const contactsRaw = await prisma.$queryRaw<ContactRaw[]>`
-      WITH ContactMetrics AS (
-        SELECT
-          c.id,
-          -- Subquery eficiente para pegar a ÚLTIMA mensagem para ordenação e display
-          (
-            SELECT json_build_object(
-              'body', m.body, 
-              'timestamp', m.timestamp,
-              'status', m.status,
-              'type', m.type
-            )
-            FROM "Message" m
-            WHERE m."contactId" = c.id
-            ORDER BY m.timestamp DESC
-            LIMIT 1
-          ) as last_msg_obj,
-          
-          -- Subquery para contar não lidas (muito mais rápido que agrupar tudo)
-          (
-            SELECT COUNT(*)::int
-            FROM "Message" m
-            WHERE m."contactId" = c.id
-            AND m.direction = 'INBOUND'
-            AND m.status = 'DELIVERED'
-          ) as unread_count,
+      const skip = (page - 1) * limit;
 
-          -- Subquery para última mensagem Inbound (Janela 24h)
-          (
-             SELECT m.timestamp
-             FROM "Message" m
-             WHERE m."contactId" = c.id
-             AND m.direction = 'INBOUND'
-             ORDER BY m.timestamp DESC
-             LIMIT 1
-          ) as last_inbound_ts
-
-        FROM "Contact" c
-        JOIN "Instance" i ON c."instanceId" = i.id
-        WHERE i."organizationId" = ${organizationId}
-        AND (
-          ${search}::text IS NULL OR 
-          c."pushName" ILIKE ${search} OR 
-          c."waId" ILIKE ${search}
-        )
-      )
-      SELECT 
-        c.id,
-        c."pushName",
-        c."waId",
-        c."profilePicUrl",
-        c."updatedAt" as "contactUpdatedAt",
-        cm.unread_count as "unreadCount",
-        cm.last_inbound_ts as "lastInboundTimestamp",
-        
-        -- Extraindo dados do JSON da subquery
-        (cm.last_msg_obj->>'body') as "lastMessageBody",
-        (cm.last_msg_obj->>'status') as "lastMessageStatus",
-        (cm.last_msg_obj->>'type') as "lastMessageType",
-        (cm.last_msg_obj->>'timestamp')::bigint as "lastMessageTimestamp",
-        
-        -- Contagem total para paginação (Window Function evita segunda query)
-        COUNT(*) OVER() as total_count
-
-      FROM "Contact" c
-      JOIN ContactMetrics cm ON c.id = cm.id
-      WHERE 
-        -- Filtro de Unread aplicado aqui
-        (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
-      
-      ORDER BY 
-        -- A MÁGICA DA ORDENAÇÃO:
-        -- Usa o timestamp da mensagem se existir, senão usa o update do contato
-        COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
-        c."updatedAt" DESC
-      
-      LIMIT ${limit} 
-      OFFSET ${offset}
-    `;
-
-      // 3. Serialização e Tratamento de BigInt
-      // O Prisma Raw retorna BigInt que quebra o JSON.stringify se não tratar.
-
-      const total = Number(contactsRaw[0]?.total_count || 0);
-      const totalPages = Math.ceil(total / limit);
-      const now = Date.now();
+      // 24 horas em milissegundos
       const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
-      const data = contactsRaw.map((c) => {
-        // Lógica da Janela 24h
-        let isWindowOpen = false;
-        if (c.lastInboundTimestamp) {
-          // Assumindo que seu timestamp no banco é Unix Seconds
-          const lastInboundTime = Number(c.lastInboundTimestamp) * 1000;
-          isWindowOpen = (now - lastInboundTime) < TWENTY_FOUR_HOURS;
+      // Construir filtro WHERE (any necessário devido à tipagem dinâmica do Prisma)
+      const whereClause: any = {
+        instance: { organizationId },
+      };
+
+      // Filtro de busca por nome ou telefone
+      if (search) {
+        whereClause.OR = [
+          { pushName: { contains: search, mode: "insensitive" } },
+          { waId: { contains: search } },
+        ];
+      }
+
+      // Filtro de não lidas - precisa de abordagem diferente
+      // Vamos buscar IDs de contatos com mensagens não lidas primeiro
+      let contactIdsWithUnread: string[] | undefined;
+      if (unreadOnly) {
+        const contactsWithUnread = await prisma.message.groupBy({
+          by: ["contactId"],
+          where: {
+            direction: "INBOUND",
+            status: "DELIVERED",
+            contact: {
+              instance: { organizationId },
+            },
+          },
+          _count: { id: true },
+          having: {
+            id: { _count: { gt: 0 } },
+          },
+        });
+        contactIdsWithUnread = contactsWithUnread.map((c) => c.contactId);
+
+        // Se não há contatos com mensagens não lidas, retorna vazio
+        if (contactIdsWithUnread.length === 0) {
+          return {
+            data: [],
+            meta: {
+              total: 0,
+              page,
+              limit,
+              totalPages: 0,
+            },
+          };
         }
 
-        // Determinar a data correta para mostrar no front
-        const messageDate = c.lastMessageTimestamp
-          ? new Date(Number(c.lastMessageTimestamp) * 1000)
-          : c.contactUpdatedAt;
+        whereClause.id = { in: contactIdsWithUnread };
+      }
+
+      // Contar total para paginação
+      const total = await prisma.contact.count({ where: whereClause });
+      const totalPages = Math.ceil(total / limit);
+
+      const contacts = await prisma.contact.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          pushName: true,
+          waId: true,
+          profilePicUrl: true,
+          updatedAt: true,
+          _count: {
+            select: {
+              messages: {
+                where: {
+                  direction: "INBOUND",
+                  status: "DELIVERED",
+                },
+              },
+            },
+          },
+          messages: {
+            orderBy: { timestamp: "desc" },
+            take: 50,
+            select: {
+              body: true,
+              timestamp: true,
+              direction: true,
+              status: true,
+              type: true,
+            },
+          },
+        },
+        orderBy: { updatedAt: "desc" },
+        skip,
+        take: limit,
+      });
+
+      // Processamento em Memória
+      const data = contacts.map((c) => {
+        const lastMsgAbsolute = c.messages[0];
+        const lastInboundMsg = c.messages.find(
+          (m) => m.direction === "INBOUND",
+        );
+
+        let isWindowOpen = false;
+        if (lastInboundMsg) {
+          const lastInboundTime = Number(lastInboundMsg.timestamp) * 1000;
+          const diff = Date.now() - lastInboundTime;
+          isWindowOpen = diff < TWENTY_FOUR_HOURS;
+        }
 
         return {
           id: c.id,
           pushName: c.pushName || c.waId,
           waId: c.waId,
           profilePicUrl: c.profilePicUrl,
-          unreadCount: Number(c.unreadCount), // Converter BigInt para Number
-          lastMessage: c.lastMessageBody || "",
-          lastMessageStatus: c.lastMessageStatus || undefined,
-          lastMessageType: c.lastMessageType || "text",
-          lastMessageAt: messageDate,
+          unreadCount: c._count.messages,
+          lastMessage: lastMsgAbsolute?.body || "",
+          lastMessageStatus: lastMsgAbsolute?.status,
+          lastMessageType: lastMsgAbsolute?.type || "text",
+          lastMessageAt: lastMsgAbsolute
+            ? new Date(Number(lastMsgAbsolute.timestamp) * 1000)
+            : c.updatedAt,
           isWindowOpen,
         };
       });
