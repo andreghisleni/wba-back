@@ -1,17 +1,17 @@
 /** biome-ignore-all lint/style/useBlockStatements: necessário para compatibilidade */
 /** biome-ignore-all lint/suspicious/noConsole: logs de debug */
 /** biome-ignore-all lint/suspicious/noExplicitAny: payloads dinâmicos da Meta API */
-import type { InputJsonValue } from "@prisma/client/runtime/client";
-import { Elysia, t } from "elysia";
-import { authMacro } from "~/auth";
-import { prisma } from "~/db/client";
-import type { MessageType } from "~/db/generated/prisma/enums";
-import { upsertSmartContact } from "~/services/contact-service";
-import { socketService } from "~/services/socket-service";
+import type { InputJsonValue } from '@prisma/client/runtime/client';
+import { Elysia, t } from 'elysia';
+import { authMacro } from '~/auth';
+import { prisma } from '~/db/client';
+import type { MessageType } from '~/db/generated/prisma/enums';
+import { upsertSmartContact } from '~/services/contact-service';
+import { socketService } from '~/services/socket-service';
 
 const TemplateParamsSchema = t.Object({
   name: t.String(),
-  language: t.String({ default: "pt_BR" }),
+  language: t.String({ default: 'pt_BR' }),
   // Valores para as variáveis do corpo: {{1}}, {{2}} -> ["João", "R$ 50,00"]
   bodyValues: t.Optional(t.Array(t.String())),
   // Valores para variáveis de botão (se houver URL dinâmica)
@@ -20,8 +20,8 @@ const TemplateParamsSchema = t.Object({
       t.Object({
         index: t.Number(), // Qual botão é (0, 1, 2)
         value: t.String(), // O valor da variável na URL
-      }),
-    ),
+      })
+    )
   ),
 });
 
@@ -58,7 +58,7 @@ const TemplateParamsStoredSchema = t.Object({
     t.Object({
       type: t.String(),
       values: t.Optional(t.Array(t.String())),
-    }),
+    })
   ),
   bodyParams: t.Optional(t.Array(t.String())),
   buttonParams: t.Optional(
@@ -66,8 +66,8 @@ const TemplateParamsStoredSchema = t.Object({
       t.Object({
         index: t.Number(),
         value: t.String(),
-      }),
-    ),
+      })
+    )
   ),
 });
 
@@ -89,8 +89,8 @@ const MessageItemSchema = t.Object({
         metaCode: t.String(),
         shortExplanation: t.Nullable(t.String()),
         detailedExplanation: t.Nullable(t.String()),
-      }),
-    ),
+      })
+    )
   ),
   // Novos campos para templates
   templateParams: t.Optional(t.Nullable(TemplateParamsStoredSchema)),
@@ -101,8 +101,8 @@ const MessageItemSchema = t.Object({
         quotedMessageId: t.String(),
         quotedMessageBody: t.Nullable(t.String()),
         quotedMessageType: t.Nullable(t.String()),
-      }),
-    ),
+      })
+    )
   ),
 });
 
@@ -146,137 +146,153 @@ const ErrorResponseSchema = t.Object({
   error: t.String(),
 });
 
+interface ContactRaw {
+  id: string;
+  pushName: string | null;
+  waId: string;
+  profilePicUrl: string | null;
+  contactUpdatedAt: Date;
+  unreadCount: bigint;
+  lastInboundTimestamp: bigint | null;
+  // Campos extraídos do JSON
+  lastMessageBody: string | null;
+  lastMessageStatus: string | null;
+  lastMessageType: string | null;
+  lastMessageTimestamp: bigint | null;
+  total_count: bigint;
+}
+
 export const whatsappChatRoute = new Elysia()
   .macro(authMacro)
   // 1. Listar Contatos (Inbox) com Paginação e Filtros
   .get(
-    "/contacts",
+    '/contacts',
     async ({ organizationId, query }) => {
-      // Parâmetros de paginação e filtros
-      const page = query.page ?? 1;
-      const limit = query.limit ?? 20;
-      const search = query.search?.trim() ?? "";
-      const unreadOnly = query.unreadOnly === "true";
+      // 1. Sanitização de Inputs
+      const page = Math.max(1, query.page ?? 1);
+      const limit = Math.max(1, Math.min(100, query.limit ?? 20));
+      const offset = (page - 1) * limit;
+      const searchParam = query.search?.trim();
+      const search = searchParam ? `%${searchParam}%` : null;
+      const unreadOnly = query.unreadOnly === 'true';
 
-      const skip = (page - 1) * limit;
+      // 2. Query SQL Otimizada (PostgreSQL)
+      // Nota: Usamos as tabelas com "s" (contacts, messages) conforme o @@map do seu schema
+      const contactsRaw = await prisma.$queryRaw<ContactRaw[]>`
+      WITH ContactMetrics AS (
+        SELECT
+          c.id,
+          
+          -- Pega a última mensagem (qualquer direção) para o preview e ordenação
+          (
+            SELECT json_build_object(
+              'body', m.body, 
+              'timestamp', m."timestamp", -- BigInt
+              'status', m.status,
+              'type', m.type
+            )
+            FROM messages m
+            WHERE m."contactId" = c.id
+            ORDER BY m."timestamp" DESC
+            LIMIT 1
+          ) as last_msg_obj,
+          
+          -- Conta mensagens não lidas (INBOUND + DELIVERED)
+          -- Ajuste o status se sua lógica de "não lido" for diferente (ex: != READ)
+          (
+            SELECT COUNT(*)::int
+            FROM messages m
+            WHERE m."contactId" = c.id
+            AND m.direction = 'INBOUND'
+            AND m.status = 'DELIVERED'
+          ) as unread_count,
 
-      // 24 horas em milissegundos
-      const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+          -- Pega o timestamp da última mensagem recebida (para janela de 24h)
+          (
+             SELECT m."timestamp"
+             FROM messages m
+             WHERE m."contactId" = c.id
+             AND m.direction = 'INBOUND'
+             ORDER BY m."timestamp" DESC
+             LIMIT 1
+          ) as last_inbound_ts
 
-      // Construir filtro WHERE (any necessário devido à tipagem dinâmica do Prisma)
-      const whereClause: any = {
-        instance: { organizationId },
-      };
+        FROM contacts c
+        JOIN whatsapp_instances i ON c."instanceId" = i.id
+        WHERE i."organizationId" = ${organizationId}
+        AND (
+          ${search}::text IS NULL OR 
+          c."pushName" ILIKE ${search} OR 
+          c."waId" ILIKE ${search}
+        )
+      )
+      SELECT 
+        c.id,
+        c."pushName",
+        c."waId",
+        c."profilePicUrl",
+        c."updatedAt" as "contactUpdatedAt",
+        
+        cm.unread_count as "unreadCount",
+        cm.last_inbound_ts as "lastInboundTimestamp",
+        
+        -- Extração segura do JSON
+        (cm.last_msg_obj->>'body') as "lastMessageBody",
+        (cm.last_msg_obj->>'status') as "lastMessageStatus",
+        (cm.last_msg_obj->>'type') as "lastMessageType",
+        (cm.last_msg_obj->>'timestamp')::bigint as "lastMessageTimestamp",
+        
+        -- Totalizador (Window Function)
+        COUNT(*) OVER() as total_count
 
-      // Filtro de busca por nome ou telefone
-      if (search) {
-        whereClause.OR = [
-          { pushName: { contains: search, mode: "insensitive" } },
-          { waId: { contains: search } },
-        ];
-      }
+      FROM contacts c
+      JOIN ContactMetrics cm ON c.id = cm.id
+      WHERE 
+        (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
+      
+      ORDER BY 
+        -- Lógica de Ordenação Robusta:
+        -- 1. Usa o timestamp da última msg. Se for null, usa 0.
+        COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
+        -- 2. Desempate pelo update do contato
+        c."updatedAt" DESC
+      
+      LIMIT ${limit} 
+      OFFSET ${offset}
+    `;
 
-      // Filtro de não lidas - precisa de abordagem diferente
-      // Vamos buscar IDs de contatos com mensagens não lidas primeiro
-      let contactIdsWithUnread: string[] | undefined;
-      if (unreadOnly) {
-        const contactsWithUnread = await prisma.message.groupBy({
-          by: ["contactId"],
-          where: {
-            direction: "INBOUND",
-            status: "DELIVERED",
-            contact: {
-              instance: { organizationId },
-            },
-          },
-          _count: { id: true },
-          having: {
-            id: { _count: { gt: 0 } },
-          },
-        });
-        contactIdsWithUnread = contactsWithUnread.map((c) => c.contactId);
-
-        // Se não há contatos com mensagens não lidas, retorna vazio
-        if (contactIdsWithUnread.length === 0) {
-          return {
-            data: [],
-            meta: {
-              total: 0,
-              page,
-              limit,
-              totalPages: 0,
-            },
-          };
-        }
-
-        whereClause.id = { in: contactIdsWithUnread };
-      }
-
-      // Contar total para paginação
-      const total = await prisma.contact.count({ where: whereClause });
+      // 3. Processamento dos Dados (Mapper)
+      const total = Number(contactsRaw[0]?.total_count || 0);
       const totalPages = Math.ceil(total / limit);
 
-      const contacts = await prisma.contact.findMany({
-        where: whereClause,
-        select: {
-          id: true,
-          pushName: true,
-          waId: true,
-          profilePicUrl: true,
-          updatedAt: true,
-          _count: {
-            select: {
-              messages: {
-                where: {
-                  direction: "INBOUND",
-                  status: "DELIVERED",
-                },
-              },
-            },
-          },
-          messages: {
-            orderBy: { timestamp: "desc" },
-            take: 50,
-            select: {
-              body: true,
-              timestamp: true,
-              direction: true,
-              status: true,
-              type: true,
-            },
-          },
-        },
-        orderBy: { updatedAt: "desc" },
-        skip,
-        take: limit,
-      });
+      const now = Date.now();
+      const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
-      // Processamento em Memória
-      const data = contacts.map((c) => {
-        const lastMsgAbsolute = c.messages[0];
-        const lastInboundMsg = c.messages.find(
-          (m) => m.direction === "INBOUND",
-        );
-
+      const data = contactsRaw.map((c) => {
+        // Cálculo da Janela de 24h
         let isWindowOpen = false;
-        if (lastInboundMsg) {
-          const lastInboundTime = Number(lastInboundMsg.timestamp) * 1000;
-          const diff = Date.now() - lastInboundTime;
-          isWindowOpen = diff < TWENTY_FOUR_HOURS;
+        if (c.lastInboundTimestamp) {
+          // Converter BigInt para Number (Timestamp Unix geralmente cabe em Number JS até o ano 2200+)
+          const lastInboundTime = Number(c.lastInboundTimestamp) * 1000;
+          isWindowOpen = now - lastInboundTime < TWENTY_FOUR_HOURS;
+        }
+
+        // Definir qual data mostrar no card do contato
+        let lastMessageAt = c.contactUpdatedAt;
+        if (c.lastMessageTimestamp) {
+          lastMessageAt = new Date(Number(c.lastMessageTimestamp) * 1000);
         }
 
         return {
           id: c.id,
-          pushName: c.pushName || c.waId,
+          pushName: c.pushName || c.waId, // Fallback visual
           waId: c.waId,
           profilePicUrl: c.profilePicUrl,
-          unreadCount: c._count.messages,
-          lastMessage: lastMsgAbsolute?.body || "",
-          lastMessageStatus: lastMsgAbsolute?.status,
-          lastMessageType: lastMsgAbsolute?.type || "text",
-          lastMessageAt: lastMsgAbsolute
-            ? new Date(Number(lastMsgAbsolute.timestamp) * 1000)
-            : c.updatedAt,
+          unreadCount: Number(c.unreadCount),
+          lastMessage: c.lastMessageBody || '',
+          lastMessageStatus: c.lastMessageStatus || undefined,
+          lastMessageType: c.lastMessageType || 'text',
+          lastMessageAt,
           isWindowOpen,
         };
       });
@@ -300,18 +316,18 @@ export const whatsappChatRoute = new Elysia()
         unreadOnly: t.Optional(t.String()), // 'true' ou 'false'
       }),
       detail: {
-        operationId: "getWhatsappContacts",
-        tags: ["WhatsApp"],
+        operationId: 'getWhatsappContacts',
+        tags: ['WhatsApp'],
       },
       response: {
         200: PaginatedContactsResponseSchema,
       },
-    },
+    }
   )
 
   // 2. Listar Mensagens de um Contato
   .get(
-    "/contacts/:contactId/messages",
+    '/contacts/:contactId/messages',
     async ({ params, organizationId, set }) => {
       // Verifica se o contato pertence a uma instância do usuário (Segurança)
       const contact = await prisma.contact.findFirst({
@@ -323,12 +339,12 @@ export const whatsappChatRoute = new Elysia()
 
       if (!contact) {
         set.status = 404;
-        return { error: "Contato não encontrado ou sem permissão" };
+        return { error: 'Contato não encontrado ou sem permissão' };
       }
 
       const messages = await prisma.message.findMany({
         where: { contactId: params.contactId },
-        orderBy: { timestamp: "asc" },
+        orderBy: { timestamp: 'asc' },
         include: {
           errorDefinition: true,
         },
@@ -365,19 +381,19 @@ export const whatsappChatRoute = new Elysia()
           errorDesc: m.errorDesc,
           errorDefinition: m.errorDefinition
             ? {
-                id: m.errorDefinition.id,
-                metaCode: m.errorDefinition.metaCode,
-                shortExplanation: m.errorDefinition.shortExplanation,
-                detailedExplanation: m.errorDefinition.detailedExplanation,
-              }
+              id: m.errorDefinition.id,
+              metaCode: m.errorDefinition.metaCode,
+              shortExplanation: m.errorDefinition.shortExplanation,
+              detailedExplanation: m.errorDefinition.detailedExplanation,
+            }
             : undefined,
           // Context de resposta (quando é reply)
           replyContext: quotedMessage
             ? {
-                quotedMessageId: quotedMessage.wamid,
-                quotedMessageBody: quotedMessage.body,
-                quotedMessageType: quotedMessage.type,
-              }
+              quotedMessageId: quotedMessage.wamid,
+              quotedMessageBody: quotedMessage.body,
+              quotedMessageType: quotedMessage.type,
+            }
             : null,
         };
       });
@@ -386,19 +402,19 @@ export const whatsappChatRoute = new Elysia()
       auth: true,
       params: t.Object({ contactId: t.String() }),
       detail: {
-        operationId: "getWhatsappContactsContactIdMessages",
-        tags: ["WhatsApp"],
+        operationId: 'getWhatsappContactsContactIdMessages',
+        tags: ['WhatsApp'],
       },
       response: {
         200: t.Array(MessageItemSchema),
         404: ErrorResponseSchema,
       },
-    },
+    }
   )
 
   // 3. Enviar Mensagem (Simples texto, template e IMAGEM)
   .post(
-    "/messages",
+    '/messages',
     async ({ body, organizationId, set }) => {
       const {
         contactId,
@@ -419,11 +435,11 @@ export const whatsappChatRoute = new Elysia()
 
       if (!contact || contact.instance.organizationId !== organizationId) {
         set.status = 403;
-        return { error: "Sem permissão" };
+        return { error: 'Sem permissão' };
       }
 
       const metaPayload: any = {
-        messaging_product: "whatsapp",
+        messaging_product: 'whatsapp',
         to: contact.waId,
       };
 
@@ -432,15 +448,15 @@ export const whatsappChatRoute = new Elysia()
 
       // --- LÓGICA DE MONTAGEM DO PAYLOAD ---
 
-      if (type === "text") {
-        if (!textMessage) throw new Error("Mensagem de texto vazia");
-        metaPayload.type = "text";
+      if (type === 'text') {
+        if (!textMessage) throw new Error('Mensagem de texto vazia');
+        metaPayload.type = 'text';
         metaPayload.text = { body: textMessage };
-      } else if (type === "image") {
+      } else if (type === 'image') {
         // LÓGICA PARA IMAGENS
-        if (!image?.url) throw new Error("URL da imagem é obrigatória");
+        if (!image?.url) throw new Error('URL da imagem é obrigatória');
 
-        metaPayload.type = "image";
+        metaPayload.type = 'image';
         metaPayload.image = {
           link: image.url,
         };
@@ -449,11 +465,11 @@ export const whatsappChatRoute = new Elysia()
         if (image.caption) {
           metaPayload.image.caption = image.caption;
         }
-      } else if (type === "video") {
+      } else if (type === 'video') {
         // LÓGICA PARA VÍDEOS
-        if (!video?.url) throw new Error("URL do vídeo é obrigatória");
+        if (!video?.url) throw new Error('URL do vídeo é obrigatória');
 
-        metaPayload.type = "video";
+        metaPayload.type = 'video';
         metaPayload.video = {
           link: video.url,
         };
@@ -462,21 +478,21 @@ export const whatsappChatRoute = new Elysia()
         if (video.caption) {
           metaPayload.video.caption = video.caption;
         }
-      } else if (type === "audio") {
+      } else if (type === 'audio') {
         // LÓGICA PARA ÁUDIOS
-        if (!audio?.url) throw new Error("URL do áudio é obrigatória");
+        if (!audio?.url) throw new Error('URL do áudio é obrigatória');
 
-        metaPayload.type = "audio";
+        metaPayload.type = 'audio';
         metaPayload.audio = {
           link: audio.url,
         };
-      } else if (type === "document") {
+      } else if (type === 'document') {
         // LÓGICA PARA DOCUMENTOS (PDF, etc)
-        if (!document?.url) throw new Error("URL do documento é obrigatória");
+        if (!document?.url) throw new Error('URL do documento é obrigatória');
         if (!document?.filename)
-          throw new Error("Nome do arquivo é obrigatório");
+          throw new Error('Nome do arquivo é obrigatório');
 
-        metaPayload.type = "document";
+        metaPayload.type = 'document';
         metaPayload.document = {
           link: document.url,
           filename: document.filename,
@@ -486,14 +502,14 @@ export const whatsappChatRoute = new Elysia()
         if (document.caption) {
           metaPayload.document.caption = document.caption;
         }
-      } else if (type === "template") {
-        if (!template) throw new Error("Dados do template faltando");
+      } else if (type === 'template') {
+        if (!template) throw new Error('Dados do template faltando');
 
         // Busca o template no banco para verificar se tem header de vídeo
         storedTemplate = await prisma.template.findFirst({
           where: {
             name: template.name,
-            language: template.language || "pt_BR",
+            language: template.language || 'pt_BR',
             instanceId: contact.instanceId,
           },
           select: {
@@ -511,16 +527,16 @@ export const whatsappChatRoute = new Elysia()
           Array.isArray(storedTemplate.structure)
         ) {
           const headerComponent = (storedTemplate.structure as any[]).find(
-            (c: any) => c.type === "HEADER" && c.format === "VIDEO",
+            (c: any) => c.type === 'HEADER' && c.format === 'VIDEO'
           );
 
           // Se tem header de vídeo E temos uma URL configurada, adiciona ao payload
           if (headerComponent && storedTemplate.headerMediaUrl) {
             components.push({
-              type: "header",
+              type: 'header',
               parameters: [
                 {
-                  type: "video",
+                  type: 'video',
                   video: { link: storedTemplate.headerMediaUrl },
                 },
               ],
@@ -531,9 +547,9 @@ export const whatsappChatRoute = new Elysia()
         // B. Preenche variáveis do CORPO (Body)
         if (template.bodyValues && template.bodyValues.length > 0) {
           components.push({
-            type: "body",
+            type: 'body',
             parameters: template.bodyValues.map((val: any) => ({
-              type: "text",
+              type: 'text',
               text: val,
             })),
           });
@@ -543,12 +559,12 @@ export const whatsappChatRoute = new Elysia()
         if (template.buttonValues && template.buttonValues.length > 0) {
           for (const btn of template.buttonValues) {
             components.push({
-              type: "button",
-              sub_type: "url",
+              type: 'button',
+              sub_type: 'url',
               index: btn.index,
               parameters: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: btn.value,
                 },
               ],
@@ -556,10 +572,10 @@ export const whatsappChatRoute = new Elysia()
           }
         }
 
-        metaPayload.type = "template";
+        metaPayload.type = 'template';
         metaPayload.template = {
           name: template.name,
-          language: { code: template.language || "pt_BR" },
+          language: { code: template.language || 'pt_BR' },
           components: components.length > 0 ? components : undefined,
         };
       }
@@ -568,9 +584,9 @@ export const whatsappChatRoute = new Elysia()
         // 2. Envia para a Meta
         const url = `https://graph.facebook.com/v21.0/${contact.instance.phoneNumberId}/messages`;
         const res = await fetch(url, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${contact.instance.accessToken}`,
           },
           body: JSON.stringify(metaPayload),
@@ -584,37 +600,37 @@ export const whatsappChatRoute = new Elysia()
         let mediaUrlToSave: string | null = null;
         let messageType: MessageType;
 
-        if (type === "text") {
+        if (type === 'text') {
           bodyToSave = textMessage;
-          messageType = "text";
-        } else if (type === "image") {
+          messageType = 'text';
+        } else if (type === 'image') {
           bodyToSave = image?.caption || null;
           mediaUrlToSave = image?.url || null;
-          messageType = "image";
-        } else if (type === "video") {
+          messageType = 'image';
+        } else if (type === 'video') {
           bodyToSave = video?.caption || null;
           mediaUrlToSave = video?.url || null;
-          messageType = "video";
-        } else if (type === "audio") {
+          messageType = 'video';
+        } else if (type === 'audio') {
           bodyToSave = null;
           mediaUrlToSave = audio?.url || null;
-          messageType = "audio";
-        } else if (type === "document") {
+          messageType = 'audio';
+        } else if (type === 'document') {
           bodyToSave = document?.caption || null;
           mediaUrlToSave = document?.url || null;
-          messageType = "document";
+          messageType = 'document';
         } else {
           bodyToSave = `Template: ${template?.name}`;
-          messageType = "template";
+          messageType = 'template';
         }
 
         // Se for template, usa os dados do template já buscado para salvar os parâmetros
         let templateParamsToSave: InputJsonValue | null = null;
-        if (type === "template" && template && storedTemplate) {
+        if (type === 'template' && template && storedTemplate) {
           templateParamsToSave = {
             templateId: storedTemplate.id,
             templateName: template.name,
-            language: template.language || "pt_BR",
+            language: template.language || 'pt_BR',
             bodyParams: template.bodyValues || [],
             buttonParams: template.buttonValues || [],
           };
@@ -625,13 +641,13 @@ export const whatsappChatRoute = new Elysia()
             wamid: responseData.messages[0].id,
             contactId: contact.id,
             instanceId: contact.instanceId,
-            direction: "OUTBOUND",
+            direction: 'OUTBOUND',
             body: bodyToSave,
             type: messageType,
-            status: "SENT",
+            status: 'SENT',
             timestamp: BigInt(Math.floor(Date.now() / 1000)),
             mediaUrl: mediaUrlToSave,
-            processingStatus: "NONE",
+            processingStatus: 'NONE',
             // @ts-expect-error - campo será adicionado na próxima migration
             templateParams: templateParamsToSave,
           },
@@ -644,7 +660,7 @@ export const whatsappChatRoute = new Elysia()
         });
 
         // --- WEBSOCKET BROADCAST ---
-        socketService.broadcast(organizationId, "chat:message:new", {
+        socketService.broadcast(organizationId, 'chat:message:new', {
           ...savedMsg, // Espalha as propriedades do prisma
           timestamp: new Date(Number(savedMsg.timestamp) * 1000),
           templateParams: templateParamsToSave,
@@ -668,38 +684,38 @@ export const whatsappChatRoute = new Elysia()
       body: t.Object({
         contactId: t.String(),
         type: t.Union([
-          t.Literal("text"),
-          t.Literal("template"),
-          t.Literal("image"),
-          t.Literal("video"),
-          t.Literal("audio"),
-          t.Literal("document"),
+          t.Literal('text'),
+          t.Literal('template'),
+          t.Literal('image'),
+          t.Literal('video'),
+          t.Literal('audio'),
+          t.Literal('document'),
         ]),
         message: t.Optional(t.String()),
         template: t.Optional(TemplateParamsSchema),
         image: t.Optional(
           t.Object({
-            url: t.String({ format: "uri" }),
+            url: t.String({ format: 'uri' }),
             caption: t.Optional(t.String()),
-          }),
+          })
         ),
         video: t.Optional(
           t.Object({
-            url: t.String({ format: "uri" }),
+            url: t.String({ format: 'uri' }),
             caption: t.Optional(t.String()),
-          }),
+          })
         ),
         audio: t.Optional(
           t.Object({
-            url: t.String({ format: "uri" }),
-          }),
+            url: t.String({ format: 'uri' }),
+          })
         ),
         document: t.Optional(
           t.Object({
-            url: t.String({ format: "uri" }),
+            url: t.String({ format: 'uri' }),
             filename: t.String(),
             caption: t.Optional(t.String()),
-          }),
+          })
         ),
       }),
       response: {
@@ -707,10 +723,10 @@ export const whatsappChatRoute = new Elysia()
         403: ErrorResponseSchema,
         500: ErrorResponseSchema,
       },
-    },
+    }
   )
   .post(
-    "/contacts",
+    '/contacts',
     async ({ body, organizationId, set }) => {
       const { phoneNumber, name } = body;
 
@@ -722,16 +738,16 @@ export const whatsappChatRoute = new Elysia()
 
       if (!instance) {
         set.status = 400;
-        return { error: "Nenhuma instância disponível para criar o contato." };
+        return { error: 'Nenhuma instância disponível para criar o contato.' };
       }
 
       // 2. Limpeza do Telefone (Remove tudo que não é número)
-      const cleanPhone = phoneNumber.replace(/\D/g, "");
+      const cleanPhone = phoneNumber.replace(/\D/g, '');
 
       // Validar tamanho mínimo (DDI + DDD + Numero)
       if (cleanPhone.length < 10) {
         set.status = 400;
-        return { error: "Número de telefone inválido." };
+        return { error: 'Número de telefone inválido.' };
       }
 
       // 3. Upsert (Cria ou Atualiza se já existir)
@@ -752,18 +768,18 @@ export const whatsappChatRoute = new Elysia()
         name: t.Optional(t.String()),
       }),
       detail: {
-        tags: ["WhatsApp Contacts"],
-        operationId: "createWhatsappContact",
+        tags: ['WhatsApp Contacts'],
+        operationId: 'createWhatsappContact',
       },
       response: {
         200: CreateContactResponseSchema,
         400: ErrorResponseSchema,
       },
-    },
+    }
   )
   // 4. Marcar Mensagens como Lidas (Visualizadas)
   .post(
-    "/contacts/:contactId/read",
+    '/contacts/:contactId/read',
     async ({ params, organizationId, set }) => {
       const { contactId } = params;
 
@@ -778,7 +794,7 @@ export const whatsappChatRoute = new Elysia()
 
       if (!contact) {
         set.status = 404;
-        return { error: "Contato não encontrado." };
+        return { error: 'Contato não encontrado.' };
       }
 
       // 2. Atualiza no Banco de Dados
@@ -786,11 +802,11 @@ export const whatsappChatRoute = new Elysia()
       const updateResult = await prisma.message.updateMany({
         where: {
           contactId,
-          direction: "INBOUND",
-          status: "DELIVERED",
+          direction: 'INBOUND',
+          status: 'DELIVERED',
         },
         data: {
-          status: "READ",
+          status: 'READ',
         },
       });
 
@@ -801,29 +817,29 @@ export const whatsappChatRoute = new Elysia()
         try {
           // Marcamos a ÚLTIMA mensagem como lida na API, o que implicitamente marca as anteriores
           const lastUnread = await prisma.message.findFirst({
-            where: { contactId, direction: "INBOUND", status: "READ" }, // Já buscamos as que acabamos de atualizar
-            orderBy: { timestamp: "desc" },
+            where: { contactId, direction: 'INBOUND', status: 'READ' }, // Já buscamos as que acabamos de atualizar
+            orderBy: { timestamp: 'desc' },
           });
 
           if (lastUnread?.wamid) {
             const url = `https://graph.facebook.com/v21.0/${contact.instance.phoneNumberId}/messages`;
             await fetch(url, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${contact.instance.accessToken}`,
               },
               body: JSON.stringify({
-                messaging_product: "whatsapp",
-                status: "read",
+                messaging_product: 'whatsapp',
+                status: 'read',
                 message_id: lastUnread.wamid,
               }),
             });
           }
         } catch (error) {
           console.error(
-            "Erro ao enviar confirmação de leitura para Meta:",
-            error,
+            'Erro ao enviar confirmação de leitura para Meta:',
+            error
           );
           // Não falhamos a request por isso, é um efeito colateral
         }
@@ -838,13 +854,13 @@ export const whatsappChatRoute = new Elysia()
       auth: true,
       params: t.Object({ contactId: t.String() }),
       detail: {
-        tags: ["WhatsApp"],
-        summary: "Marca mensagens recebidas como lidas",
-        operationId: "markWhatsappMessagesAsRead",
+        tags: ['WhatsApp'],
+        summary: 'Marca mensagens recebidas como lidas',
+        operationId: 'markWhatsappMessagesAsRead',
       },
       response: {
         200: ReadMessagesResponseSchema,
         404: ErrorResponseSchema,
       },
-    },
+    }
   );
