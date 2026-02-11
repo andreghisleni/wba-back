@@ -82,20 +82,19 @@ export const importMembersRoute = new Elysia().macro(authMacro).post(
     }
 
     // busca todos os ids dos contatos usando o upsertSmartContact que já verifica os que nao existem e cria esses
-    const membersWithIds = await Promise.all(
-      members.map(async (member: typeof importMemberSchema) => {
-        // Usar a função de upsertSmartContact para garantir que o contato exista
-        const contact = await upsertSmartContact({
-          instanceId: instance.id,
-          phoneNumber: member.phone,
-          name: member.name,
-        });
-        return {
-          ...member,
-          contactId: contact.id,
-        };
-      })
-    );
+    const membersWithIds = [];
+    for (const member of members) {
+      // Usar a função de upsertSmartContact para garantir que o contato exista
+      const contact = await upsertSmartContact({
+        instanceId: instance.id,
+        phoneNumber: member.phone,
+        name: member.name,
+      });
+      membersWithIds.push({
+        ...member,
+        contactId: contact.id,
+      });
+    }
 
     // 3. Adiciona os contatos à lista de transmissão
     const result = await prisma.broadcastListMember.createMany({
