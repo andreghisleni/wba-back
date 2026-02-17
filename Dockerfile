@@ -13,7 +13,7 @@ COPY ./prisma ./prisma
 RUN bun install
 
 # GERAR o Prisma Client (Não precisa de DATABASE_URL real aqui, não tente conectar ao banco)
-RUN bun db:g
+# RUN bun db:g
 
 # Copiar o resto do código
 COPY ./src ./src
