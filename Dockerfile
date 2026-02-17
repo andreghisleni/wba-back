@@ -13,7 +13,7 @@ COPY ./prisma ./prisma
 RUN bun install
 
 # GERAR o Prisma Client (Não precisa de DATABASE_URL real aqui, não tente conectar ao banco)
-RUN bunx prisma generate
+RUN bun db:g
 
 # Copiar o resto do código
 COPY ./src ./src
@@ -56,4 +56,4 @@ EXPOSE 3000
 # O PULO DO GATO:
 # Primeiro ele roda a migration (já dentro da rede interna do Easypanel)
 # Se der sucesso (&&), ele inicia o seu servidor compilado.
-CMD ["sh", "-c", "bunx prisma migrate deploy && ./server"]
+CMD ["sh", "-c", "bun db:m:d && ./server"]
