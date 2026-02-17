@@ -16,13 +16,13 @@ RUN bun install
 COPY ./prisma ./prisma
 
 # Declare build args
-ARG DATABASE_URL
+# ARG DATABASE_URL
 
-# Set environment variable for Prisma
-ENV DATABASE_URL=$DATABASE_URL
+# # Set environment variable for Prisma
+# ENV DATABASE_URL=$DATABASE_URL
 
 # Generate Prisma client with correct binary targets
-RUN bun db:m:d
+# RUN bun db:m:d
 
 COPY ./src ./src
 
