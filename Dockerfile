@@ -6,27 +6,23 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl
 
 # Cache packages installation
-COPY package.json package.json
-COPY bun.lock bun.lock
-COPY tsconfig.json tsconfig.json
-COPY prisma.config.ts prisma.config.ts
-
+COPY package.json bun.lock tsconfig.json prisma.config.ts ./
 RUN bun install
 
 COPY ./prisma ./prisma
 
-# Declare build args
-ARG DATABASE_URL
+# --- O TRUQUE ACONTECE AQUI ---
+# 1. Recebe a URL EXTERNA do Easypanel durante o build
+ARG EXTERNAL_DB_URL
+# 2. Define ela temporariamente como DATABASE_URL para o Prisma
+ENV DATABASE_URL=$EXTERNAL_DB_URL
 
-# Set environment variable for Prisma
-ENV DATABASE_URL=$DATABASE_URL
-
-# Generate Prisma client with correct binary targets
+# 3. Gera o client e roda a migration usando a rede externa
 # RUN bun db:g
 RUN bun db:m:d
+# ------------------------------
 
 COPY ./src ./src
-
 
 ENV NODE_ENV=production
 
@@ -50,8 +46,6 @@ RUN apt-get update -y && \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/server server
-# COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
-# COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
 
 ENV NODE_ENV=production
 
