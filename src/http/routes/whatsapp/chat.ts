@@ -266,11 +266,18 @@ export const whatsappChatRoute = new Elysia()
           (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
 
         ORDER BY 
-          -- 1. Prioridade da Tag (Nulo por último, maior prioridade primeiro)
+          -- 1. Prioridade Máxima: Tem mensagens não lidas? (1 para Sim, 0 para Não)
+          CASE WHEN cm.unread_count > 0 THEN 1 ELSE 0 END DESC,
+
+          -- 2. Segundo Critério: Prioridade da Tag (Maior primeiro)
+          -- Nota: Isso só afetará o desempate dentro do grupo de "Não Lidos" 
+          -- e depois dentro do grupo de "Lidos".
           t.priority DESC NULLS LAST,
-          -- 2. Timestamp da última mensagem
+
+          -- 3. Terceiro Critério: Data da última mensagem (Mais recente primeiro)
           COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
-          -- 3. Update do contato como fallback
+
+          -- 4. Fallback: Data de atualização do contato
           c."updatedAt" DESC
 
         LIMIT ${limit} 
