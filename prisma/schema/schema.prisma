@@ -115,6 +115,8 @@ model Organization {
   webhooks        Webhook[]
   absenceMessages AbsenceMessage[]
 
+  tags Tag[]
+
   @@unique([slug])
   @@map("organization")
 }

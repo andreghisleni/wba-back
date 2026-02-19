@@ -196,6 +196,7 @@ export type OrganizationWhereInput = {
   apiKeys?: Prisma.ApiKeyListRelationFilter
   webhooks?: Prisma.WebhookListRelationFilter
   absenceMessages?: Prisma.AbsenceMessageListRelationFilter
+  tags?: Prisma.TagListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -211,6 +212,7 @@ export type OrganizationOrderByWithRelationInput = {
   apiKeys?: Prisma.ApiKeyOrderByRelationAggregateInput
   webhooks?: Prisma.WebhookOrderByRelationAggregateInput
   absenceMessages?: Prisma.AbsenceMessageOrderByRelationAggregateInput
+  tags?: Prisma.TagOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -229,6 +231,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   apiKeys?: Prisma.ApiKeyListRelationFilter
   webhooks?: Prisma.WebhookListRelationFilter
   absenceMessages?: Prisma.AbsenceMessageListRelationFilter
+  tags?: Prisma.TagListRelationFilter
 }, "id" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -268,6 +271,7 @@ export type OrganizationCreateInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -283,6 +287,7 @@ export type OrganizationUncheckedCreateInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -298,6 +303,7 @@ export type OrganizationUpdateInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -313,6 +319,7 @@ export type OrganizationUncheckedUpdateInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -386,6 +393,20 @@ export type OrganizationUpdateOneRequiredWithoutWhatsAppInstancesNestedInput = {
   upsert?: Prisma.OrganizationUpsertWithoutWhatsAppInstancesInput
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutWhatsAppInstancesInput, Prisma.OrganizationUpdateWithoutWhatsAppInstancesInput>, Prisma.OrganizationUncheckedUpdateWithoutWhatsAppInstancesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutTagsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutTagsInput, Prisma.OrganizationUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutTagsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutTagsInput, Prisma.OrganizationUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutTagsInput
+  upsert?: Prisma.OrganizationUpsertWithoutTagsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutTagsInput, Prisma.OrganizationUpdateWithoutTagsInput>, Prisma.OrganizationUncheckedUpdateWithoutTagsInput>
 }
 
 export type OrganizationCreateNestedOneWithoutMembersInput = {
@@ -470,6 +491,7 @@ export type OrganizationCreateWithoutWhatsAppInstancesInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutWhatsAppInstancesInput = {
@@ -484,6 +506,7 @@ export type OrganizationUncheckedCreateWithoutWhatsAppInstancesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutWhatsAppInstancesInput = {
@@ -514,6 +537,7 @@ export type OrganizationUpdateWithoutWhatsAppInstancesInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutWhatsAppInstancesInput = {
@@ -525,6 +549,83 @@ export type OrganizationUncheckedUpdateWithoutWhatsAppInstancesInput = {
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
+  webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
+  absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutTagsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  createdAt: Date | string
+  metadata?: string | null
+  members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
+  invitations?: Prisma.InvitationCreateNestedManyWithoutOrganizationInput
+  whatsAppInstances?: Prisma.WhatsAppInstanceCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
+  webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
+  absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutTagsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  createdAt: Date | string
+  metadata?: string | null
+  members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
+  webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
+  absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutTagsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutTagsInput, Prisma.OrganizationUncheckedCreateWithoutTagsInput>
+}
+
+export type OrganizationUpsertWithoutTagsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutTagsInput, Prisma.OrganizationUncheckedUpdateWithoutTagsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutTagsInput, Prisma.OrganizationUncheckedCreateWithoutTagsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutTagsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutTagsInput, Prisma.OrganizationUncheckedUpdateWithoutTagsInput>
+}
+
+export type OrganizationUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
+  invitations?: Prisma.InvitationUpdateManyWithoutOrganizationNestedInput
+  whatsAppInstances?: Prisma.WhatsAppInstanceUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
+  webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
+  absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -542,6 +643,7 @@ export type OrganizationCreateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -556,6 +658,7 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -586,6 +689,7 @@ export type OrganizationUpdateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -600,6 +704,7 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutInvitationsInput = {
@@ -614,6 +719,7 @@ export type OrganizationCreateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutInvitationsInput = {
@@ -628,6 +734,7 @@ export type OrganizationUncheckedCreateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutInvitationsInput = {
@@ -658,6 +765,7 @@ export type OrganizationUpdateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
@@ -672,6 +780,7 @@ export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutApiKeysInput = {
@@ -686,6 +795,7 @@ export type OrganizationCreateWithoutApiKeysInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutApiKeysInput = {
@@ -700,6 +810,7 @@ export type OrganizationUncheckedCreateWithoutApiKeysInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutApiKeysInput = {
@@ -730,6 +841,7 @@ export type OrganizationUpdateWithoutApiKeysInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutApiKeysInput = {
@@ -744,6 +856,7 @@ export type OrganizationUncheckedUpdateWithoutApiKeysInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAbsenceMessagesInput = {
@@ -758,6 +871,7 @@ export type OrganizationCreateWithoutAbsenceMessagesInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAbsenceMessagesInput = {
@@ -772,6 +886,7 @@ export type OrganizationUncheckedCreateWithoutAbsenceMessagesInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   webhooks?: Prisma.WebhookUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAbsenceMessagesInput = {
@@ -802,6 +917,7 @@ export type OrganizationUpdateWithoutAbsenceMessagesInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAbsenceMessagesInput = {
@@ -816,6 +932,7 @@ export type OrganizationUncheckedUpdateWithoutAbsenceMessagesInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   webhooks?: Prisma.WebhookUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutWebhooksInput = {
@@ -830,6 +947,7 @@ export type OrganizationCreateWithoutWebhooksInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutWebhooksInput = {
@@ -844,6 +962,7 @@ export type OrganizationUncheckedCreateWithoutWebhooksInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedCreateNestedManyWithoutOrganizationInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutWebhooksInput = {
@@ -874,6 +993,7 @@ export type OrganizationUpdateWithoutWebhooksInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutWebhooksInput = {
@@ -888,6 +1008,7 @@ export type OrganizationUncheckedUpdateWithoutWebhooksInput = {
   whatsAppInstances?: Prisma.WhatsAppInstanceUncheckedUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   absenceMessages?: Prisma.AbsenceMessageUncheckedUpdateManyWithoutOrganizationNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -902,6 +1023,7 @@ export type OrganizationCountOutputType = {
   apiKeys: number
   webhooks: number
   absenceMessages: number
+  tags: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -911,6 +1033,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   apiKeys?: boolean | OrganizationCountOutputTypeCountApiKeysArgs
   webhooks?: boolean | OrganizationCountOutputTypeCountWebhooksArgs
   absenceMessages?: boolean | OrganizationCountOutputTypeCountAbsenceMessagesArgs
+  tags?: boolean | OrganizationCountOutputTypeCountTagsArgs
 }
 
 /**
@@ -965,6 +1088,13 @@ export type OrganizationCountOutputTypeCountAbsenceMessagesArgs<ExtArgs extends 
   where?: Prisma.AbsenceMessageWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TagWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -979,6 +1109,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   apiKeys?: boolean | Prisma.Organization$apiKeysArgs<ExtArgs>
   webhooks?: boolean | Prisma.Organization$webhooksArgs<ExtArgs>
   absenceMessages?: boolean | Prisma.Organization$absenceMessagesArgs<ExtArgs>
+  tags?: boolean | Prisma.Organization$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -1017,6 +1148,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   apiKeys?: boolean | Prisma.Organization$apiKeysArgs<ExtArgs>
   webhooks?: boolean | Prisma.Organization$webhooksArgs<ExtArgs>
   absenceMessages?: boolean | Prisma.Organization$absenceMessagesArgs<ExtArgs>
+  tags?: boolean | Prisma.Organization$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1031,6 +1163,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     apiKeys: Prisma.$ApiKeyPayload<ExtArgs>[]
     webhooks: Prisma.$WebhookPayload<ExtArgs>[]
     absenceMessages: Prisma.$AbsenceMessagePayload<ExtArgs>[]
+    tags: Prisma.$TagPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1439,6 +1572,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   apiKeys<T extends Prisma.Organization$apiKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   webhooks<T extends Prisma.Organization$webhooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$webhooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebhookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   absenceMessages<T extends Prisma.Organization$absenceMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$absenceMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AbsenceMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tags<T extends Prisma.Organization$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2003,6 +2137,30 @@ export type Organization$absenceMessagesArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.AbsenceMessageScalarFieldEnum | Prisma.AbsenceMessageScalarFieldEnum[]
+}
+
+/**
+ * Organization.tags
+ */
+export type Organization$tagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tag
+   */
+  select?: Prisma.TagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tag
+   */
+  omit?: Prisma.TagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TagInclude<ExtArgs> | null
+  where?: Prisma.TagWhereInput
+  orderBy?: Prisma.TagOrderByWithRelationInput | Prisma.TagOrderByWithRelationInput[]
+  cursor?: Prisma.TagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
 }
 
 /**

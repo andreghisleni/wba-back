@@ -56,6 +56,7 @@ export const ModelName = {
   BroadcastCampaign: 'BroadcastCampaign',
   WhatsAppInstance: 'WhatsAppInstance',
   Contact: 'Contact',
+  Tag: 'Tag',
   Message: 'Message',
   Template: 'Template',
   ConversationCharge: 'ConversationCharge',
@@ -156,10 +157,24 @@ export const ContactScalarFieldEnum = {
   profilePicUrl: 'profilePicUrl',
   instanceId: 'instanceId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  tagId: 'tagId'
 } as const
 
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+
+export const TagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  priority: 'priority',
+  colorName: 'colorName',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
 
 
 export const MessageScalarFieldEnum = {

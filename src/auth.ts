@@ -12,7 +12,7 @@ import {
   openAPI,
   organization,
 } from 'better-auth/plugins';
-
+import Elysia from 'elysia';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { prisma } from './db/client';
 import InviteEmail from './emails/invite-email';
@@ -88,7 +88,6 @@ export const auth = betterAuth({
             userName: data.email || undefined,
             inviteLink: `${env.BETTER_AUTH_URL}/accept-invitation/${data.id}`,
             organizationName: data.organization.name,
-
           })
         );
 
@@ -195,3 +194,35 @@ export const authMacro = {
     },
   },
 };
+
+export const uAuth = new Elysia().macro({
+  auth: {
+    async resolve({ status, request: { headers } }) {
+      const session = await auth.api.getSession({
+        headers,
+      });
+
+      // biome-ignore lint/style/useBlockStatements: <explanation>
+      if (!session) return status(401);
+
+      const member = await auth.api.getActiveMember({
+        headers,
+      });
+
+      // const org = await auth.api.getFullOrganization({
+      //   headers,
+      //   query: {
+      //     membersLimit: 1,
+      //   }
+      // });
+
+      return {
+        user: session.user,
+        // organization: org,
+        member,
+        organizationId: member?.organizationId,
+        session: session.session,
+      };
+    },
+  },
+});

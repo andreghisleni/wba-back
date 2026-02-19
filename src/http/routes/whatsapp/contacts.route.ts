@@ -49,4 +49,62 @@ export const getContactsRoute = new Elysia({
         error: t.String(),
       }),
     },
+  })
+  .patch('/:id/tag', async ({ body, organizationId, set, params }) => {
+    const { tagId } = body;
+
+    const contact = await prisma.contact.findUnique({
+      where: { id: params.id },
+      include: { instance: true },
+    });
+
+    if (!contact || contact.instance.organizationId !== organizationId) {
+      set.status = 404;
+      return { error: 'Contato não encontrado.' };
+    }
+
+    const tag = await prisma.tag.findFirst({
+      where: {
+        id: tagId,
+        organizationId,
+      },
+    });
+
+    if (!tag) {
+      set.status = 404;
+      return { error: 'Tag não encontrada.' };
+    }
+
+    await prisma.contact.update({
+      where: { id: params.id },
+      data: {
+        tagId,
+      },
+    });
+
+    set.status = 201;
+    return { id: params.id };
+  }, {
+    auth: true,
+    body: t.Object({
+      tagId: t.String({ format: 'uuid' }),
+    }),
+    params: t.Object({
+      id: t.String({ format: 'uuid' }),
+    }),
+    detail: {
+      summary: 'Adiciona uma tag a um contato.',
+      operationId: 'addTagToContact',
+    },
+    response: {
+      201: t.Object({
+        id: t.String(),
+      }),
+      400: t.Object({
+        error: t.String(),
+      }),
+      404: t.Object({
+        error: t.String(),
+      }),
+    },
   });

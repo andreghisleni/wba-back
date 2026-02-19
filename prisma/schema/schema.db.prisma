@@ -55,9 +55,32 @@ model Contact {
 
   broadcastListMembers BroadcastListMember[]
 
+  tagId String? @map("tag_id")
+  tag   Tag?    @relation(fields: [tagId], references: [id])
+
   // Garante que o contato é único POR INSTÂNCIA (Instâncias diferentes podem ter o mesmo contato)
   @@unique([instanceId, waId])
   @@map("contacts")
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String
+
+  priority Int @default(0) // Para ordenação manual
+
+  colorName String
+
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts Contact[]
+
+  @@unique([organizationId, name])
+  @@map("tags")
 }
 
 // ---------------------------------------------------------

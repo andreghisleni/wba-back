@@ -6,6 +6,7 @@ import { getContactsRoute } from './contacts.route';
 import { mediaCallbackRoute } from './media-callback';
 import { whatsappOauthLinkRoute } from './oauth-link';
 import { whatsappOnboardingRoute } from './onboarding';
+import { tagsRoutes } from './tags';
 import { whatsappTemplatesRoute } from './templates';
 import { uploadRoute } from './upload';
 import { whatsappWebhookRoute } from './webhook';
@@ -25,4 +26,6 @@ export const whatsappRoutes = new Elysia({
   // Nova rota de mensagem de ausência
   .use(whatsappAbsenceMessageRoute)
   .use(broadcastRoutes)
-  .use(getContactsRoute);
+  .use(getContactsRoute)
+
+  .use(tagsRoutes);

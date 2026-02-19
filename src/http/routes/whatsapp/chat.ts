@@ -36,6 +36,15 @@ const ContactListItemSchema = t.Object({
   lastMessageStatus: t.Optional(t.String()),
   lastMessageAt: t.Date(),
   isWindowOpen: t.Boolean(),
+
+  tag: t.Nullable(
+    t.Object({
+      id: t.String(),
+      name: t.String(),
+      color: t.String(),
+      priority: t.Number(),
+    })
+  ),
 });
 
 // Schema para resposta paginada de contatos
@@ -160,6 +169,11 @@ interface ContactRaw {
   lastMessageType: string | null;
   lastMessageTimestamp: bigint | null;
   total_count: bigint;
+
+  tagId: string | null;
+  tagName: string | null;
+  tagPriority: number | null;
+  tagColor: string | null;
 }
 
 export const whatsappChatRoute = new Elysia()
@@ -178,89 +192,90 @@ export const whatsappChatRoute = new Elysia()
 
       // 2. Query SQL Otimizada (PostgreSQL)
       // Nota: Usamos as tabelas com "s" (contacts, messages) conforme o @@map do seu schema
+      // 2. Query SQL Otimizada com Tags
       const contactsRaw = await prisma.$queryRaw<ContactRaw[]>`
-      WITH ContactMetrics AS (
-        SELECT
-          c.id,
-          
-          -- Pega a última mensagem (qualquer direção) para o preview e ordenação
-          (
-            SELECT json_build_object(
-              'body', m.body, 
-              'timestamp', m."timestamp", -- BigInt
-              'status', m.status,
-              'type', m.type
-            )
-            FROM messages m
-            WHERE m."contactId" = c.id
-            ORDER BY m."timestamp" DESC
-            LIMIT 1
-          ) as last_msg_obj,
-          
-          -- Conta mensagens não lidas (INBOUND + DELIVERED)
-          -- Ajuste o status se sua lógica de "não lido" for diferente (ex: != READ)
-          (
-            SELECT COUNT(*)::int
-            FROM messages m
-            WHERE m."contactId" = c.id
-            AND m.direction = 'INBOUND'
-            AND m.status = 'DELIVERED'
-          ) as unread_count,
+        WITH ContactMetrics AS (
+          SELECT
+            c.id,
+            -- Pega a última mensagem
+            (
+              SELECT json_build_object(
+                'body', m.body, 
+                'timestamp', m."timestamp",
+                'status', m.status,
+                'type', m.type
+              )
+              FROM messages m
+              WHERE m."contactId" = c.id
+              ORDER BY m."timestamp" DESC
+              LIMIT 1
+            ) as last_msg_obj,
+            
+            (
+              SELECT COUNT(*)::int
+              FROM messages m
+              WHERE m."contactId" = c.id
+              AND m.direction = 'INBOUND'
+              AND m.status = 'DELIVERED'
+            ) as unread_count,
 
-          -- Pega o timestamp da última mensagem recebida (para janela de 24h)
-          (
-             SELECT m."timestamp"
-             FROM messages m
-             WHERE m."contactId" = c.id
-             AND m.direction = 'INBOUND'
-             ORDER BY m."timestamp" DESC
-             LIMIT 1
-          ) as last_inbound_ts
+            (
+              SELECT m."timestamp"
+              FROM messages m
+              WHERE m."contactId" = c.id
+              AND m.direction = 'INBOUND'
+              ORDER BY m."timestamp" DESC
+              LIMIT 1
+            ) as last_inbound_ts
+
+          FROM contacts c
+          JOIN whatsapp_instances i ON c."instanceId" = i.id
+          WHERE i."organizationId" = ${organizationId}
+          AND (
+            ${search}::text IS NULL OR 
+            c."pushName" ILIKE ${search} OR 
+            c."waId" ILIKE ${search}
+          )
+        )
+        SELECT 
+          c.id,
+          c."pushName",
+          c."waId",
+          c."profilePicUrl",
+          c."updatedAt" as "contactUpdatedAt",
+          
+          -- Dados da Tag
+          t.id as "tagId",
+          t.name as "tagName",
+          t.priority as "tagPriority",
+          t."colorName" as "tagColor",
+          
+          cm.unread_count as "unreadCount",
+          cm.last_inbound_ts as "lastInboundTimestamp",
+          (cm.last_msg_obj->>'body') as "lastMessageBody",
+          (cm.last_msg_obj->>'status') as "lastMessageStatus",
+          (cm.last_msg_obj->>'type') as "lastMessageType",
+          (cm.last_msg_obj->>'timestamp')::bigint as "lastMessageTimestamp",
+          
+          COUNT(*) OVER() as total_count
 
         FROM contacts c
-        JOIN whatsapp_instances i ON c."instanceId" = i.id
-        WHERE i."organizationId" = ${organizationId}
-        AND (
-          ${search}::text IS NULL OR 
-          c."pushName" ILIKE ${search} OR 
-          c."waId" ILIKE ${search}
-        )
-      )
-      SELECT 
-        c.id,
-        c."pushName",
-        c."waId",
-        c."profilePicUrl",
-        c."updatedAt" as "contactUpdatedAt",
-        
-        cm.unread_count as "unreadCount",
-        cm.last_inbound_ts as "lastInboundTimestamp",
-        
-        -- Extração segura do JSON
-        (cm.last_msg_obj->>'body') as "lastMessageBody",
-        (cm.last_msg_obj->>'status') as "lastMessageStatus",
-        (cm.last_msg_obj->>'type') as "lastMessageType",
-        (cm.last_msg_obj->>'timestamp')::bigint as "lastMessageTimestamp",
-        
-        -- Totalizador (Window Function)
-        COUNT(*) OVER() as total_count
+        JOIN ContactMetrics cm ON c.id = cm.id
+        LEFT JOIN tags t ON c.tag_id = t.id -- Join para trazer as informações da tag
+        WHERE 
+          (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
 
-      FROM contacts c
-      JOIN ContactMetrics cm ON c.id = cm.id
-      WHERE 
-        (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
-      
-      ORDER BY 
-        -- Lógica de Ordenação Robusta:
-        -- 1. Usa o timestamp da última msg. Se for null, usa 0.
-        COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
-        -- 2. Desempate pelo update do contato
-        c."updatedAt" DESC
-      
-      LIMIT ${limit} 
-      OFFSET ${offset}
-    `;
+        ORDER BY 
+          -- 1. Prioridade da Tag (Nulo por último, maior prioridade primeiro)
+          t.priority DESC NULLS LAST,
+          -- 2. Timestamp da última mensagem
+          COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
+          -- 3. Update do contato como fallback
+          c."updatedAt" DESC
 
+        LIMIT ${limit} 
+        OFFSET ${offset}
+        `;
       // 3. Processamento dos Dados (Mapper)
       const total = Number(contactsRaw[0]?.total_count || 0);
       const totalPages = Math.ceil(total / limit);
@@ -294,6 +309,12 @@ export const whatsappChatRoute = new Elysia()
           lastMessageType: c.lastMessageType || 'text',
           lastMessageAt,
           isWindowOpen,
+          tag: c.tagId ? {
+            id: c.tagId,
+            name: c.tagName || '',
+            color: c.tagColor || '',
+            priority: c.tagPriority || 0
+          } : null
         };
       });
 

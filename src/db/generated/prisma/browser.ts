@@ -43,6 +43,11 @@ export type WhatsAppInstance = Prisma.WhatsAppInstanceModel
  */
 export type Contact = Prisma.ContactModel
 /**
+ * Model Tag
+ * 
+ */
+export type Tag = Prisma.TagModel
+/**
  * Model Message
  * 
  */
