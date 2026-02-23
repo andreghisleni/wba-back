@@ -39,6 +39,7 @@ export type TagMinAggregateOutputType = {
   name: string | null
   priority: number | null
   colorName: string | null
+  type: $Enums.TagType | null
   organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +50,7 @@ export type TagMaxAggregateOutputType = {
   name: string | null
   priority: number | null
   colorName: string | null
+  type: $Enums.TagType | null
   organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +61,7 @@ export type TagCountAggregateOutputType = {
   name: number
   priority: number
   colorName: number
+  type: number
   organizationId: number
   createdAt: number
   updatedAt: number
@@ -79,6 +82,7 @@ export type TagMinAggregateInputType = {
   name?: true
   priority?: true
   colorName?: true
+  type?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +93,7 @@ export type TagMaxAggregateInputType = {
   name?: true
   priority?: true
   colorName?: true
+  type?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +104,7 @@ export type TagCountAggregateInputType = {
   name?: true
   priority?: true
   colorName?: true
+  type?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +202,7 @@ export type TagGroupByOutputType = {
   name: string
   priority: number
   colorName: string
+  type: $Enums.TagType
   organizationId: string
   createdAt: Date
   updatedAt: Date
@@ -229,11 +236,13 @@ export type TagWhereInput = {
   name?: Prisma.StringFilter<"Tag"> | string
   priority?: Prisma.IntFilter<"Tag"> | number
   colorName?: Prisma.StringFilter<"Tag"> | string
+  type?: Prisma.EnumTagTypeFilter<"Tag"> | $Enums.TagType
   organizationId?: Prisma.StringFilter<"Tag"> | string
   createdAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   contacts?: Prisma.ContactListRelationFilter
+  kanbanContacts?: Prisma.ContactListRelationFilter
 }
 
 export type TagOrderByWithRelationInput = {
@@ -241,11 +250,13 @@ export type TagOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   colorName?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   contacts?: Prisma.ContactOrderByRelationAggregateInput
+  kanbanContacts?: Prisma.ContactOrderByRelationAggregateInput
 }
 
 export type TagWhereUniqueInput = Prisma.AtLeast<{
@@ -257,11 +268,13 @@ export type TagWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Tag"> | string
   priority?: Prisma.IntFilter<"Tag"> | number
   colorName?: Prisma.StringFilter<"Tag"> | string
+  type?: Prisma.EnumTagTypeFilter<"Tag"> | $Enums.TagType
   organizationId?: Prisma.StringFilter<"Tag"> | string
   createdAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   contacts?: Prisma.ContactListRelationFilter
+  kanbanContacts?: Prisma.ContactListRelationFilter
 }, "id" | "organizationId_name">
 
 export type TagOrderByWithAggregationInput = {
@@ -269,6 +282,7 @@ export type TagOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   colorName?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -287,6 +301,7 @@ export type TagScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Tag"> | string
   priority?: Prisma.IntWithAggregatesFilter<"Tag"> | number
   colorName?: Prisma.StringWithAggregatesFilter<"Tag"> | string
+  type?: Prisma.EnumTagTypeWithAggregatesFilter<"Tag"> | $Enums.TagType
   organizationId?: Prisma.StringWithAggregatesFilter<"Tag"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tag"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tag"> | Date | string
@@ -296,22 +311,26 @@ export type TagCreateInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutTagsInput
   contacts?: Prisma.ContactCreateNestedManyWithoutTagInput
+  kanbanContacts?: Prisma.ContactCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagUncheckedCreateInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   organizationId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagInput
+  kanbanContacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagUpdateInput = {
@@ -319,10 +338,12 @@ export type TagUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTagsNestedInput
   contacts?: Prisma.ContactUpdateManyWithoutTagNestedInput
+  kanbanContacts?: Prisma.ContactUpdateManyWithoutTagKanbanNestedInput
 }
 
 export type TagUncheckedUpdateInput = {
@@ -330,17 +351,20 @@ export type TagUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutTagNestedInput
+  kanbanContacts?: Prisma.ContactUncheckedUpdateManyWithoutTagKanbanNestedInput
 }
 
 export type TagCreateManyInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   organizationId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -351,6 +375,7 @@ export type TagUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -360,6 +385,7 @@ export type TagUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +406,7 @@ export type TagCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   colorName?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -394,6 +421,7 @@ export type TagMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   colorName?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -404,6 +432,7 @@ export type TagMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   colorName?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -429,6 +458,12 @@ export type TagCreateNestedOneWithoutContactsInput = {
   connect?: Prisma.TagWhereUniqueInput
 }
 
+export type TagCreateNestedOneWithoutKanbanContactsInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutKanbanContactsInput, Prisma.TagUncheckedCreateWithoutKanbanContactsInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutKanbanContactsInput
+  connect?: Prisma.TagWhereUniqueInput
+}
+
 export type TagUpdateOneWithoutContactsNestedInput = {
   create?: Prisma.XOR<Prisma.TagCreateWithoutContactsInput, Prisma.TagUncheckedCreateWithoutContactsInput>
   connectOrCreate?: Prisma.TagCreateOrConnectWithoutContactsInput
@@ -437,6 +472,20 @@ export type TagUpdateOneWithoutContactsNestedInput = {
   delete?: Prisma.TagWhereInput | boolean
   connect?: Prisma.TagWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutContactsInput, Prisma.TagUpdateWithoutContactsInput>, Prisma.TagUncheckedUpdateWithoutContactsInput>
+}
+
+export type TagUpdateOneWithoutKanbanContactsNestedInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutKanbanContactsInput, Prisma.TagUncheckedCreateWithoutKanbanContactsInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutKanbanContactsInput
+  upsert?: Prisma.TagUpsertWithoutKanbanContactsInput
+  disconnect?: Prisma.TagWhereInput | boolean
+  delete?: Prisma.TagWhereInput | boolean
+  connect?: Prisma.TagWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutKanbanContactsInput, Prisma.TagUpdateWithoutKanbanContactsInput>, Prisma.TagUncheckedUpdateWithoutKanbanContactsInput>
+}
+
+export type EnumTagTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TagType
 }
 
 export type TagCreateNestedManyWithoutOrganizationInput = {
@@ -485,25 +534,58 @@ export type TagCreateWithoutContactsInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutTagsInput
+  kanbanContacts?: Prisma.ContactCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagUncheckedCreateWithoutContactsInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   organizationId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  kanbanContacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagCreateOrConnectWithoutContactsInput = {
   where: Prisma.TagWhereUniqueInput
   create: Prisma.XOR<Prisma.TagCreateWithoutContactsInput, Prisma.TagUncheckedCreateWithoutContactsInput>
+}
+
+export type TagCreateWithoutKanbanContactsInput = {
+  id?: string
+  name: string
+  priority?: number
+  colorName?: string
+  type?: $Enums.TagType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutTagsInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutTagInput
+}
+
+export type TagUncheckedCreateWithoutKanbanContactsInput = {
+  id?: string
+  name: string
+  priority?: number
+  colorName?: string
+  type?: $Enums.TagType
+  organizationId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagInput
+}
+
+export type TagCreateOrConnectWithoutKanbanContactsInput = {
+  where: Prisma.TagWhereUniqueInput
+  create: Prisma.XOR<Prisma.TagCreateWithoutKanbanContactsInput, Prisma.TagUncheckedCreateWithoutKanbanContactsInput>
 }
 
 export type TagUpsertWithoutContactsInput = {
@@ -522,9 +604,11 @@ export type TagUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutTagsNestedInput
+  kanbanContacts?: Prisma.ContactUpdateManyWithoutTagKanbanNestedInput
 }
 
 export type TagUncheckedUpdateWithoutContactsInput = {
@@ -532,29 +616,70 @@ export type TagUncheckedUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kanbanContacts?: Prisma.ContactUncheckedUpdateManyWithoutTagKanbanNestedInput
+}
+
+export type TagUpsertWithoutKanbanContactsInput = {
+  update: Prisma.XOR<Prisma.TagUpdateWithoutKanbanContactsInput, Prisma.TagUncheckedUpdateWithoutKanbanContactsInput>
+  create: Prisma.XOR<Prisma.TagCreateWithoutKanbanContactsInput, Prisma.TagUncheckedCreateWithoutKanbanContactsInput>
+  where?: Prisma.TagWhereInput
+}
+
+export type TagUpdateToOneWithWhereWithoutKanbanContactsInput = {
+  where?: Prisma.TagWhereInput
+  data: Prisma.XOR<Prisma.TagUpdateWithoutKanbanContactsInput, Prisma.TagUncheckedUpdateWithoutKanbanContactsInput>
+}
+
+export type TagUpdateWithoutKanbanContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutTagsNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutTagNestedInput
+}
+
+export type TagUncheckedUpdateWithoutKanbanContactsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagCreateWithoutOrganizationInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.ContactCreateNestedManyWithoutTagInput
+  kanbanContacts?: Prisma.ContactCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagUncheckedCreateWithoutOrganizationInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagInput
+  kanbanContacts?: Prisma.ContactUncheckedCreateNestedManyWithoutTagKanbanInput
 }
 
 export type TagCreateOrConnectWithoutOrganizationInput = {
@@ -591,6 +716,7 @@ export type TagScalarWhereInput = {
   name?: Prisma.StringFilter<"Tag"> | string
   priority?: Prisma.IntFilter<"Tag"> | number
   colorName?: Prisma.StringFilter<"Tag"> | string
+  type?: Prisma.EnumTagTypeFilter<"Tag"> | $Enums.TagType
   organizationId?: Prisma.StringFilter<"Tag"> | string
   createdAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tag"> | Date | string
@@ -600,7 +726,8 @@ export type TagCreateManyOrganizationInput = {
   id?: string
   name: string
   priority?: number
-  colorName: string
+  colorName?: string
+  type?: $Enums.TagType
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -610,9 +737,11 @@ export type TagUpdateWithoutOrganizationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUpdateManyWithoutTagNestedInput
+  kanbanContacts?: Prisma.ContactUpdateManyWithoutTagKanbanNestedInput
 }
 
 export type TagUncheckedUpdateWithoutOrganizationInput = {
@@ -620,9 +749,11 @@ export type TagUncheckedUpdateWithoutOrganizationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutTagNestedInput
+  kanbanContacts?: Prisma.ContactUncheckedUpdateManyWithoutTagKanbanNestedInput
 }
 
 export type TagUncheckedUpdateManyWithoutOrganizationInput = {
@@ -630,6 +761,7 @@ export type TagUncheckedUpdateManyWithoutOrganizationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   colorName?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTagTypeFieldUpdateOperationsInput | $Enums.TagType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -641,10 +773,12 @@ export type TagUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type TagCountOutputType = {
   contacts: number
+  kanbanContacts: number
 }
 
 export type TagCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contacts?: boolean | TagCountOutputTypeCountContactsArgs
+  kanbanContacts?: boolean | TagCountOutputTypeCountKanbanContactsArgs
 }
 
 /**
@@ -664,17 +798,26 @@ export type TagCountOutputTypeCountContactsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.ContactWhereInput
 }
 
+/**
+ * TagCountOutputType without action
+ */
+export type TagCountOutputTypeCountKanbanContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ContactWhereInput
+}
+
 
 export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   priority?: boolean
   colorName?: boolean
+  type?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   contacts?: boolean | Prisma.Tag$contactsArgs<ExtArgs>
+  kanbanContacts?: boolean | Prisma.Tag$kanbanContactsArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tag"]>
 
@@ -683,6 +826,7 @@ export type TagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   name?: boolean
   priority?: boolean
   colorName?: boolean
+  type?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -694,6 +838,7 @@ export type TagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   name?: boolean
   priority?: boolean
   colorName?: boolean
+  type?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -705,15 +850,17 @@ export type TagSelectScalar = {
   name?: boolean
   priority?: boolean
   colorName?: boolean
+  type?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "priority" | "colorName" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["tag"]>
+export type TagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "priority" | "colorName" | "type" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["tag"]>
 export type TagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   contacts?: boolean | Prisma.Tag$contactsArgs<ExtArgs>
+  kanbanContacts?: boolean | Prisma.Tag$kanbanContactsArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TagIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -728,12 +875,14 @@ export type $TagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     contacts: Prisma.$ContactPayload<ExtArgs>[]
+    kanbanContacts: Prisma.$ContactPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     priority: number
     colorName: string
+    type: $Enums.TagType
     organizationId: string
     createdAt: Date
     updatedAt: Date
@@ -1133,6 +1282,7 @@ export interface Prisma__TagClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   contacts<T extends Prisma.Tag$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kanbanContacts<T extends Prisma.Tag$kanbanContactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$kanbanContactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1166,6 +1316,7 @@ export interface TagFieldRefs {
   readonly name: Prisma.FieldRef<"Tag", 'String'>
   readonly priority: Prisma.FieldRef<"Tag", 'Int'>
   readonly colorName: Prisma.FieldRef<"Tag", 'String'>
+  readonly type: Prisma.FieldRef<"Tag", 'TagType'>
   readonly organizationId: Prisma.FieldRef<"Tag", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tag", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tag", 'DateTime'>
@@ -1568,6 +1719,30 @@ export type TagDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
  * Tag.contacts
  */
 export type Tag$contactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Contact
+   */
+  select?: Prisma.ContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Contact
+   */
+  omit?: Prisma.ContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContactInclude<ExtArgs> | null
+  where?: Prisma.ContactWhereInput
+  orderBy?: Prisma.ContactOrderByWithRelationInput | Prisma.ContactOrderByWithRelationInput[]
+  cursor?: Prisma.ContactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ContactScalarFieldEnum | Prisma.ContactScalarFieldEnum[]
+}
+
+/**
+ * Tag.kanbanContacts
+ */
+export type Tag$kanbanContactsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Contact
    */

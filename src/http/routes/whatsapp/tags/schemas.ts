@@ -5,6 +5,7 @@ export const tagSchema = t.Object({
   name: t.String(),
   colorName: t.String(),
   priority: t.Number(),
+  type: t.String(),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

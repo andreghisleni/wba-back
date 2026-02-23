@@ -39,12 +39,20 @@ const ContactListItemSchema = t.Object({
 
   tag: t.Nullable(
     t.Object({
-      id: t.String(),
-      name: t.String(),
-      color: t.String(),
-      priority: t.Number(),
+      id: t.Nullable(t.String()),
+      name: t.Nullable(t.String()),
+      color: t.Nullable(t.String()),
+      priority: t.Nullable(t.Number()),
     })
   ),
+
+  kanbanTag: t.Nullable(
+    t.Object({
+      id: t.Nullable(t.String()),
+      name: t.Nullable(t.String()),
+    })
+  ),
+
 });
 
 // Schema para resposta paginada de contatos
@@ -174,6 +182,9 @@ interface ContactRaw {
   tagName: string | null;
   tagPriority: number | null;
   tagColor: string | null;
+
+  kanbanTagId: string | null;
+  kanbanTagName: string | null;
 }
 
 export const whatsappChatRoute = new Elysia()
@@ -189,6 +200,7 @@ export const whatsappChatRoute = new Elysia()
       const searchParam = query.search?.trim();
       const search = searchParam ? `%${searchParam}%` : null;
       const unreadOnly = query.unreadOnly === 'true';
+      const kanbanTagId = query.kanbanTagId;
 
       // 2. Query SQL Otimizada (PostgreSQL)
       // Nota: Usamos as tabelas com "s" (contacts, messages) conforme o @@map do seu schema
@@ -197,7 +209,6 @@ export const whatsappChatRoute = new Elysia()
         WITH ContactMetrics AS (
           SELECT
             c.id,
-            -- Pega a última mensagem
             (
               SELECT json_build_object(
                 'body', m.body, 
@@ -244,11 +255,15 @@ export const whatsappChatRoute = new Elysia()
           c."profilePicUrl",
           c."updatedAt" as "contactUpdatedAt",
           
-          -- Dados da Tag
-          t.id as "tagId",
-          t.name as "tagName",
-          t.priority as "tagPriority",
-          t."colorName" as "tagColor",
+          -- Tag Geral (Prioridade e Cor do Card)
+          tg.id as "tagId",
+          tg.name as "tagName",
+          tg.priority as "tagPriority",
+          tg."colorName" as "tagColor",
+
+          -- Tag Kanban (Opcional, se quiser mostrar a coluna)
+          tk.id as "kanbanTagId",
+          tk.name as "kanbanTagName",
           
           cm.unread_count as "unreadCount",
           cm.last_inbound_ts as "lastInboundTimestamp",
@@ -261,22 +276,43 @@ export const whatsappChatRoute = new Elysia()
 
         FROM contacts c
         JOIN ContactMetrics cm ON c.id = cm.id
-        LEFT JOIN tags t ON c.tag_id = t.id -- Join para trazer as informações da tag
+        LEFT JOIN tags tg ON c.tag_id = tg.id        
+        LEFT JOIN tags tk ON c.tag_kanban_id = tk.id 
+
         WHERE 
-          (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
+          -- Filtro de Organização (Garante segurança)
+          EXISTS (
+            SELECT 1 FROM whatsapp_instances i 
+            WHERE i.id = c."instanceId" AND i."organizationId" = ${organizationId}
+          )
+
+          -- Filtro de Mensagens Não Lidas
+          AND (${unreadOnly}::boolean IS FALSE OR cm.unread_count > 0)
+
+          -- FILTRO DE KANBAN (Lógica para 'none' ou UUID)
+          AND (
+            ${kanbanTagId}::text IS NULL OR 
+            (${kanbanTagId} = 'none' AND c.tag_kanban_id IS NULL) OR 
+            (c.tag_kanban_id::text = ${kanbanTagId})
+          )
+
+          -- Filtro de Pesquisa
+          AND (
+            ${search}::text IS NULL OR 
+            c."pushName" ILIKE ${search} OR 
+            c."waId" ILIKE ${search}
+          )
 
         ORDER BY 
-          -- 1. Prioridade Máxima: Tem mensagens não lidas? (1 para Sim, 0 para Não)
-          CASE WHEN cm.unread_count > 0 THEN 1 ELSE 0 END DESC,
-
-          -- 2. Segundo Critério: Prioridade da Tag (Maior primeiro)
-          -- Nota: Isso só afetará o desempate dentro do grupo de "Não Lidos" 
-          -- e depois dentro do grupo de "Lidos".
-          t.priority DESC NULLS LAST,
-
-          -- 3. Terceiro Critério: Data da última mensagem (Mais recente primeiro)
+          -- 1. Prioridade absoluta: Mensagens não lidas
+          (CASE WHEN cm.unread_count > 0 THEN 1 ELSE 0 END) DESC,
+          
+          -- 2. Prioridade da Tag Geral (definida no seu model Tag)
+          tg.priority DESC NULLS LAST,
+          
+          -- 3. Ordenação cronológica (última mensagem recebida/enviada)
           COALESCE((cm.last_msg_obj->>'timestamp')::bigint, 0) DESC,
-
+          
           -- 4. Fallback: Data de atualização do contato
           c."updatedAt" DESC
 
@@ -291,15 +327,13 @@ export const whatsappChatRoute = new Elysia()
       const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
       const data = contactsRaw.map((c) => {
-        // Cálculo da Janela de 24h
+
         let isWindowOpen = false;
         if (c.lastInboundTimestamp) {
-          // Converter BigInt para Number (Timestamp Unix geralmente cabe em Number JS até o ano 2200+)
           const lastInboundTime = Number(c.lastInboundTimestamp) * 1000;
           isWindowOpen = now - lastInboundTime < TWENTY_FOUR_HOURS;
         }
 
-        // Definir qual data mostrar no card do contato
         let lastMessageAt = c.contactUpdatedAt;
         if (c.lastMessageTimestamp) {
           lastMessageAt = new Date(Number(c.lastMessageTimestamp) * 1000);
@@ -307,7 +341,7 @@ export const whatsappChatRoute = new Elysia()
 
         return {
           id: c.id,
-          pushName: c.pushName || c.waId, // Fallback visual
+          pushName: c.pushName || c.waId,
           waId: c.waId,
           profilePicUrl: c.profilePicUrl,
           unreadCount: Number(c.unreadCount),
@@ -316,12 +350,18 @@ export const whatsappChatRoute = new Elysia()
           lastMessageType: c.lastMessageType || 'text',
           lastMessageAt,
           isWindowOpen,
+          // Tag para prioridade e cor do card
           tag: c.tagId ? {
             id: c.tagId,
-            name: c.tagName || '',
-            color: c.tagColor || '',
-            priority: c.tagPriority || 0
-          } : null
+            name: c.tagName,
+            color: c.tagColor,
+            priority: c.tagPriority,
+          } : null,
+          // Info do Kanban
+          kanbanTag: c.kanbanTagId ? {
+            id: c.kanbanTagId,
+            name: c.kanbanTagName,
+          } : null,
         };
       });
 
@@ -342,6 +382,7 @@ export const whatsappChatRoute = new Elysia()
         limit: t.Optional(t.Number({ default: 20 })),
         search: t.Optional(t.String()),
         unreadOnly: t.Optional(t.String()), // 'true' ou 'false'
+        kanbanTagId: t.Optional(t.Union([t.Literal('none'), t.String({ format: 'uuid' })])),
       }),
       detail: {
         operationId: 'getWhatsappContacts',

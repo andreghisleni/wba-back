@@ -222,6 +222,23 @@ export type EnumInstanceStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumInstanceStatusFilter<$PrismaModel>
 }
 
+export type EnumTagTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TagType | Prisma.EnumTagTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTagTypeFilter<$PrismaModel> | $Enums.TagType
+}
+
+export type EnumTagTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TagType | Prisma.EnumTagTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTagTypeWithAggregatesFilter<$PrismaModel> | $Enums.TagType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTagTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTagTypeFilter<$PrismaModel>
+}
+
 export type EnumMessageTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.MessageType | Prisma.EnumMessageTypeFieldRefInput<$PrismaModel>
   in?: $Enums.MessageType[] | Prisma.ListEnumMessageTypeFieldRefInput<$PrismaModel>
@@ -665,6 +682,23 @@ export type NestedEnumInstanceStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInstanceStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInstanceStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTagTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TagType | Prisma.EnumTagTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTagTypeFilter<$PrismaModel> | $Enums.TagType
+}
+
+export type NestedEnumTagTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TagType | Prisma.EnumTagTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TagType[] | Prisma.ListEnumTagTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTagTypeWithAggregatesFilter<$PrismaModel> | $Enums.TagType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTagTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTagTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumMessageTypeFilter<$PrismaModel = never> = {

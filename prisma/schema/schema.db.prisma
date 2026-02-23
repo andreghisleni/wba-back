@@ -58,6 +58,9 @@ model Contact {
   tagId String? @map("tag_id")
   tag   Tag?    @relation(fields: [tagId], references: [id])
 
+  tagKanbanId String? @map("tag_kanban_id")
+  tagKanban   Tag?    @relation("KanbanTag", fields: [tagKanbanId], references: [id])
+
   // Garante que o contato é único POR INSTÂNCIA (Instâncias diferentes podem ter o mesmo contato)
   @@unique([instanceId, waId])
   @@map("contacts")
@@ -69,7 +72,9 @@ model Tag {
 
   priority Int @default(0) // Para ordenação manual
 
-  colorName String
+  colorName String @default("")
+
+  type TagType @default(general)
 
   organizationId String       @map("organization_id")
   organization   Organization @relation(fields: [organizationId], references: [id])
@@ -77,10 +82,16 @@ model Tag {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  contacts Contact[]
+  contacts       Contact[]
+  kanbanContacts Contact[] @relation("KanbanTag")
 
   @@unique([organizationId, name])
   @@map("tags")
+}
+
+enum TagType {
+  general
+  kanban
 }
 
 // ---------------------------------------------------------

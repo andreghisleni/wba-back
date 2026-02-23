@@ -2085,7 +2085,8 @@ export const ContactScalarFieldEnum = {
   instanceId: 'instanceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  tagId: 'tagId'
+  tagId: 'tagId',
+  tagKanbanId: 'tagKanbanId'
 } as const
 
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
@@ -2096,6 +2097,7 @@ export const TagScalarFieldEnum = {
   name: 'name',
   priority: 'priority',
   colorName: 'colorName',
+  type: 'type',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2470,6 +2472,20 @@ export type EnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'InstanceStatus[]'
  */
 export type ListEnumInstanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstanceStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TagType'
+ */
+export type EnumTagTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TagType'>
+    
+
+
+/**
+ * Reference to a field of type 'TagType[]'
+ */
+export type ListEnumTagTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TagType[]'>
     
 
 

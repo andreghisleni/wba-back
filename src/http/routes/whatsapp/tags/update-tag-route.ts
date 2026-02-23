@@ -62,7 +62,6 @@ export const updateTagRoute = new Elysia().use(uAuth).post(
         description: "Name of the tag",
       }),
       colorName: t.String({
-        minLength: 1,
         description: "Color of the tag",
       }),
       priority: t.Number({

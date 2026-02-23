@@ -21,6 +21,14 @@ export const CampaignStatus = {
 export type CampaignStatus = (typeof CampaignStatus)[keyof typeof CampaignStatus]
 
 
+export const TagType = {
+  general: 'general',
+  kanban: 'kanban'
+} as const
+
+export type TagType = (typeof TagType)[keyof typeof TagType]
+
+
 export const InstanceStatus = {
   ACTIVE: 'ACTIVE',
   DISCONNECTED: 'DISCONNECTED',

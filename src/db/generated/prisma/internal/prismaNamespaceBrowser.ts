@@ -158,7 +158,8 @@ export const ContactScalarFieldEnum = {
   instanceId: 'instanceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  tagId: 'tagId'
+  tagId: 'tagId',
+  tagKanbanId: 'tagKanbanId'
 } as const
 
 export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
@@ -169,6 +170,7 @@ export const TagScalarFieldEnum = {
   name: 'name',
   priority: 'priority',
   colorName: 'colorName',
+  type: 'type',
   organizationId: 'organizationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
