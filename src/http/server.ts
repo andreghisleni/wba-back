@@ -1,5 +1,6 @@
 import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
+import { apitallyPlugin } from "apitally/elysia";
 import { Elysia, t } from "elysia";
 import { auth } from "~/auth";
 import { env } from "~/env";
@@ -18,6 +19,12 @@ import { whatsappRoutes } from "./routes/whatsapp";
 
 export const app = new Elysia()
   .use(tracing)
+  .use(
+    apitallyPlugin({
+      clientId: env.API_TALLY_CLIENT_ID,
+      env: env.API_TALLY_ENV,
+    }),
+  )
   .use(
     cors({
       origin: env.BETTER_AUTH_URL,
