@@ -30,16 +30,18 @@ export const whatsappOauthLinkRoute = new Elysia({
       'whatsapp_business_messaging',
     ].join(',');
     const state = crypto.randomUUID();
-    const rootUrl = 'https://www.facebook.com/v21.0/dialog/oauth';
+    const rootUrl = 'https://www.facebook.com/v25.0/dialog/oauth';
 
     // --- AQUI ESTÁ A MÁGICA ---
     // O objeto 'extras' configura o Embedded Signup com coexistência
     const extras = JSON.stringify({
       featureType: 'whatsapp_business_app_onboarding',
       sessionInfoVersion: '3',
-      setup: {
-        solutionID: env.META_CONFIG_ID,
-      }
+      version: 'v3',
+      features: [
+        { name: 'marketing_messages_lite' },
+        { name: 'app_only_install' },
+      ],
     });
 
     const params = new URLSearchParams({

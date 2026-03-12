@@ -27,7 +27,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
 
     try {
       // 1. Trocar o 'code' pelo Access Token do Usuário
-      const tokenUrl = new URL("https://graph.facebook.com/v21.0/oauth/access_token");
+      const tokenUrl = new URL("https://graph.facebook.com/v25.0/oauth/access_token");
       tokenUrl.searchParams.append("client_id", env.META_APP_ID);
       tokenUrl.searchParams.append("redirect_uri", `${env.META_CALLBACK_URL}/webhook/oauth/callback`);
       tokenUrl.searchParams.append("client_secret", env.META_APP_SECRET);
@@ -41,7 +41,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
 
       // 2. Descobrir qual WABA (Conta Business) o usuário selecionou
       // Usamos o debug_token para ver as permissões concedidas
-      const debugUrl = `https://graph.facebook.com/v21.0/debug_token?input_token=${userAccessToken}&access_token=${env.META_APP_ID}|${env.META_APP_SECRET}`;
+      const debugUrl = `https://graph.facebook.com/v25.0/debug_token?input_token=${userAccessToken}&access_token=${env.META_APP_ID}|${env.META_APP_SECRET}`;
       const debugRes = await fetch(debugUrl).then((r) => r.json());
 
       if (debugRes.error) {
@@ -59,7 +59,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
       if (!wabaId) throw new Error("Nenhuma conta WhatsApp Business encontrada nas permissões.");
 
       // 3. Pegar o número de telefone com detalhes para verificar coexistência
-      const phonesUrl = `https://graph.facebook.com/v21.0/${wabaId}/phone_numbers?fields=id,display_phone_number,verified_name,code_verification_status,is_official_business_account,account_mode&access_token=${userAccessToken}`;
+      const phonesUrl = `https://graph.facebook.com/v25.0/${wabaId}/phone_numbers?fields=id,display_phone_number,verified_name,code_verification_status,is_official_business_account,account_mode&access_token=${userAccessToken}`;
       const phonesRes = await fetch(phonesUrl).then((r) => r.json());
 
       if (phonesRes.error) {
@@ -86,7 +86,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
 
       if (needsRegistration) {
         console.log("Registrando número na API Cloud...");
-        const registerUrl = `https://graph.facebook.com/v21.0/${phoneData.id}/register`;
+        const registerUrl = `https://graph.facebook.com/v25.0/${phoneData.id}/register`;
         const registerRes = await fetch(registerUrl, {
           method: "POST",
           headers: {
@@ -134,7 +134,7 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
       });
 
       // 6. Inscrever nos Webhooks (para receber mensagens)
-      const subscribeRes = await fetch(`https://graph.facebook.com/v21.0/${wabaId}/subscribed_apps`, {
+      const subscribeRes = await fetch(`https://graph.facebook.com/v25.0/${wabaId}/subscribed_apps`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
