@@ -18,7 +18,7 @@ interface MetaAPIResponse {
 }
 
 interface MetaButtonObj {
-  type: 'URL' | 'PHONE_NUMBER' | 'QUICK_REPLY';
+  type: 'URL' | 'PHONE_NUMBER' | 'QUICK_REPLY' | 'COPY_CODE' | 'OTP';
   text: string;
   url?: string;
   example?: string[];
@@ -99,6 +99,8 @@ const MetaComponentSchema = t.Object({
           t.Literal('URL'),
           t.Literal('PHONE_NUMBER'),
           t.Literal('QUICK_REPLY'),
+          t.Literal('COPY_CODE'), // <-- Adicionado
+          t.Literal('OTP'),       // <-- Adicionado (para autenticação futura)
         ]),
         text: t.String(),
         url: t.Optional(t.String()),
