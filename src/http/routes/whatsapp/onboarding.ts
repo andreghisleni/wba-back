@@ -27,12 +27,22 @@ export const whatsappOnboardingRoute = new Elysia().macro(authMacro).post(
 
     try {
       // 1. Trocar o 'code' pelo Access Token do Usuário
+      // Para Embedded Signup via FB.login(), não usamos redirect_uri na troca do código
+      console.log("Iniciando troca do code por token...");
+      console.log("Code recebido (primeiros 20 chars):", code.substring(0, 20) + "...");
+      console.log("META_APP_ID:", env.META_APP_ID);
+      console.log("META_APP_SECRET (primeiros 10 chars):", env.META_APP_SECRET.substring(0, 10) + "...");
+
       const tokenUrl = new URL("https://graph.facebook.com/v25.0/oauth/access_token");
       tokenUrl.searchParams.append("client_id", env.META_APP_ID);
-      tokenUrl.searchParams.append("redirect_uri", `${env.META_CALLBACK_URL}/webhook/oauth/callback`);
       tokenUrl.searchParams.append("client_secret", env.META_APP_SECRET);
       tokenUrl.searchParams.append("code", code);
+
+      console.log("URL da requisição:", tokenUrl.toString().replace(env.META_APP_SECRET, "***"));
+
       const tokenRes = await fetch(tokenUrl).then((r) => r.json());
+
+      console.log("Resposta do token:", JSON.stringify(tokenRes, null, 2));
 
       if (tokenRes.error) throw new Error(tokenRes.error.message);
       const userAccessToken = tokenRes.access_token;
