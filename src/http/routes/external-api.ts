@@ -234,9 +234,21 @@ export const externalApiRoutes = new Elysia({ prefix: "/v1" })
           status: "queued",
         });
 
+        // 🔥 IMPORTANTE: Converter BigInt para tipos serializáveis
         socketService.broadcast(organization.id, "chat:message:new", {
-          ...savedMsg,
+          id: savedMsg.id,
+          wamid: savedMsg.wamid,
+          contactId: savedMsg.contactId,
+          instanceId: savedMsg.instanceId,
+          direction: savedMsg.direction,
+          body: savedMsg.body,
+          type: savedMsg.type,
+          status: savedMsg.status,
+          mediaUrl: savedMsg.mediaUrl,
+          mediaFileName: savedMsg.mediaFileName,
           timestamp: new Date(Number(savedMsg.timestamp) * 1000),
+          errorCode: savedMsg.errorCode,
+          errorDesc: savedMsg.errorDesc,
           templateParams,
         });
 

@@ -12,8 +12,21 @@ export const socketService = {
 
     // Verifica se o servidor já subiu
     if (app.server) {
-      app.server.publish(topic, JSON.stringify({ event, data: payload }));
-      // console.log(`📡 Broadcast para [${topic}]: ${event}`);
+      try {
+        const message = JSON.stringify({ event, data: payload });
+        app.server.publish(topic, message);
+        // biome-ignore lint/suspicious/noConsole: <explanation>
+        console.log(`📡 Broadcast para [${topic}]: ${event}`, {
+          contactId: payload.contactId,
+          messageId: payload.id,
+          direction: payload.direction,
+        });
+      } catch (error) {
+        // biome-ignore lint/suspicious/noConsole: <explanation>
+        console.error(`❌ Erro ao fazer broadcast do evento ${event}:`, error);
+        // biome-ignore lint/suspicious/noConsole: <explanation>
+        console.error('Payload que causou erro:', payload);
+      }
     } else {
       // biome-ignore lint/suspicious/noConsole: <explanation>
       console.warn("⚠️ Tentativa de broadcast antes do servidor iniciar.");
