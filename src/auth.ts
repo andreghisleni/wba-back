@@ -115,7 +115,7 @@ export const auth = betterAuth({
     }),
   ],
   basePath: '/api',
-  trustedOrigins: ['http://localhost:5173'],
+  trustedOrigins: ['http://localhost:5173', env.BETTER_AUTH_URL],
   advanced: {
     database: {
       generateId: false,
